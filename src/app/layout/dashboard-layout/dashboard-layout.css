@@ -1,0 +1,51 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  background: #f4f6fb;
+}
+
+.sidebar {
+  width: 240px;
+  background: #111827;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar a {
+  display: block;
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  transition: 0.2s;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.bottom {
+  margin-top: auto;
+}
+
+.bottom button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

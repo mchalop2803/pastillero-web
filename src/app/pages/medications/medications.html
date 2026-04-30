@@ -1,0 +1,86 @@
+<div class="page">
+
+  <header class="header">
+    <h1>💊 Medications</h1>
+    <p>Manage your daily medication</p>
+  </header>
+
+  <div class="filters">
+    <button [class.active]="filter === 'ALL'" (click)="setFilter('ALL')">ALL</button>
+    <button [class.active]="filter === 'DAY'" (click)="setFilter('DAY')">🌅 DAY</button>
+    <button [class.active]="filter === 'AFTERNOON'" (click)="setFilter('AFTERNOON')">🌇 AFTERNOON</button>
+    <button [class.active]="filter === 'NIGHT'" (click)="setFilter('NIGHT')">🌙 NIGHT</button>
+  </div>
+
+  <button class="add-btn" (click)="openAddModal()">➕ New medication</button>
+
+  <div class="grid">
+
+    <div *ngFor="let med of filteredMeds$ | async"
+         class="card"
+         (click)="openDetail(med)">
+
+      <div class="image-container">
+        <img [src]="med.imageUrl || 'assets/default-med.png'" />
+      </div>
+
+      <div class="info">
+        <h3>{{ med.nombre }}</h3>
+        <p>{{ med.dosis }}</p>
+
+        <span class="moment" *ngIf="med.momentDayUI">
+          {{ med.momentDayUI }}
+        </span>
+
+        <span class="hour" *ngIf="med.horario">
+          🕒 {{ med.horario }}
+        </span>
+      </div>
+
+      <button class="delete"
+        (click)="deleteMedicament(med.id); $event.stopPropagation()">
+        🗑
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="modal" *ngIf="isAddModalOpen">
+    <div class="modal-content">
+
+      <h2>{{ editingId ? 'Edit medication' : 'New medication' }}</h2>
+
+      <form (ngSubmit)="addMedicament()">
+
+        <input [(ngModel)]="newMedicament.nombre" name="nombre" placeholder="Name" required />
+        <input [(ngModel)]="newMedicament.dosis" name="dosis" placeholder="Dose" required />
+
+        <input type="time"
+               [(ngModel)]="newMedicament.horario"
+               name="horario"
+               required />
+
+        <div *ngIf="!editingId">
+          <input type="file" (change)="onFileChange($event)" />
+        </div>
+
+        <div class="actions">
+          <button class="add" type="submit">Save</button>
+          <button class="cancel" type="button" (click)="closeModal()">Cancel</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <app-detail-modal
+    [visible]="isDetailOpen"
+    [item]="selectedItem"
+    (close)="closeDetail()"
+    (delete)="deleteFromModal($event)"
+    (edit)="editFromModal($event)">
+  </app-detail-modal>
+
+</div>

@@ -1,12 +1,34 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { Auth, authState } from '@angular/fire/auth';
+import { firstValueFrom } from 'rxjs';
+import { RouterModule, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  protected readonly title = signal('pastillero-web');
+export class App implements OnInit {
+
+  private auth = inject(Auth);
+
+  loading = true;
+
+  constructor(private router: Router) {}
+
+  async ngOnInit() {
+    const user = await firstValueFrom(authState(this.auth));
+
+    if (!user) {
+      this.router.navigate(['/login']);
+    } else {
+      this.loading = false;
+    }
+  }
 }

@@ -1,0 +1,57 @@
+<div class="home-container">
+
+  <header class="home-header">
+    <h1>🏠 My Health</h1>
+    <p>Summary of your medical activity</p>
+  </header>
+
+  <div class="cards">
+
+    <div class="card citas">
+      <div class="icon">📅</div>
+      <h3>Next appointment</h3>
+
+      <ng-container *ngIf="nextCita; else noCita">
+        <p>{{ nextCita.descripcion }}</p>
+        <span *ngIf="nextCita">
+          📅 {{ nextCita.fecha }}
+          ⏰ {{ nextCita.hora }}
+        </span>
+      </ng-container>
+
+      <ng-template #noCita>
+        <p>No appointments</p>
+      </ng-template>
+    </div>
+
+    <div class="card meds">
+      <div class="icon">💊</div>
+      <h3>Next medication</h3>
+
+      <ng-container *ngIf="nextMed; else noMed">
+        <p>{{ nextMed.nombre }}</p>
+        <span>{{ nextMed.dosis }}</span>
+      </ng-container>
+
+      <ng-template #noMed>
+        <p>No medication</p>
+      </ng-template>
+    </div>
+
+    <div class="card alerts">
+      <div class="icon">⏰</div>
+      <h3>Next alert</h3>
+
+      <ng-container *ngIf="nextAlert; else noAlert">
+        <p>{{ nextAlert.nombre }}</p>
+        <span>{{ nextAlert.hora }}</span>
+      </ng-container>
+
+      <ng-template #noAlert>
+        <p>No alerts</p>
+      </ng-template>
+    </div>
+
+  </div>
+
+</div>

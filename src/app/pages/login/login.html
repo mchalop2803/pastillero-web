@@ -1,0 +1,39 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <div class="logo">
+      💊 <span>Pastillero</span>
+    </div>
+
+    <p class="subtitle">Log in to continue</p>
+
+    <input
+      type="email"
+      placeholder="Email"
+      [(ngModel)]="email"
+    />
+
+    <input
+      type="password"
+      placeholder="Password" 
+      [(ngModel)]="password"
+    />
+
+    <button (click)="login()" [disabled]="loading">
+
+      <span *ngIf="!loading">Log in</span>
+      <span *ngIf="loading">Loading...</span>
+
+    </button>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <p class="link">
+      Don't have an account?
+      <span (click)="goToRegister()">Register</span>
+    </p>
+
+  </div>
+
+</div>

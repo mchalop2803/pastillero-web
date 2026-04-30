@@ -1,0 +1,49 @@
+<div class="modal" *ngIf="visible">
+  <div class="modal-content">
+
+    <h2>{{ item?.nombre || item?.descripcion }}</h2>
+
+    <div class="detail">
+
+      <p *ngIf="item?.dosis">
+        💊 <strong>Dose:</strong> {{ item.dosis }}
+      </p>
+
+      <p *ngIf="item?.horario">
+        🕒 <strong>Time:</strong> {{ item.horario }}
+      </p>
+
+      <p *ngIf="item?.hora">
+        ⏰ <strong>Hour:</strong> {{ item.hora }}
+      </p>
+
+      <p *ngIf="item?.momentDay">
+        📅 <strong>Moment of the day:</strong>
+        <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Day</span>
+        <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Afternoon</span>
+        <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Night</span>
+      </p>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        *ngIf="type !== 'alert'"
+        class="add"
+        (click)="editItem()">
+        ✏️ Edit
+      </button>
+
+      <button class="delete" (click)="deleteItem()">
+        🗑 Delete
+      </button>
+
+      <button class="close" (click)="closeModal()">
+        Close
+      </button>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="page">
+  <h1>🏥 Appointments</h1>
+  <p class="subtitle">Medical appointment management</p>
+
+  <button class="add" (click)="openAddModal()">➕ Add Appointment</button>
+
+  <div class="grid">
+    <div *ngFor="let cita of citas$ | async"
+         class="card"
+         (click)="openDetail(cita)">
+
+      <div class="info">
+        <h3>{{ cita.descripcion }}</h3>
+
+        <p *ngIf="cita.fecha">
+          📅 {{ cita.fecha }}
+        </p>
+
+        <p *ngIf="cita.hora">
+          ⏰ {{ cita.hora }}
+        </p>
+      </div>
+
+      <button class="delete"
+              (click)="deleteCita(cita.id); $event.stopPropagation()">
+        🗑
+      </button>
+
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="isModalOpen">
+    <div class="modal-content">
+
+      <h2>{{ editingId ? 'Edit Appointment' : 'Add Appointment' }}</h2>
+
+      <form (ngSubmit)="addCita()">
+
+        <input [(ngModel)]="newCita.descripcion"
+               name="descripcion"
+               placeholder="Description"
+               required />
+
+        <input type="date"
+               [(ngModel)]="newCita.fecha"
+               name="fecha"
+               required />
+
+        <input type="time"
+               [(ngModel)]="newCita.hora"
+               name="hora"
+               required />
+
+        <button class="add" type="submit">
+          {{ editingId ? 'Update' : 'Save' }}
+        </button>
+
+        <button class="delete" type="button" (click)="closeModal()">
+          Cancel
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  <app-detail-modal
+    [visible]="isDetailOpen"
+    [item]="selectedItem"
+    (close)="closeDetail()"
+    (delete)="deleteFromModal($event)"
+    (edit)="editFromModal($event)">
+  </app-detail-modal>
+</div>

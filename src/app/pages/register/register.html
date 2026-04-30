@@ -1,0 +1,37 @@
+<div class="register-container">
+
+  <div class="register-card">
+
+    <div class="logo">
+      💊 <span>Pastillero</span>
+    </div>
+
+    <p class="subtitle">Create your account</p>
+
+    <input type="text" placeholder="Name" [(ngModel)]="name" />
+    <input type="text" placeholder="Surname" [(ngModel)]="surname" />
+
+    <input type="email" placeholder="Email" [(ngModel)]="email" />
+    <input type="password" placeholder="Password" [(ngModel)]="password" />
+
+    <input type="text" placeholder="NIF" [(ngModel)]="nif" />
+    <input type="text" placeholder="Phone" [(ngModel)]="phone" />
+    <input type="number" placeholder="Age" [(ngModel)]="age" />
+
+    <button (click)="register()" [disabled]="loading">
+
+      <span *ngIf="!loading">Register</span>
+      <span *ngIf="loading">Creating...</span>
+
+    </button>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <p class="login-link">
+      Already have an account?
+      <span (click)="goToLogin()">Login</span>
+    </p>
+
+  </div>
+
+</div>
