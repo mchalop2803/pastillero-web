@@ -21,4 +21,14 @@ export class DashboardLayoutComponent {
       this.router.navigate(['/login']);
     });
   }
+
+  isSidebarOpen = false;
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
+  }
 }

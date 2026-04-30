@@ -1,6 +1,10 @@
 <div class="layout">
 
-  <aside class="sidebar">
+  <button class="menu-btn" (click)="toggleSidebar()">
+    ☰
+  </button>
+
+  <aside class="sidebar" [class.open]="isSidebarOpen">
     <h2>💊 Pastillero Digital</h2>
 
     <nav>
@@ -13,8 +17,9 @@
     <div class="bottom">
       <button (click)="logout()">🚪 Logout</button>
     </div>
-
   </aside>
+
+  <div class="overlay" *ngIf="isSidebarOpen" (click)="closeSidebar()"></div>
 
   <main class="content">
     <router-outlet></router-outlet>

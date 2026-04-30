@@ -49,3 +49,54 @@
   padding: 20px;
   overflow-y: auto;
 }
+
+/* BOTÓN HAMBURGUESA */
+.menu-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 26px;
+  background: #111827;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+@media (max-width: 768px) {
+
+  .menu-btn {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100%;
+    z-index: 1000;
+    transition: 0.3s;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .content {
+    padding-top: 60px;
+  }
+}
