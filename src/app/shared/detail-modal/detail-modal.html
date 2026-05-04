@@ -1,5 +1,8 @@
-<div class="modal" *ngIf="visible">
-  <div class="modal-content">
+<div class="modal" *ngIf="visible" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- CLOSE ICON -->
+    <button class="icon-close" (click)="closeModal()">✕</button>
 
     <h2>{{ item?.nombre || item?.descripcion }}</h2>
 
@@ -18,7 +21,7 @@
       </p>
 
       <p *ngIf="item?.momentDay">
-        📅 <strong>Moment of the day:</strong>
+        📅 <strong>Moment:</strong>
         <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Day</span>
         <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Afternoon</span>
         <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Night</span>
@@ -44,7 +47,6 @@
     <button class="close" (click)="closeModal()">
       Close
     </button>
-
 
   </div>
 </div>
