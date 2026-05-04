@@ -65,12 +65,10 @@
 .actions .close {
   background: rgba(0,0,0,0.04);
   color: #6b7280;
-  border-radius: 999px;
 }
 
 .actions .close:hover {
   background: rgba(17, 24, 39, 0.12);
-  transform: translateY(-1px);
 }
 
 @keyframes fadeIn {
