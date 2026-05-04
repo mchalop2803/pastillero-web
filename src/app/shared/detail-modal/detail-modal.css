@@ -33,7 +33,7 @@
   min-width: 0;
   border: none;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 10px; /* mismo para todos */
   cursor: pointer;
   font-weight: 500;
   transition: 0.2s;
@@ -44,6 +44,7 @@
   gap: 6px;
 }
 
+/* BOTÓN EDIT */
 .actions .add {
   background: #3b82f6;
   color: white;
@@ -53,6 +54,7 @@
   background: #2563eb;
 }
 
+/* BOTÓN DELETE */
 .actions .delete {
   background: #ef4444;
   color: white;
@@ -62,14 +64,14 @@
   background: #dc2626;
 }
 
+/* BOTÓN CLOSE (ahora consistente) */
 .actions .close {
-  background: rgba(0,0,0,0.04);
-  color: #6b7280;
-  border-radius: 999px;
+  background: #6b7280;
+  color: white;
 }
 
 .actions .close:hover {
-  background: rgba(17, 24, 39, 0.12);
+  background: #4b5563;
   transform: translateY(-1px);
 }
 
