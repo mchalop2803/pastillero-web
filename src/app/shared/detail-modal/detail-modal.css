@@ -28,11 +28,10 @@
   margin-top: 20px;
 }
 
-/* 🔥 CLAVE: todos mismo tamaño real */
 .actions button {
   flex: 1;
   border: none;
-  padding: 12px 0; /* iguala altura exacta */
+  padding: 12px 0;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
@@ -43,7 +42,7 @@
   justify-content: center;
   gap: 6px;
 
-  white-space: nowrap; /* evita que uno se rompa */
+  white-space: nowrap;
 }
 
 /* EDIT */
@@ -66,7 +65,6 @@
   background: #dc2626;
 }
 
-/* CLOSE (igual tamaño, estilo coherente pero neutro) */
 .actions .close {
   background: #e5e7eb;
   color: #374151;
@@ -74,7 +72,6 @@
 
 .actions .close:hover {
   background: #d1d5db;
-  transform: translateY(-1px);
 }
 
 @keyframes fadeIn {
