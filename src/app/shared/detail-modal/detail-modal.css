@@ -28,12 +28,12 @@
   margin-top: 20px;
 }
 
+/* 🔥 CLAVE: todos mismo tamaño real */
 .actions button {
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 1;
   border: none;
-  padding: 12px;
-  border-radius: 10px; /* mismo para todos */
+  padding: 12px 0; /* iguala altura exacta */
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
   transition: 0.2s;
@@ -42,9 +42,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+
+  white-space: nowrap; /* evita que uno se rompa */
 }
 
-/* BOTÓN EDIT */
+/* EDIT */
 .actions .add {
   background: #3b82f6;
   color: white;
@@ -54,7 +56,7 @@
   background: #2563eb;
 }
 
-/* BOTÓN DELETE */
+/* DELETE */
 .actions .delete {
   background: #ef4444;
   color: white;
@@ -64,14 +66,14 @@
   background: #dc2626;
 }
 
-/* BOTÓN CLOSE (ahora consistente) */
+/* CLOSE (igual tamaño, estilo coherente pero neutro) */
 .actions .close {
-  background: #6b7280;
-  color: white;
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .actions .close:hover {
-  background: #4b5563;
+  background: #d1d5db;
   transform: translateY(-1px);
 }
 
