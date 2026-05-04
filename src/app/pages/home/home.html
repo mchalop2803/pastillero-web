@@ -30,7 +30,7 @@
 
       <ng-container *ngIf="nextMed; else noMed">
         <p>{{ nextMed.nombre }}</p>
-        <span>{{ nextMed.dosis }}</span>
+        <span>{{ nextMed.dosisUI }}</span>
       </ng-container>
 
       <ng-template #noMed>

@@ -28,7 +28,6 @@ export class Home {
         .filter(c => c.descripcion && c.fecha && c.hora)
         .map(c => {
 
-          // 🔥 CLAVE: crear fecha local REAL
           const [year, month, day] = c.fecha.split('-').map(Number);
           const [hour, minute] = c.hora.split(':').map(Number);
 
@@ -79,8 +78,26 @@ export class Home {
     // ================= MEDICAMENTOS =================
     this.data.getMedicaments().subscribe(meds => {
 
-      this.nextMed = meds.length ? meds[0] : null;
+      const translated = meds.map(m => ({
+        ...m,
+        dosisUI: this.translateDose(m.dosis)
+      }));
+
+      this.nextMed = translated.length ? translated[0] : null;
     });
 
+  }
+
+  private translateDose(value: string): string {
+
+    if (!value) return '';
+
+    const v = value.toLowerCase();
+
+    if (v.includes('entera') || v.includes('1')) return '1 pill';
+    if (v.includes('media') || v.includes('1/2')) return 'half pill';
+    if (v.includes('cuarto') || v.includes('1/4')) return 'quarter pill';
+
+    return value;
   }
 }
