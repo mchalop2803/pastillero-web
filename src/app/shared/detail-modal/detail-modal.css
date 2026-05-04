@@ -1,109 +1,71 @@
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(6px);
-  padding: 16px;
+  backdrop-filter: blur(4px);
 }
 
-/* CONTENEDOR PRINCIPAL */
 .modal-content {
-  background: #fff;
-  border-radius: 18px;
-  width: 360px;
-  max-width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  width: 340px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   animation: fadeIn 0.2s ease;
-
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
 }
 
-/* HEADER REAL (ESTO ES LA CLAVE) */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-/* TÍTULO */
-.title {
-  margin: 0;
-  font-size: 20px;
-  color: #111827;
-  line-height: 1.2;
-  flex: 1;
-}
-
-/* X REALMENTE FUERA DEL FLUJO */
-.icon-close {
-  border: none;
-  background: transparent;
-  font-size: 20px;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 4px;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.icon-close:hover {
-  color: #111827;
-  transform: scale(1.1);
-}
-
-/* DETAIL BIEN ESTRUCTURADO */
-.detail {
-  background: #f9fafb;
-  border-radius: 12px;
-  padding: 12px 14px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
+/* DETAIL */
 .detail p {
-  margin: 0;
-  font-size: 14px;
+  margin: 6px 0;
   color: #374151;
 }
 
-/* BOTONES */
+/* 🔥 LAYOUT ACCIONES */
 .actions {
+  display: flex;
+  justify-content: space-between; /* clave */
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* izquierda (edit + delete) */
+.left-actions {
   display: flex;
   gap: 10px;
 }
 
+/* derecha (close) */
+.right-actions {
+  display: flex;
+}
+
+/* BOTONES BASE */
 .actions button {
-  flex: 1;
   border: none;
-  padding: 12px 0;
-  border-radius: 12px;
-  font-weight: 600;
+  padding: 12px 14px;
+  border-radius: 10px;
   cursor: pointer;
+  font-weight: 500;
   transition: 0.2s;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
   gap: 6px;
+
+  white-space: nowrap;
 }
 
 /* EDIT */
-.actions .edit {
+.actions .add {
   background: #3b82f6;
   color: white;
 }
 
-.actions .edit:hover {
+.actions .add:hover {
   background: #2563eb;
 }
 
@@ -117,10 +79,20 @@
   background: #dc2626;
 }
 
+/* CLOSE (IGUAL QUE LOS DEMÁS) */
+.actions .close {
+  background: #111827;
+  color: white;
+}
+
+.actions .close:hover {
+  background: #000000;
+}
+
 /* ANIMACIÓN */
 @keyframes fadeIn {
   from {
-    transform: scale(0.96);
+    transform: scale(0.95);
     opacity: 0;
   }
   to {

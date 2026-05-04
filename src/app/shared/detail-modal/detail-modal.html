@@ -1,16 +1,8 @@
-<div class="modal" *ngIf="visible" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+<div class="modal" *ngIf="visible">
+  <div class="modal-content">
 
-    <!-- HEADER -->
-    <div class="modal-header">
-      <h2 class="title">
-        {{ item?.nombre || item?.descripcion }}
-      </h2>
+    <h2>{{ item?.nombre || item?.descripcion }}</h2>
 
-      <button class="icon-close" (click)="closeModal()">✕</button>
-    </div>
-
-    <!-- DETAIL -->
     <div class="detail">
 
       <p *ngIf="item?.dosis">
@@ -26,29 +18,35 @@
       </p>
 
       <p *ngIf="item?.momentDay">
-        📅 <strong>Moment:</strong>
-
+        📅 <strong>Moment of the day:</strong>
         <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Day</span>
         <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Afternoon</span>
         <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Night</span>
-
       </p>
 
     </div>
 
-    <!-- ACTIONS -->
+    <!-- ACCIONES SEPARADAS -->
     <div class="actions">
 
-      <button
-        *ngIf="type !== 'alert'"
-        class="edit"
-        (click)="editItem()">
-        ✏️ Edit
-      </button>
+      <div class="left-actions">
+        <button
+          *ngIf="type !== 'alert'"
+          class="add"
+          (click)="editItem()">
+          ✏️ Edit
+        </button>
 
-      <button class="delete" (click)="deleteItem()">
-        🗑 Delete
-      </button>
+        <button class="delete" (click)="deleteItem()">
+          🗑 Delete
+        </button>
+      </div>
+
+      <div class="right-actions">
+        <button class="close" (click)="closeModal()">
+          Close
+        </button>
+      </div>
 
     </div>
 
