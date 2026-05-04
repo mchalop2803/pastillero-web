@@ -66,12 +66,29 @@
 }
 
 .actions .close {
-  background: #e5e7eb;
-  color: #374151;
+  background: #111827;
+  color: white;
 }
 
 .actions .close:hover {
-  background: #d1d5db;
+  background: #000000;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.close {
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  padding: 12px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
 }
 
 @keyframes fadeIn {
