@@ -26,27 +26,22 @@
 
     </div>
 
-    <!-- ACCIONES SEPARADAS -->
     <div class="actions">
 
-      <div class="left-actions">
-        <button
-          *ngIf="type !== 'alert'"
-          class="add"
-          (click)="editItem()">
-          ✏️ Edit
-        </button>
+      <button
+        *ngIf="type !== 'alert'"
+        class="add"
+        (click)="editItem()">
+        ✏️ Edit
+      </button>
 
-        <button class="delete" (click)="deleteItem()">
-          🗑 Delete
-        </button>
-      </div>
+      <button class="delete" (click)="deleteItem()">
+        🗑 Delete
+      </button>
 
-      <div class="right-actions">
-        <button class="close" (click)="closeModal()">
-          Close
-        </button>
-      </div>
+      <button class="close" (click)="closeModal()">
+        Close
+      </button>
 
     </div>
 

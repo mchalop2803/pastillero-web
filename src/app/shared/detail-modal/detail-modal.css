@@ -17,35 +17,22 @@
   animation: fadeIn 0.2s ease;
 }
 
-/* DETAIL */
 .detail p {
   margin: 6px 0;
   color: #374151;
 }
 
-/* 🔥 LAYOUT ACCIONES */
 .actions {
   display: flex;
-  justify-content: space-between; /* clave */
-  align-items: center;
+  gap: 10px;
   margin-top: 20px;
 }
 
-/* izquierda (edit + delete) */
-.left-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* derecha (close) */
-.right-actions {
-  display: flex;
-}
-
-/* BOTONES BASE */
 .actions button {
+  flex: 1 1 0;
+  min-width: 0;
   border: none;
-  padding: 12px 14px;
+  padding: 12px;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
@@ -55,11 +42,8 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-
-  white-space: nowrap;
 }
 
-/* EDIT */
 .actions .add {
   background: #3b82f6;
   color: white;
@@ -69,7 +53,6 @@
   background: #2563eb;
 }
 
-/* DELETE */
 .actions .delete {
   background: #ef4444;
   color: white;
@@ -79,17 +62,17 @@
   background: #dc2626;
 }
 
-/* CLOSE (IGUAL QUE LOS DEMÁS) */
 .actions .close {
-  background: #111827;
-  color: white;
+  background: rgba(0,0,0,0.04);
+  color: #6b7280;
+  border-radius: 999px;
 }
 
 .actions .close:hover {
-  background: #000000;
+  background: rgba(17, 24, 39, 0.12);
+  transform: translateY(-1px);
 }
 
-/* ANIMACIÓN */
 @keyframes fadeIn {
   from {
     transform: scale(0.95);
