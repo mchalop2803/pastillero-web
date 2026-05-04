@@ -29,12 +29,23 @@
 .detail {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+
+  background: #f9fafb;      /* 🔥 efecto tarjeta */
+  border: 1px solid #e5e7eb;
+
+  padding: 18px;            /* 🔥 MÁS GRANDE */
+  border-radius: 14px;
+
+  margin-top: 6px;
 }
 
+/* texto más claro y legible */
 .detail p {
   margin: 0;
   color: #374151;
+  font-size: 15px;          /* 🔥 un poco más grande */
+  line-height: 1.4;
 }
 
 /* ACCIONES */
