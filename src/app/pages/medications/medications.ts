@@ -43,7 +43,7 @@ export class Medications {
 
   ngOnInit() {
     this.medicaments$ = this.data.getMedicaments().pipe(
-      map(meds => this.translateMomentDay(meds))
+      map(meds => this.translateData(meds))
     );
 
     this.filteredMeds$ = this.medicaments$.pipe(
@@ -51,12 +51,13 @@ export class Medications {
     );
   }
 
-  // ================= TRADUCCIÓN SOLO TEXTO =================
+  // ================= TRADUCCIÓN UI =================
 
-  private translateMomentDay(meds: any[]) {
+  private translateData(meds: any[]) {
     return meds.map(m => ({
       ...m,
-      momentDayUI: this.toEnglish(m.momentDay)
+      momentDayUI: this.toEnglish(m.momentDay),
+      dosisUI: this.translateDose(m.dosis)
     }));
   }
 
@@ -67,6 +68,19 @@ export class Medications {
       case 'NOCHE': return 'NIGHT';
       default: return value;
     }
+  }
+
+  private translateDose(value: string): string {
+
+    if (!value) return '';
+
+    const v = value.toLowerCase();
+
+    if (v.includes('entera') || v.includes('1')) return '1 pill';
+    if (v.includes('media') || v.includes('1/2')) return 'half pill';
+    if (v.includes('cuarto') || v.includes('1/4')) return 'quarter pill';
+
+    return value;
   }
 
   // ================= FILTRO =================
@@ -141,63 +155,63 @@ export class Medications {
 
   async addMedicament() {
 
-  if (!this.newMedicament.nombre ||
-      !this.newMedicament.dosis ||
-      !this.newMedicament.horario) return;
+    if (!this.newMedicament.nombre ||
+        !this.newMedicament.dosis ||
+        !this.newMedicament.horario) return;
 
-  let imageUrl: string = '';
+    let imageUrl: string = '';
 
-  try {
-    if (this.selectedFile) {
-      console.log('📤 Subiendo imagen...');
-      imageUrl = await this.storage.uploadImage(this.selectedFile);
-      console.log('✅ Imagen subida:', imageUrl);
-    }
-  } catch (err) {
-    console.error('🔥 ERROR SUBIENDO IMAGEN:', err);
-    alert('Error subiendo imagen');
-    return; // 🔴 corta SOLO si falla subida
-  }
-
-  const momentDay = this.calculateMomentDay(this.newMedicament.horario);
-
-  const medicamentData = {
-    nombre: this.newMedicament.nombre,
-    dosis: this.newMedicament.dosis,
-    horario: this.newMedicament.horario,
-    momentDay,
-    imageUrl
-  };
-
-  try {
-
-    if (this.editingId) {
-
-      await this.data.updateMedicament(this.editingId, medicamentData);
-
-      await this.data.updateAlertByMedicament(this.editingId, {
-        nombre: medicamentData.nombre,
-        hora: medicamentData.horario
-      });
-
-    } else {
-
-      const newId = await this.data.addMedicament(medicamentData);
-
-      await this.data.addAlert({
-        medicamentId: newId,
-        nombre: medicamentData.nombre,
-        hora: medicamentData.horario
-      });
+    try {
+      if (this.selectedFile) {
+        console.log('📤 Subiendo imagen...');
+        imageUrl = await this.storage.uploadImage(this.selectedFile);
+        console.log('✅ Imagen subida:', imageUrl);
+      }
+    } catch (err) {
+      console.error('🔥 ERROR SUBIENDO IMAGEN:', err);
+      alert('Error uploading image');
+      return;
     }
 
-    console.log('✅ Medicamento guardado');
-    this.closeModal();
+    const momentDay = this.calculateMomentDay(this.newMedicament.horario);
 
-  } catch (err) {
-    console.error('🔥 ERROR GUARDANDO EN DB:', err);
+    const medicamentData = {
+      nombre: this.newMedicament.nombre,
+      dosis: this.newMedicament.dosis,
+      horario: this.newMedicament.horario,
+      momentDay,
+      imageUrl
+    };
+
+    try {
+
+      if (this.editingId) {
+
+        await this.data.updateMedicament(this.editingId, medicamentData);
+
+        await this.data.updateAlertByMedicament(this.editingId, {
+          nombre: medicamentData.nombre,
+          hora: medicamentData.horario
+        });
+
+      } else {
+
+        const newId = await this.data.addMedicament(medicamentData);
+
+        await this.data.addAlert({
+          medicamentId: newId,
+          nombre: medicamentData.nombre,
+          hora: medicamentData.horario
+        });
+      }
+
+      console.log('✅ Medicamento guardado');
+      this.closeModal();
+
+    } catch (err) {
+      console.error('🔥 ERROR GUARDANDO EN DB:', err);
+    }
   }
-}
 
   deleteMedicament(id: string) {
     this.data.deleteMedicament(id);
