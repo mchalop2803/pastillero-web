@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
-  padding: 30px;
+  padding: 20px;
 }
 
 .modal-content {
@@ -14,7 +14,7 @@
   padding: 30px;
   border-radius: 18px;
 
-  width: 420px;          /* 🔥 MÁS GRANDE */
+  width: 500px;          /* 🔥 MÁS GRANDE */
   max-width: 95%;
 
   box-shadow: 0 15px 40px rgba(0,0,0,0.25);
