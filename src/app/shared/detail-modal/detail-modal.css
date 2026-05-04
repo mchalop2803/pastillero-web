@@ -6,55 +6,30 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(6px);
-  padding: 16px; /* evita cortes en pantallas pequeñas */
+  padding: 16px;
 }
 
+/* CONTENEDOR PRINCIPAL */
 .modal-content {
-  position: relative;
-  background: #ffffff;
-  padding: 26px;
+  background: #fff;
   border-radius: 18px;
   width: 360px;
   max-width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   animation: fadeIn 0.2s ease;
 
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px; /* 🔥 controla todo el layout */
+  gap: 14px;
 }
 
-/* ✕ PERFECTA (NO AFECTA LAYOUT) */
-.icon-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-
-  width: 34px;
-  height: 34px;
-
+/* HEADER REAL (ESTO ES LA CLAVE) */
+.modal-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  background: transparent;
-
-  font-size: 20px;
-  line-height: 1;
-  color: #6b7280;
-
-  cursor: pointer;
-  padding: 0;
-
-  z-index: 10; /* 🔥 evita conflictos visuales */
-
-  transition: 0.2s;
-}
-
-.icon-close:hover {
-  color: #111827;
-  transform: scale(1.15);
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 /* TÍTULO */
@@ -62,12 +37,28 @@
   margin: 0;
   font-size: 20px;
   color: #111827;
-
-  padding-right: 28px; /* evita choque con la X */
   line-height: 1.2;
+  flex: 1;
 }
 
-/* 🔥 DETAIL MEJORADO (ESTILO CARD SUAVE) */
+/* X REALMENTE FUERA DEL FLUJO */
+.icon-close {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.icon-close:hover {
+  color: #111827;
+  transform: scale(1.1);
+}
+
+/* DETAIL BIEN ESTRUCTURADO */
 .detail {
   background: #f9fafb;
   border-radius: 12px;
@@ -80,15 +71,14 @@
 
 .detail p {
   margin: 0;
-  color: #374151;
   font-size: 14px;
+  color: #374151;
 }
 
 /* BOTONES */
 .actions {
   display: flex;
   gap: 10px;
-  margin-top: 6px;
 }
 
 .actions button {
@@ -96,16 +86,15 @@
   border: none;
   padding: 12px 0;
   border-radius: 12px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
   transition: 0.2s;
 
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   gap: 6px;
-
-  white-space: nowrap; /* 🔥 NO rompe Edit */
 }
 
 /* EDIT */

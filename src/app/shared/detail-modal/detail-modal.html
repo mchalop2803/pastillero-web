@@ -1,13 +1,16 @@
 <div class="modal" *ngIf="visible" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
 
-    <!-- X SIMPLE -->
-    <button class="icon-close" (click)="closeModal()">✕</button>
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h2 class="title">
+        {{ item?.nombre || item?.descripcion }}
+      </h2>
 
-    <h2 class="title">
-      {{ item?.nombre || item?.descripcion }}
-    </h2>
+      <button class="icon-close" (click)="closeModal()">✕</button>
+    </div>
 
+    <!-- DETAIL -->
     <div class="detail">
 
       <p *ngIf="item?.dosis">
@@ -33,6 +36,7 @@
 
     </div>
 
+    <!-- ACTIONS -->
     <div class="actions">
 
       <button
