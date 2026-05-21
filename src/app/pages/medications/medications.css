@@ -288,7 +288,7 @@ input:focus, select:focus {
 /* GRIS SECUNDARIO */
 .actions .cancel {
   background: #2563eb;
-  color: #111827;
+  color: white;
 }
 
 .actions .cancel:hover {

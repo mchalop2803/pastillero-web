@@ -117,7 +117,7 @@
   font-weight: 700;
   color: #111827;
 
-  padding-left: 4px; /* 👈 aire visual */
+  padding-left: 4px;
 }
 
 /* FOOTER */
@@ -155,13 +155,13 @@
 }
 
 .delete {
-  background: #ef4444;
+  background: #3b82f6;
   color: white;
 }
 
 .close {
-  background: #e5e7eb;
-  color: #111827;
+  background: #3b82f6;
+  color: white;
 }
 
 /* ANIMACIÓN */
