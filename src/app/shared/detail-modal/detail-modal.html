@@ -1,46 +1,68 @@
 <div class="modal" *ngIf="visible">
-  <div class="modal-content">
+  <div class="modal-backdrop" (click)="closeModal()"></div>
 
-    <h2>{{ item?.nombre || item?.descripcion }}</h2>
+  <div class="modal-panel">
 
-    <div class="detail">
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h2>
+        {{ item?.nombre || item?.descripcion }}
+      </h2>
 
-      <p *ngIf="item?.dosis">
-        💊 <strong>Dosis:</strong> {{ item.dosis }}
-      </p>
+      <button class="icon-close" (click)="closeModal()">✕</button>
+    </div>
 
-      <p *ngIf="item?.horario">
-        🕒 <strong>Hora:</strong> {{ item.horario }}
-      </p>
+    <!-- BODY -->
+    <div class="modal-body">
 
-      <p *ngIf="item?.hora">
-        ⏰ <strong>Hora:</strong> {{ item.hora }}
-      </p>
+      <div class="info-grid">
 
-      <p *ngIf="momentoNormalizado">
-        📅 <strong>Momento del día:</strong>
+        <div class="card" *ngIf="item?.dosis">
+          <span class="label">💊 Dosis</span>
+          <span class="value">{{ item.dosis }}</span>
+        </div>
 
-        <span *ngIf="momentoNormalizado === 'MAÑANA'">🌅 Mañana</span>
-        <span *ngIf="momentoNormalizado === 'TARDE'">🌇 Tarde</span>
-        <span *ngIf="momentoNormalizado === 'NOCHE'">🌙 Noche</span>
-      </p>
+        <div class="card" *ngIf="item?.horario || item?.hora">
+          <span class="label">🕒 Hora</span>
+          <span class="value">{{ item.horario || item.hora }}</span>
+        </div>
+
+        <div class="card" *ngIf="momentoNormalizado">
+          <span class="label">📅 Momento del día</span>
+
+          <span class="value">
+            <ng-container [ngSwitch]="momentoNormalizado">
+
+              <span *ngSwitchCase="'MAÑANA'">🌅 Mañana</span>
+              <span *ngSwitchCase="'TARDE'">🌇 Tarde</span>
+              <span *ngSwitchCase="'NOCHE'">🌙 Noche</span>
+
+              <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
+
+            </ng-container>
+          </span>
+
+        </div>
+
+      </div>
 
     </div>
 
-    <div class="actions">
+    <!-- FOOTER -->
+    <div class="modal-footer">
 
       <button
         *ngIf="type !== 'alert'"
-        class="add"
+        class="btn edit"
         (click)="editItem()">
         ✏️ Editar
       </button>
 
-      <button class="delete" (click)="deleteItem()">
+      <button class="btn delete" (click)="deleteItem()">
         🗑 Eliminar
       </button>
 
-      <button class="close" (click)="closeModal()">
+      <button class="btn close" (click)="closeModal()">
         Cerrar
       </button>
 

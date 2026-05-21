@@ -89,14 +89,13 @@ export class Home {
   }
 
   private translateDose(value: string): string {
-
     if (!value) return '';
 
     const v = value.toLowerCase();
 
-    if (v.includes('entera') || v.includes('1')) return '1 pill';
-    if (v.includes('media') || v.includes('1/2')) return 'half pill';
-    if (v.includes('cuarto') || v.includes('1/4')) return 'quarter pill';
+    if (v.includes('entera') || v.includes('whole') || v.includes('1')) return '1 pastilla';
+    if (v.includes('media') || v.includes('half') || v.includes('1/2')) return 'media pastilla';
+    if (v.includes('cuarto') || v.includes('quarter') || v.includes('1/4')) return 'un cuarto de pastilla';
 
     return value;
   }

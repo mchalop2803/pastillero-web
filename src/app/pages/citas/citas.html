@@ -38,7 +38,7 @@
 
         <input [(ngModel)]="newCita.descripcion"
                name="descripcion"
-               placeholder="Description"
+               placeholder="Descripcion"
                required />
 
         <input type="date"
@@ -52,7 +52,7 @@
                required />
 
         <button class="add" type="submit">
-          {{ editingId ? 'Update' : 'Save' }}
+          {{ editingId ? 'Actualizar' : 'Guardar' }}
         </button>
 
         <button class="delete" type="button" (click)="closeModal()">
