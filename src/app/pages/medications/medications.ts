@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data';
 import { StorageService } from '../../services/storage.service';
-import { Observable, map } from 'rxjs';
+import { Observable, map, firstValueFrom } from 'rxjs';
 import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 
 @Component({
@@ -19,6 +19,8 @@ export class Medications {
   filteredMeds$!: Observable<any[]>;
 
   filter: string = 'TODOS';
+
+  isSaving: boolean = false;
 
   newMedicament: any = {
     nombre: '',
@@ -42,7 +44,6 @@ export class Medications {
   ) {}
 
   ngOnInit() {
-
     this.medicaments$ = this.data.getMedicaments();
 
     this.filteredMeds$ = this.medicaments$.pipe(
@@ -61,13 +62,11 @@ export class Medications {
   }
 
   applyFilter(meds: any[]) {
-
     if (this.filter === 'TODOS') return meds;
-
     return meds.filter(m => m.momentoDia === this.filter);
   }
 
-  // ================= MODAL =================
+  // ================= MODALES =================
 
   openAddModal() {
     this.isAddModalOpen = true;
@@ -86,106 +85,74 @@ export class Medications {
 
   closeModal() {
     this.isAddModalOpen = false;
-
-    this.newMedicament = {
-      nombre: '',
-      dosis: '',
-      momentoDia: '',
-      horario: '',
-      imageUrl: ''
-    };
-
-    this.selectedFile = null;
     this.editingId = null;
-  }
-
-  // ================= MOMENTO DEL DÍA =================
-
-  private calculateMomentoDia(horario: string): string {
-
-    if (!horario) return '';
-
-    const [hourStr, minuteStr] = horario.split(':');
-    const h = parseInt(hourStr, 10);
-    const m = parseInt(minuteStr, 10);
-
-    const totalMinutes = h * 60 + m;
-
-    const mañanaStart = 6 * 60 + 1;   
-    const mañanaEnd = 12 * 60;        
-
-    const tardeStart = 12 * 60 + 1;   
-    const tardeEnd = 20 * 60;         
-
-    if (totalMinutes >= mañanaStart && totalMinutes <= mañanaEnd) {
-      return 'MAÑANA';
-    }
-
-    if (totalMinutes >= tardeStart && totalMinutes <= tardeEnd) {
-      return 'TARDE';
-    }
-
-    return 'NOCHE';
+    this.selectedFile = null;
   }
 
   // ================= CRUD =================
 
   async addMedicament() {
 
-    if (!this.newMedicament.nombre ||
-        !this.newMedicament.dosis ||
-        !this.newMedicament.horario) return;
-
-    let imageUrl: string = '';
+    if (this.isSaving) return;
+    this.isSaving = true;
 
     try {
+
+      const meds = await firstValueFrom(this.medicaments$);
+
+      const exists = meds.some(m =>
+        m.nombre?.toLowerCase().trim() ===
+        this.newMedicament.nombre?.toLowerCase().trim()
+      );
+
+      if (exists && !this.editingId) {
+        alert('❌ Este medicamento ya existe');
+        return;
+      }
+
+      let imageUrl = '';
 
       if (this.selectedFile) {
         imageUrl = await this.storage.uploadImage(this.selectedFile);
       }
 
-    } catch (err) {
-      console.error('Error subiendo imagen:', err);
-      alert('Error al subir imagen');
-      return;
-    }
+      const momentoDia = this.calculateMomentoDia(this.newMedicament.horario);
 
-    const momentoDia = this.calculateMomentoDia(this.newMedicament.horario);
-
-    const medicamentData = {
-      nombre: this.newMedicament.nombre,
-      dosis: this.newMedicament.dosis, // ej: "1 pastilla", "media pastilla"
-      horario: this.newMedicament.horario,
-      momentoDia,
-      imageUrl
-    };
-
-    try {
+      const data = {
+        nombre: this.newMedicament.nombre.trim(),
+        dosis: this.newMedicament.dosis,
+        horario: this.newMedicament.horario,
+        momentoDia,
+        imageUrl
+      };
 
       if (this.editingId) {
 
-        await this.data.updateMedicament(this.editingId, medicamentData);
+        await this.data.updateMedicament(this.editingId, data);
 
         await this.data.updateAlertByMedicament(this.editingId, {
-          nombre: medicamentData.nombre,
-          hora: medicamentData.horario
+          nombre: data.nombre,
+          hora: data.horario
         });
 
       } else {
 
-        const newId = await this.data.addMedicament(medicamentData);
+        const newId = await this.data.addMedicament(data);
 
         await this.data.addAlert({
           medicamentId: newId,
-          nombre: medicamentData.nombre,
-          hora: medicamentData.horario
+          nombre: data.nombre,
+          hora: data.horario
         });
       }
 
       this.closeModal();
 
     } catch (err) {
-      console.error('Error guardando medicamento:', err);
+      console.error(err);
+      alert('Error al guardar');
+    } finally {
+      this.isSaving = false;
     }
   }
 
@@ -197,6 +164,8 @@ export class Medications {
   onFileChange(event: any) {
     this.selectedFile = event.target.files[0] || null;
   }
+
+  // ================= DETAIL =================
 
   openDetail(item: any) {
     this.selectedItem = item;
@@ -214,20 +183,26 @@ export class Medications {
   }
 
   editFromModal(item: any) {
-
     this.editingId = item.id;
 
-    this.newMedicament = {
-      nombre: item.nombre,
-      dosis: item.dosis,
-      momentoDia: item.momentoDia,
-      horario: item.horario,
-      imageUrl: item.imageUrl || ''
-    };
-
-    this.selectedFile = null;
+    this.newMedicament = { ...item };
 
     this.closeDetail();
     this.isAddModalOpen = true;
+  }
+
+  // ================= UTIL =================
+
+  private calculateMomentoDia(horario: string): string {
+
+    if (!horario) return '';
+
+    const [h, m] = horario.split(':').map(Number);
+    const total = h * 60 + m;
+
+    if (total >= 361 && total <= 720) return 'MAÑANA';
+    if (total >= 721 && total <= 1200) return 'TARDE';
+
+    return 'NOCHE';
   }
 }

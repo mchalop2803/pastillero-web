@@ -5,6 +5,7 @@
     <p>Controla tu medicación diaria</p>
   </header>
 
+  <!-- FILTROS -->
   <div class="filters">
     <button [class.active]="filter === 'TODOS'" (click)="setFilter('TODOS')">
       Todos
@@ -23,13 +24,23 @@
     </button>
   </div>
 
-  <button class="add-btn" (click)="openAddModal()">➕ Nueva medicación</button>
+  <!-- BOTÓN CREAR -->
+  <button
+    class="add-btn"
+    (click)="openAddModal()"
+    [disabled]="isSaving"
+  >
+    {{ isSaving ? '⏳ Guardando...' : '➕ Nueva medicación' }}
+  </button>
 
+  <!-- GRID -->
   <div class="grid">
 
-    <div *ngFor="let med of filteredMeds$ | async"
-         class="card"
-         (click)="openDetail(med)">
+    <div
+      *ngFor="let med of filteredMeds$ | async"
+      class="card"
+      (click)="openDetail(med)"
+    >
 
       <div class="image-container">
         <img [src]="med.imageUrl || 'assets/default-med.png'" />
@@ -39,8 +50,8 @@
         <h3>{{ med.nombre }}</h3>
         <p>{{ med.dosisUI }}</p>
 
-        <span class="moment" *ngIf="med.momentDayUI">
-          {{ med.momentDayUI }}
+        <span class="moment" *ngIf="med.momentoDia">
+          {{ med.momentoDia }}
         </span>
 
         <span class="hour" *ngIf="med.horario">
@@ -48,8 +59,11 @@
         </span>
       </div>
 
-      <button class="delete"
-        (click)="deleteMedicament(med.id); $event.stopPropagation()">
+      <button
+        class="delete"
+        (click)="deleteMedicament(med.id); $event.stopPropagation()"
+        [disabled]="isSaving"
+      >
         🗑
       </button>
 
@@ -57,35 +71,70 @@
 
   </div>
 
+  <!-- MODAL ADD / EDIT -->
   <div class="modal" *ngIf="isAddModalOpen">
+
     <div class="modal-content">
 
-      <h2>{{ editingId ? 'Editar medicamento' : 'Nuevo medicamento' }}</h2>
+      <h2>
+        {{ editingId ? 'Editar medicamento' : 'Nuevo medicamento' }}
+      </h2>
 
       <form (ngSubmit)="addMedicament()">
 
-        <input [(ngModel)]="newMedicament.nombre" name="nombre" placeholder="Name" required />
-        <input [(ngModel)]="newMedicament.dosis" name="dosis" placeholder="Dose" required />
+        <input
+          [(ngModel)]="newMedicament.nombre"
+          name="nombre"
+          placeholder="Nombre"
+          required
+        />
 
-        <input type="time"
-               [(ngModel)]="newMedicament.horario"
-               name="horario"
-               required />
+        <input
+          [(ngModel)]="newMedicament.dosis"
+          name="dosis"
+          placeholder="Dosis"
+          required
+        />
+
+        <input
+          type="time"
+          [(ngModel)]="newMedicament.horario"
+          name="horario"
+          required
+        />
 
         <div *ngIf="!editingId">
           <input type="file" (change)="onFileChange($event)" />
         </div>
 
         <div class="actions">
-          <button class="add" type="submit">Guardar</button>
-          <button class="cancel" type="button" (click)="closeModal()">Cancelar</button>
+
+          <button
+            class="add"
+            type="submit"
+            [disabled]="isSaving"
+          >
+            {{ isSaving ? 'Guardando...' : 'Guardar' }}
+          </button>
+
+          <button
+            class="cancel"
+            type="button"
+            (click)="closeModal()"
+            [disabled]="isSaving"
+          >
+            Cancelar
+          </button>
+
         </div>
 
       </form>
 
     </div>
+
   </div>
 
+  <!-- DETAIL MODAL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"
