@@ -6,10 +6,10 @@
   </header>
 
   <div class="filters">
-    <button [class.active]="filter === 'ALL'" (click)="setFilter('ALL')">Todos</button>
-    <button [class.active]="filter === 'DAY'" (click)="setFilter('DAY')">🌅 Mañana</button>
-    <button [class.active]="filter === 'AFTERNOON'" (click)="setFilter('AFTERNOON')">🌇 Tarde</button>
-    <button [class.active]="filter === 'NIGHT'" (click)="setFilter('NIGHT')">🌙 Noche</button>
+    <button [class.active]="filter === 'TODOS'" (click)="setFilter('TODOS')">Todos</button>
+    <button [class.active]="filter === 'MAÑANA'" (click)="setFilter('MAÑANA')">🌅 Mañana</button>
+    <button [class.active]="filter === 'TARDE'" (click)="setFilter('TARDE')">🌇 Tarde</button>
+    <button [class.active]="filter === 'NOCHE'" (click)="setFilter('NOCHE')">🌙 Noche</button>
   </div>
 
   <button class="add-btn" (click)="openAddModal()">➕ Nueva medicación</button>
