@@ -1,16 +1,20 @@
 :host {
   display: block;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .register-container {
-  height: 100vh;
+  min-height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
   background: radial-gradient(circle at top, #1e3a8a, #0f172a);
   font-family: Arial, sans-serif;
+
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .register-card {

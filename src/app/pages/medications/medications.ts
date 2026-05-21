@@ -18,12 +18,12 @@ export class Medications {
   medicaments$!: Observable<any[]>;
   filteredMeds$!: Observable<any[]>;
 
-  filter: string = 'ALL';
+  filter: string = 'TODOS';
 
   newMedicament: any = {
     nombre: '',
     dosis: '',
-    momentDay: '',
+    momentoDia: '',
     horario: '',
     imageUrl: ''
   };
@@ -42,45 +42,12 @@ export class Medications {
   ) {}
 
   ngOnInit() {
-    this.medicaments$ = this.data.getMedicaments().pipe(
-      map(meds => this.translateData(meds))
-    );
+
+    this.medicaments$ = this.data.getMedicaments();
 
     this.filteredMeds$ = this.medicaments$.pipe(
       map(meds => this.applyFilter(meds))
     );
-  }
-
-  // ================= TRADUCCIÓN UI =================
-
-  private translateData(meds: any[]) {
-    return meds.map(m => ({
-      ...m,
-      momentDayUI: this.toEnglish(m.momentDay),
-      dosisUI: this.translateDose(m.dosis)
-    }));
-  }
-
-  private toEnglish(value: string): string {
-    switch (value) {
-      case 'DIA': return 'DAY';
-      case 'TARDE': return 'AFTERNOON';
-      case 'NOCHE': return 'NIGHT';
-      default: return value;
-    }
-  }
-
-  private translateDose(value: string): string {
-
-    if (!value) return '';
-
-    const v = value.toLowerCase();
-
-    if (v.includes('entera') || v.includes('1')) return '1 pill';
-    if (v.includes('media') || v.includes('1/2')) return 'half pill';
-    if (v.includes('cuarto') || v.includes('1/4')) return 'quarter pill';
-
-    return value;
   }
 
   // ================= FILTRO =================
@@ -94,17 +61,10 @@ export class Medications {
   }
 
   applyFilter(meds: any[]) {
-    if (this.filter === 'ALL') return meds;
 
-    return meds.filter(m => {
-      const value = (m.momentDayUI || '').toLowerCase();
+    if (this.filter === 'TODOS') return meds;
 
-      if (this.filter === 'DAY') return value === 'day';
-      if (this.filter === 'AFTERNOON') return value === 'afternoon';
-      if (this.filter === 'NIGHT') return value === 'night';
-
-      return false;
-    });
+    return meds.filter(m => m.momentoDia === this.filter);
   }
 
   // ================= MODAL =================
@@ -116,7 +76,7 @@ export class Medications {
     this.newMedicament = {
       nombre: '',
       dosis: '',
-      momentDay: '',
+      momentoDia: '',
       horario: '',
       imageUrl: ''
     };
@@ -130,7 +90,7 @@ export class Medications {
     this.newMedicament = {
       nombre: '',
       dosis: '',
-      momentDay: '',
+      momentoDia: '',
       horario: '',
       imageUrl: ''
     };
@@ -141,12 +101,13 @@ export class Medications {
 
   // ================= MOMENTO DEL DÍA =================
 
-  private calculateMomentDay(horario: string): string {
+  private calculateMomentoDia(horario: string): string {
+
     if (!horario) return '';
 
     const h = parseInt(horario.split(':')[0], 10);
 
-    if (h >= 5 && h < 12) return 'DIA';
+    if (h >= 5 && h < 12) return 'MAÑANA';
     if (h >= 12 && h < 20) return 'TARDE';
     return 'NOCHE';
   }
@@ -162,24 +123,24 @@ export class Medications {
     let imageUrl: string = '';
 
     try {
+
       if (this.selectedFile) {
-        console.log('📤 Subiendo imagen...');
         imageUrl = await this.storage.uploadImage(this.selectedFile);
-        console.log('✅ Imagen subida:', imageUrl);
       }
+
     } catch (err) {
-      console.error('🔥 ERROR SUBIENDO IMAGEN:', err);
-      alert('Error uploading image');
+      console.error('Error subiendo imagen:', err);
+      alert('Error al subir imagen');
       return;
     }
 
-    const momentDay = this.calculateMomentDay(this.newMedicament.horario);
+    const momentoDia = this.calculateMomentoDia(this.newMedicament.horario);
 
     const medicamentData = {
       nombre: this.newMedicament.nombre,
-      dosis: this.newMedicament.dosis,
+      dosis: this.newMedicament.dosis, // ej: "1 pastilla", "media pastilla"
       horario: this.newMedicament.horario,
-      momentDay,
+      momentoDia,
       imageUrl
     };
 
@@ -205,11 +166,10 @@ export class Medications {
         });
       }
 
-      console.log('✅ Medicamento guardado');
       this.closeModal();
 
     } catch (err) {
-      console.error('🔥 ERROR GUARDANDO EN DB:', err);
+      console.error('Error guardando medicamento:', err);
     }
   }
 
@@ -244,8 +204,8 @@ export class Medications {
     this.newMedicament = {
       nombre: item.nombre,
       dosis: item.dosis,
-      momentDay: item.momentDay || '',
-      horario: item.horario || '',
+      momentoDia: item.momentoDia,
+      horario: item.horario,
       imageUrl: item.imageUrl || ''
     };
 
