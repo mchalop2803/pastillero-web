@@ -1,19 +1,26 @@
-<div class="overlay" *ngIf="visible">
+<div
+  class="overlay"
+  *ngIf="visible"
+  (click)="closeModal()"
+>
 
-  <div class="backdrop" (click)="closeModal()"></div>
-
-  <div class="panel">
+  <div
+    class="panel"
+    (click)="$event.stopPropagation()"
+  >
 
     <!-- HEADER -->
     <div class="header">
 
       <div class="title">
         <h1>{{ item?.nombre || item?.descripcion }}</h1>
+
         <p class="subtitle">
           {{ type === 'medication' ? 'Medicamento' :
              type === 'cita' ? 'Cita médica' :
              type === 'alert' ? 'Alerta' : 'Detalle' }}
         </p>
+
       </div>
 
       <button class="close-btn" (click)="closeModal()">✕</button>
@@ -26,30 +33,36 @@
       <div class="grid">
 
         <div class="card" *ngIf="item?.dosis">
-          <span class="label">💊 Dosis</span>
-          <span class="value">{{ item.dosis }}</span>
+          <div class="icon">💊</div>
+          <div>
+            <span class="label">Dosis</span>
+            <span class="value">{{ item.dosis }}</span>
+          </div>
         </div>
 
         <div class="card" *ngIf="item?.horario || item?.hora">
-          <span class="label">🕒 Hora</span>
-          <span class="value">{{ item.horario || item.hora }}</span>
+          <div class="icon">🕒</div>
+          <div>
+            <span class="label">Hora</span>
+            <span class="value">{{ item.horario || item.hora }}</span>
+          </div>
         </div>
 
         <div class="card" *ngIf="momentoNormalizado">
-          <span class="label">📅 Momento del día</span>
+          <div class="icon">📅</div>
+          <div>
+            <span class="label">Momento del día</span>
 
-          <span class="value">
-            <ng-container [ngSwitch]="momentoNormalizado">
+            <span class="value">
+              <ng-container [ngSwitch]="momentoNormalizado">
+                <span *ngSwitchCase="'MAÑANA'">Mañana</span>
+                <span *ngSwitchCase="'TARDE'">Tarde</span>
+                <span *ngSwitchCase="'NOCHE'">Noche</span>
+                <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
+              </ng-container>
+            </span>
 
-              <span *ngSwitchCase="'MAÑANA'">🌅 Mañana</span>
-              <span *ngSwitchCase="'TARDE'">🌇 Tarde</span>
-              <span *ngSwitchCase="'NOCHE'">🌙 Noche</span>
-
-              <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
-
-            </ng-container>
-          </span>
-
+          </div>
         </div>
 
       </div>
@@ -61,7 +74,7 @@
 
       <button
         *ngIf="type !== 'alert'"
-        class="btn primary"
+        class="btn"
         (click)="editItem()">
         ✏️ Editar
       </button>
