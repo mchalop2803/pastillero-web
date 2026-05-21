@@ -5,6 +5,7 @@
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* HEADER */
 .header h1 {
   margin: 0;
   font-size: 24px;
@@ -17,6 +18,7 @@
   margin-bottom: 20px;
 }
 
+/* FILTROS */
 .filters {
   display: flex;
   gap: 10px;
@@ -28,14 +30,26 @@
   padding: 10px;
   border-radius: 12px;
   border: none;
+
   background: #e5e7eb;
   cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
+  font-weight: 600;
+
+  transition: all 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.filters button small {
+  font-size: 10px;
+  opacity: 0.7;
+  font-weight: 400;
 }
 
 .filters button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .filters button.active {
@@ -44,17 +58,22 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+/* BOTÓN PRINCIPAL */
 .add-btn {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border: none;
+
   padding: 12px;
   border-radius: 12px;
+
   margin-bottom: 20px;
   width: 100%;
+
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+
+  transition: all 0.2s ease;
 }
 
 .add-btn:hover {
@@ -69,15 +88,21 @@
   gap: 15px;
 }
 
+/* CARD */
 .card {
   background: #ffffff;
   border-radius: 20px;
+
   padding: 14px;
+
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+
   position: relative;
   cursor: pointer;
+
   transition: all 0.25s ease;
-  border: 1px solid rgba(0,0,0,0.04);
+
   overflow: hidden;
 }
 
@@ -86,22 +111,26 @@
   box-shadow: 0 18px 40px rgba(0,0,0,0.12);
 }
 
+/* IMAGEN */
 .image-container {
   width: 100%;
   height: 110px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   margin-bottom: 12px;
 }
 
 .image-container img {
   max-height: 100%;
   max-width: 100%;
-  border-radius: 14px;
   object-fit: cover;
+  border-radius: 14px;
 }
 
+/* INFO */
 .info h3 {
   margin: 0;
   font-size: 15px;
@@ -115,14 +144,19 @@
   font-size: 13px;
 }
 
+/* BADGES */
 .moment {
   display: inline-block;
   margin-top: 6px;
+
   font-size: 11px;
   padding: 4px 10px;
+
   border-radius: 999px;
+
   background: #dbeafe;
   color: #1d4ed8;
+
   font-weight: 500;
 }
 
@@ -130,25 +164,34 @@
   display: inline-block;
   margin-top: 6px;
   margin-left: 6px;
+
   font-size: 11px;
   padding: 4px 10px;
+
   border-radius: 999px;
+
   background: #ede9fe;
   color: #5b21b6;
+
   font-weight: 500;
 }
 
+/* DELETE BUTTON */
 .delete {
   position: absolute;
   top: 10px;
   right: 10px;
+
   background: rgba(239, 68, 68, 0.9);
   border: none;
   color: white;
+
   border-radius: 10px;
   padding: 6px 8px;
+
   font-size: 12px;
   cursor: pointer;
+
   transition: 0.2s;
 }
 
@@ -157,14 +200,17 @@
   transform: scale(1.05);
 }
 
+/* MODAL */
 .modal {
   position: fixed;
   inset: 0;
+
   background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(4px);
 }
 
 .modal-content {
@@ -177,9 +223,8 @@
 
   border-radius: 24px;
 
-  box-shadow:
-    0 25px 70px rgba(0,0,0,0.35),
-    0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35),
+              0 10px 25px rgba(0,0,0,0.15);
 
   animation: fadeIn 0.25s ease;
 
@@ -187,13 +232,18 @@
   flex-direction: column;
 }
 
+/* INPUTS */
 input, select {
   width: 100%;
   margin-bottom: 10px;
+
   padding: 10px;
+
   border-radius: 10px;
   border: 1px solid #e5e7eb;
+
   outline: none;
+
   transition: 0.2s;
 }
 
@@ -202,40 +252,46 @@ input:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 
+/* ACTIONS */
 .actions {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
 
-.actions .add {
-  flex: 1;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
+/* 🔥 BOTONES UNIFICADOS */
+.actions .add,
 .actions .cancel {
   flex: 1;
-  background: #e5e7eb;
+  height: 44px;
+
+  border-radius: 12px;
   border: none;
-  padding: 10px;
-  border-radius: 10px;
+
+  font-weight: 600;
+
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.filters button {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+/* AZUL PRINCIPAL */
+.actions .add {
+  background: #3b82f6;
+  color: white;
 }
 
-.filters small {
-  font-size: 10px;
-  opacity: 0.7;
-  font-weight: normal;
+.actions .add:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* GRIS SECUNDARIO */
+.actions .cancel {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.actions .cancel:hover {
+  background: #d1d5db;
+  transform: translateY(-2px);
 }
