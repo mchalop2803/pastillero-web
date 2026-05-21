@@ -12,7 +12,7 @@
   align-items: center;
 
   background: radial-gradient(circle at top, #1e3a8a, #0f172a);
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .login-card {
@@ -42,6 +42,7 @@
   font-size: 13px;
 }
 
+/* INPUTS */
 input {
   width: 100%;
   padding: 12px;
@@ -52,6 +53,9 @@ input {
 
   outline: none;
   transition: 0.2s;
+
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -59,6 +63,7 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 
+/* BUTTON */
 button {
   width: 100%;
   padding: 12px;
@@ -73,6 +78,8 @@ button {
   font-weight: bold;
 
   transition: 0.2s;
+
+  margin-top: 10px;
 }
 
 button:hover {
@@ -85,10 +92,30 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* ERROR */
 .error {
   color: #ef4444;
   margin-top: 10px;
   font-size: 13px;
+}
+
+/* LINK LOGIN -> REGISTER */
+.link {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.link span {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.link span:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
 }
 
 /* ANIMATION */
@@ -101,9 +128,4 @@ button:disabled {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-:host {
-  display: block;
-  height: 100vh;
 }
