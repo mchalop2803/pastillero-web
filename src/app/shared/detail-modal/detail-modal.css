@@ -17,18 +17,18 @@
 .modal-content {
   background: white;
 
-  width: 800px;
+  width: 950px;
   max-width: 95%;
 
-  min-height: 60vh;
+  min-height: 75vh;
 
-  padding: 40px;
+  padding: 45px;
 
-  border-radius: 28px;
+  border-radius: 30px;
 
   box-shadow:
-    0 25px 70px rgba(0,0,0,0.35),
-    0 10px 25px rgba(0,0,0,0.15);
+    0 35px 90px rgba(0,0,0,0.40),
+    0 12px 30px rgba(0,0,0,0.18);
 
   animation: fadeIn 0.25s ease;
 
@@ -36,20 +36,32 @@
   flex-direction: column;
 }
 
+.modal-content h2 {
+  font-size: 30px;
+  font-weight: 700;
+
+  margin-bottom: 25px;
+
+  color: #111827;
+}
+
 .detail {
-  margin-top: 25px;
+  margin-top: 20px;
   flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .detail p {
-  margin: 12px 0;
+  margin: 0;
+
+  padding: 14px 0;
+
+  font-size: 17px;
 
   color: #374151;
-
-  font-size: 15px;
-  line-height: 1.5;
-
-  padding-bottom: 8px;
 
   border-bottom: 1px solid #f3f4f6;
 }
@@ -68,14 +80,11 @@
 .actions button {
   flex: 1;
 
-  height: 50px;
+  height: 60px;
 
-  border: none;
-  border-radius: 12px;
+  border-radius: 14px;
 
-  cursor: pointer;
-
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 
   transition: all 0.2s ease;
@@ -83,7 +92,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.actions button:hover {
+  transform: translateY(-2px);
 }
 
 /* BOTÓN AÑADIR */
@@ -111,12 +124,12 @@
 /* BOTÓN CERRAR */
 .actions .close {
   background: #f3f4f6;
-  color: #4b5563;
+  color: #374151;
+  font-weight: 600;
 }
 
 .actions .close:hover {
   background: #e5e7eb;
-  transform: translateY(-1px);
 }
 
 @keyframes fadeIn {

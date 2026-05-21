@@ -105,10 +105,26 @@ export class Medications {
 
     if (!horario) return '';
 
-    const h = parseInt(horario.split(':')[0], 10);
+    const [hourStr, minuteStr] = horario.split(':');
+    const h = parseInt(hourStr, 10);
+    const m = parseInt(minuteStr, 10);
 
-    if (h >= 5 && h < 12) return 'MAÑANA';
-    if (h >= 12 && h < 20) return 'TARDE';
+    const totalMinutes = h * 60 + m;
+
+    const mañanaStart = 6 * 60 + 1;   
+    const mañanaEnd = 12 * 60;        
+
+    const tardeStart = 12 * 60 + 1;   
+    const tardeEnd = 20 * 60;         
+
+    if (totalMinutes >= mañanaStart && totalMinutes <= mañanaEnd) {
+      return 'MAÑANA';
+    }
+
+    if (totalMinutes >= tardeStart && totalMinutes <= tardeEnd) {
+      return 'TARDE';
+    }
+
     return 'NOCHE';
   }
 
