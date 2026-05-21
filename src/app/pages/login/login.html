@@ -6,32 +6,32 @@
       💊 <span>Pastillero</span>
     </div>
 
-    <p class="subtitle">Log in to continue</p>
+    <p class="subtitle">Inicia sesión para continuar</p>
 
     <input
       type="email"
-      placeholder="Email"
+      placeholder="Correo electrónico"
       [(ngModel)]="email"
     />
 
     <input
       type="password"
-      placeholder="Password" 
+      placeholder="Contraseña" 
       [(ngModel)]="password"
     />
 
     <button (click)="login()" [disabled]="loading">
 
-      <span *ngIf="!loading">Log in</span>
-      <span *ngIf="loading">Loading...</span>
+      <span *ngIf="!loading">Iniciar sesión</span>
+      <span *ngIf="loading">Cargando...</span>
 
     </button>
 
     <p class="error" *ngIf="error">{{ error }}</p>
 
     <p class="link">
-      Don't have an account?
-      <span (click)="goToRegister()">Register</span>
+      No tienes una cuenta?
+      <span (click)="goToRegister()">Regístrate</span>
     </p>
 
   </div>

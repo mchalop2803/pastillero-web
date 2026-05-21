@@ -6,22 +6,22 @@
     <div class="detail">
 
       <p *ngIf="item?.dosis">
-        💊 <strong>Dose:</strong> {{ item.dosis }}
+        💊 <strong>Dosis:</strong> {{ item.dosis }}
       </p>
 
       <p *ngIf="item?.horario">
-        🕒 <strong>Time:</strong> {{ item.horario }}
+        🕒 <strong>Hora:</strong> {{ item.horario }}
       </p>
 
       <p *ngIf="item?.hora">
-        ⏰ <strong>Hour:</strong> {{ item.hora }}
+        ⏰ <strong>Hora:</strong> {{ item.hora }}
       </p>
 
       <p *ngIf="item?.momentDay">
-        📅 <strong>Moment of the day:</strong>
-        <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Day</span>
-        <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Afternoon</span>
-        <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Night</span>
+        📅 <strong>Momento del dia:</strong>
+        <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Mañana</span>
+        <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Tarde</span>
+        <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Noche</span>
       </p>
 
     </div>
@@ -32,15 +32,15 @@
         *ngIf="type !== 'alert'"
         class="add"
         (click)="editItem()">
-        ✏️ Edit
+        ✏️ Editar
       </button>
 
       <button class="delete" (click)="deleteItem()">
-        🗑 Delete
+        🗑 Eliminar
       </button>
 
       <button class="close" (click)="closeModal()">
-        Close
+        Cerrar
       </button>
 
     </div>

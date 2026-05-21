@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
-import { createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { Database, ref, set } from '@angular/fire/database';
 
 import { CommonModule } from '@angular/common';
@@ -25,6 +24,8 @@ export class Register {
   age: number | null = null;
 
   error = '';
+  errorField = '';
+
   loading = false;
 
   constructor(
@@ -35,48 +36,192 @@ export class Register {
 
   async register() {
 
+    // Reiniciar errores
     this.error = '';
+    this.errorField = '';
 
-    if (!this.email || !this.password || !this.name ||
-        !this.surname || !this.nif || !this.phone || !this.age) {
-        this.error = 'Please fill all fields';
-        return;
+    // =========================
+    // VALIDAR CAMPOS VACÍOS
+    // =========================
+
+    if (!this.name) {
+      this.error = 'El nombre es obligatorio';
+      this.errorField = 'name';
+      return;
     }
+
+    if (!this.surname) {
+      this.error = 'Los apellidos son obligatorios';
+      this.errorField = 'surname';
+      return;
+    }
+
+    if (!this.email) {
+      this.error = 'El correo electrónico es obligatorio';
+      this.errorField = 'email';
+      return;
+    }
+
+    if (!this.password) {
+      this.error = 'La contraseña es obligatoria';
+      this.errorField = 'password';
+      return;
+    }
+
+    if (!this.nif) {
+      this.error = 'El DNI es obligatorio';
+      this.errorField = 'nif';
+      return;
+    }
+
+    if (!this.phone) {
+      this.error = 'El teléfono es obligatorio';
+      this.errorField = 'phone';
+      return;
+    }
+
+    if (!this.age) {
+      this.error = 'La edad es obligatoria';
+      this.errorField = 'age';
+      return;
+    }
+
+    // =========================
+    // VALIDAR NOMBRE/APELLIDOS
+    // =========================
+
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
+    if (!nameRegex.test(this.name)) {
+      this.error = 'El nombre solo puede contener letras';
+      this.errorField = 'name';
+      return;
+    }
+
+    if (!nameRegex.test(this.surname)) {
+      this.error = 'Los apellidos solo pueden contener letras';
+      this.errorField = 'surname';
+      return;
+    }
+
+    // =========================
+    // VALIDAR EMAIL
+    // =========================
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(this.email)) {
+      this.error = 'Introduce un correo electrónico válido';
+      this.errorField = 'email';
+      return;
+    }
+
+    // =========================
+    // VALIDAR CONTRASEÑA
+    // =========================
+
+    if (this.password.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres';
+      this.errorField = 'password';
+      return;
+    }
+
+    // =========================
+    // VALIDAR DNI
+    // =========================
+
+    const nifRegex = /^[0-9]{8}[A-Za-z]$/;
+
+    if (!nifRegex.test(this.nif)) {
+      this.error = 'El DNI debe tener formato 12345678A';
+      this.errorField = 'nif';
+      return;
+    }
+
+    // =========================
+    // VALIDAR TELÉFONO
+    // =========================
+
+    const phoneRegex = /^[0-9]{9}$/;
+
+    if (!phoneRegex.test(this.phone)) {
+      this.error = 'El teléfono debe contener 9 dígitos';
+      this.errorField = 'phone';
+      return;
+    }
+
+    // =========================
+    // VALIDAR EDAD
+    // =========================
+
+    if (this.age < 1 || this.age > 120) {
+      this.error = 'Introduce una edad válida';
+      this.errorField = 'age';
+      return;
+    }
+
+    // =========================
+    // REGISTRO FIREBASE
+    // =========================
 
     try {
 
-        this.loading = true;
+      this.loading = true;
 
-        const userCredential = await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         this.auth,
         this.email,
         this.password
-        );
+      );
 
-        const uid = userCredential.user.uid;
+      const uid = userCredential.user.uid;
 
-        const userData = {
+      const userData = {
         id: uid,
         name: this.name,
         surname: this.surname,
         nif: this.nif,
         phone: this.phone,
         age: this.age
-        };
+      };
 
-        await set(ref(this.db, `users/${uid}`), userData);
+      await set(ref(this.db, `users/${uid}`), userData);
 
-        this.router.navigate(['/login']);
-
-    } catch (err) {
-        console.error(err);
-        this.error = 'Error registering user';
-    } finally {
-        this.loading = false;
-    }
-    }
-
-    goToLogin() {
       this.router.navigate(['/login']);
+
+    } catch (err: any) {
+
+      console.error(err);
+
+      switch (err.code) {
+
+        case 'auth/email-already-in-use':
+          this.error = 'Este correo ya está registrado';
+          this.errorField = 'email';
+          break;
+
+        case 'auth/invalid-email':
+          this.error = 'Correo electrónico inválido';
+          this.errorField = 'email';
+          break;
+
+        case 'auth/weak-password':
+          this.error = 'La contraseña es demasiado débil';
+          this.errorField = 'password';
+          break;
+
+        default:
+          this.error = 'Error al registrar usuario';
+      }
+
+    } finally {
+
+      this.loading = false;
+
     }
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
 }

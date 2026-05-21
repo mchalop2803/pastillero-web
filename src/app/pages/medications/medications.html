@@ -1,18 +1,18 @@
 <div class="page">
 
   <header class="header">
-    <h1>💊 Medications</h1>
-    <p>Manage your daily medication</p>
+    <h1>💊 Medicamentos</h1>
+    <p>Controla tu medicación diaria</p>
   </header>
 
   <div class="filters">
-    <button [class.active]="filter === 'ALL'" (click)="setFilter('ALL')">ALL</button>
-    <button [class.active]="filter === 'DAY'" (click)="setFilter('DAY')">🌅 DAY</button>
-    <button [class.active]="filter === 'AFTERNOON'" (click)="setFilter('AFTERNOON')">🌇 AFTERNOON</button>
-    <button [class.active]="filter === 'NIGHT'" (click)="setFilter('NIGHT')">🌙 NIGHT</button>
+    <button [class.active]="filter === 'ALL'" (click)="setFilter('ALL')">Todos</button>
+    <button [class.active]="filter === 'DAY'" (click)="setFilter('DAY')">🌅 Mañana</button>
+    <button [class.active]="filter === 'AFTERNOON'" (click)="setFilter('AFTERNOON')">🌇 Tarde</button>
+    <button [class.active]="filter === 'NIGHT'" (click)="setFilter('NIGHT')">🌙 Noche</button>
   </div>
 
-  <button class="add-btn" (click)="openAddModal()">➕ New medication</button>
+  <button class="add-btn" (click)="openAddModal()">➕ Nueva medicación</button>
 
   <div class="grid">
 
@@ -49,7 +49,7 @@
   <div class="modal" *ngIf="isAddModalOpen">
     <div class="modal-content">
 
-      <h2>{{ editingId ? 'Edit medication' : 'New medication' }}</h2>
+      <h2>{{ editingId ? 'Editar medicamento' : 'Nuevo medicamento' }}</h2>
 
       <form (ngSubmit)="addMedicament()">
 
@@ -66,8 +66,8 @@
         </div>
 
         <div class="actions">
-          <button class="add" type="submit">Save</button>
-          <button class="cancel" type="button" (click)="closeModal()">Cancel</button>
+          <button class="add" type="submit">Guardar</button>
+          <button class="cancel" type="button" (click)="closeModal()">Cancelar</button>
         </div>
 
       </form>

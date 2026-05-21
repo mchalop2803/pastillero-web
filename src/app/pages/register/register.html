@@ -6,30 +6,125 @@
       💊 <span>Pastillero</span>
     </div>
 
-    <p class="subtitle">Create your account</p>
+    <p class="subtitle">Crea tu cuenta</p>
 
-    <input type="text" placeholder="Name" [(ngModel)]="name" />
-    <input type="text" placeholder="Surname" [(ngModel)]="surname" />
+    <!-- Nombre -->
+    <label>Nombre</label>
+    <input
+      type="text"
+      placeholder="Ej: Juan"
+      [(ngModel)]="name"
+      [class.input-error]="errorField === 'name'"
+      maxlength="30"
+      required
+    />
+    <small>Solo letras. Máximo 30 caracteres.</small>
+    <p class="field-error" *ngIf="errorField === 'name'">
+      {{ error }}
+    </p>
 
-    <input type="email" placeholder="Email" [(ngModel)]="email" />
-    <input type="password" placeholder="Password" [(ngModel)]="password" />
+    <!-- Apellidos -->
+    <label>Apellidos</label>
+    <input
+      type="text"
+      placeholder="Ej: García López"
+      [(ngModel)]="surname"
+      [class.input-error]="errorField === 'surname'"
+      maxlength="50"
+      required
+    />
+    <small>Introduce tus apellidos completos.</small>
+    <p class="field-error" *ngIf="errorField === 'surname'">
+      {{ error }}
+    </p>
 
-    <input type="text" placeholder="NIF" [(ngModel)]="nif" />
-    <input type="text" placeholder="Phone" [(ngModel)]="phone" />
-    <input type="number" placeholder="Age" [(ngModel)]="age" />
+    <!-- Email -->
+    <label>Correo electrónico</label>
+    <input
+      type="email"
+      placeholder="Ej: juan@gmail.com"
+      [(ngModel)]="email"
+      [class.input-error]="errorField === 'email'"
+      required
+    />
+    <small>Debe ser un correo válido.</small>
+    <p class="field-error" *ngIf="errorField === 'email'">
+      {{ error }}
+    </p>
+
+    <!-- Contraseña -->
+    <label>Contraseña</label>
+    <input
+      type="password"
+      placeholder="Mínimo 6 caracteres"
+      [(ngModel)]="password"
+      [class.input-error]="errorField === 'password'"
+      minlength="6"
+      required
+    />
+    <small>
+      Usa al menos 6 caracteres, incluyendo números y letras.
+    </small>
+    <p class="field-error" *ngIf="errorField === 'password'">
+      {{ error }}
+    </p>
+
+    <!-- DNI -->
+    <label>DNI</label>
+    <input
+      type="text"
+      placeholder="Ej: 12345678A"
+      [(ngModel)]="nif"
+      [class.input-error]="errorField === 'nif'"
+      maxlength="9"
+      required
+    />
+    <small>Formato válido: 12345678A</small>
+    <p class="field-error" *ngIf="errorField === 'nif'">
+      {{ error }}
+    </p>
+
+    <!-- Teléfono -->
+    <label>Teléfono</label>
+    <input
+      type="text"
+      placeholder="Ej: 612345678"
+      [(ngModel)]="phone"
+      [class.input-error]="errorField === 'phone'"
+      maxlength="9"
+      required
+    />
+    <small>Debe contener 9 dígitos.</small>
+    <p class="field-error" *ngIf="errorField === 'phone'">
+      {{ error }}
+    </p>
+
+    <!-- Edad -->
+    <label>Edad</label>
+    <input
+      type="number"
+      placeholder="Ej: 25"
+      [(ngModel)]="age"
+      [class.input-error]="errorField === 'age'"
+      min="1"
+      max="120"
+      required
+    />
+    <small>Introduce una edad válida.</small>
+    <p class="field-error" *ngIf="errorField === 'age'">
+      {{ error }}
+    </p>
 
     <button (click)="register()" [disabled]="loading">
 
-      <span *ngIf="!loading">Register</span>
-      <span *ngIf="loading">Creating...</span>
+      <span *ngIf="!loading">Registrar</span>
+      <span *ngIf="loading">Creando...</span>
 
     </button>
 
-    <p class="error" *ngIf="error">{{ error }}</p>
-
     <p class="login-link">
-      Already have an account?
-      <span (click)="goToLogin()">Login</span>
+      ¿Ya tienes una cuenta?
+      <span (click)="goToLogin()">Iniciar sesión</span>
     </p>
 
   </div>

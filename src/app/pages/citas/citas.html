@@ -1,8 +1,8 @@
 <div class="page">
-  <h1>🏥 Appointments</h1>
-  <p class="subtitle">Medical appointment management</p>
+  <h1>📅 Citas</h1>
+  <p class="subtitle">Control de citas médicas</p>
 
-  <button class="add" (click)="openAddModal()">➕ Add Appointment</button>
+  <button class="add" (click)="openAddModal()">➕ Añadir cita</button>
 
   <div class="grid">
     <div *ngFor="let cita of citas$ | async"
@@ -32,7 +32,7 @@
   <div class="modal" *ngIf="isModalOpen">
     <div class="modal-content">
 
-      <h2>{{ editingId ? 'Edit Appointment' : 'Add Appointment' }}</h2>
+      <h2>{{ editingId ? 'Editar cita' : 'Añadir Cita' }}</h2>
 
       <form (ngSubmit)="addCita()">
 
@@ -56,7 +56,7 @@
         </button>
 
         <button class="delete" type="button" (click)="closeModal()">
-          Cancel
+          Cancelar
         </button>
 
       </form>

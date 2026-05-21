@@ -95,3 +95,65 @@ button:disabled {
   text-decoration: none;
   font-weight: bold;
 }
+
+label {
+  display: block;
+  text-align: left;
+
+  margin-bottom: 5px;
+  margin-top: 12px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #1f2937;
+}
+
+small {
+  display: block;
+  text-align: left;
+
+  margin-top: -5px;
+  margin-bottom: 12px;
+
+  font-size: 11px;
+  color: #6b7280;
+
+  padding-left: 2px;
+}
+
+input {
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+button {
+  margin-top: 10px;
+}
+
+.login-link span {
+  color: #2563eb;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.login-link span:hover {
+  text-decoration: underline;
+}
+
+.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+
+.success-text {
+  color: #10b981;
+}
+
+.warning-text {
+  color: #f59e0b;
+}
