@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-detail-modal',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './detail-modal.html'
+  templateUrl: './detail-modal.html',
+  styleUrls: ['./detail-modal.css']
 })
 export class DetailModalComponent {
 

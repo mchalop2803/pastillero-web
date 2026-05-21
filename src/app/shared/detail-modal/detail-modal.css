@@ -70,7 +70,8 @@
 
 /* DASHBOARD LAYOUT */
 .dashboard {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
@@ -93,7 +94,9 @@
 /* INFO ROW */
 .info-line {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 6px;
+
   padding: 14px 0;
   border-bottom: 1px solid #f1f1f1;
 }
@@ -103,14 +106,18 @@
 }
 
 .label {
-  font-size: 13px;
-  color: #6b7280;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .value {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #111827;
+
+  padding-left: 4px; /* 👈 aire visual */
 }
 
 /* FOOTER */
