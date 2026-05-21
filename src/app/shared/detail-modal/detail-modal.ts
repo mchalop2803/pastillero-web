@@ -28,4 +28,17 @@ export class DetailModalComponent {
   editItem() {
     this.edit.emit(this.item);
   }
+
+  get momentoNormalizado(): string {
+
+  const value = this.item?.momentoDia || this.item?.momentDay;
+
+  if (!value) return '';
+
+  if (value === 'DIA' || value === 'MAÑANA') return 'MAÑANA';
+  if (value === 'TARDE') return 'TARDE';
+  if (value === 'NOCHE') return 'NOCHE';
+
+  return value;
+}
 }

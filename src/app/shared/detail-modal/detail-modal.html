@@ -17,11 +17,12 @@
         ⏰ <strong>Hora:</strong> {{ item.hora }}
       </p>
 
-      <p *ngIf="item?.momentDay">
-        📅 <strong>Momento del dia:</strong>
-        <span *ngIf="item.momentDay === 'DAY' || item.momentDay === 'DIA'">🌅 Mañana</span>
-        <span *ngIf="item.momentDay === 'AFTERNOON' || item.momentDay === 'TARDE'">🌇 Tarde</span>
-        <span *ngIf="item.momentDay === 'NIGHT' || item.momentDay === 'NOCHE'">🌙 Noche</span>
+      <p *ngIf="momentoNormalizado">
+        📅 <strong>Momento del día:</strong>
+
+        <span *ngIf="momentoNormalizado === 'MAÑANA'">🌅 Mañana</span>
+        <span *ngIf="momentoNormalizado === 'TARDE'">🌇 Tarde</span>
+        <span *ngIf="momentoNormalizado === 'NOCHE'">🌙 Noche</span>
       </p>
 
     </div>
