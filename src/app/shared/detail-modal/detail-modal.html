@@ -1,13 +1,5 @@
-<div
-  class="overlay"
-  *ngIf="visible"
-  (click)="closeModal()"
->
-
-  <div
-    class="panel"
-    (click)="$event.stopPropagation()"
-  >
+<div class="overlay" *ngIf="visible" (click)="closeModal()">
+  <div class="panel" (click)="$event.stopPropagation()">
 
     <!-- HEADER -->
     <div class="header">
@@ -20,75 +12,72 @@
              type === 'cita' ? 'Cita médica' :
              type === 'alert' ? 'Alerta' : 'Detalle' }}
         </p>
-
       </div>
 
       <button class="close-btn" (click)="closeModal()">✕</button>
 
     </div>
 
-    <!-- BODY -->
+    <!-- BODY DASHBOARD -->
     <div class="content">
 
-      <div class="grid">
+      <div class="dashboard">
 
-        <div class="card" *ngIf="item?.dosis">
-          <div class="icon">💊</div>
-          <div>
-            <span class="label">Dosis</span>
-            <span class="value">{{ item.dosis }}</span>
-          </div>
-        </div>
+        <!-- BLOQUE PRINCIPAL -->
+        <div class="main-info">
 
-        <div class="card" *ngIf="item?.horario || item?.hora">
-          <div class="icon">🕒</div>
-          <div>
-            <span class="label">Hora</span>
-            <span class="value">{{ item.horario || item.hora }}</span>
-          </div>
-        </div>
+          <div class="big-card">
+            <h2>Información principal</h2>
 
-        <div class="card" *ngIf="momentoNormalizado">
-          <div class="icon">📅</div>
-          <div>
-            <span class="label">Momento del día</span>
+            <div class="info-line" *ngIf="item?.dosis">
+              <span class="label">💊 Dosis</span>
+              <span class="value">{{ item.dosis }}</span>
+            </div>
 
-            <span class="value">
-              <ng-container [ngSwitch]="momentoNormalizado">
-                <span *ngSwitchCase="'MAÑANA'">Mañana</span>
-                <span *ngSwitchCase="'TARDE'">Tarde</span>
-                <span *ngSwitchCase="'NOCHE'">Noche</span>
-                <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
-              </ng-container>
-            </span>
+            <div class="info-line" *ngIf="item?.horario || item?.hora">
+              <span class="label">🕒 Hora</span>
+              <span class="value">{{ item.horario || item.hora }}</span>
+            </div>
+
+            <div class="info-line" *ngIf="momentoNormalizado">
+              <span class="label">📅 Momento</span>
+              <span class="value">
+                <ng-container [ngSwitch]="momentoNormalizado">
+                  <span *ngSwitchCase="'MAÑANA'">Mañana</span>
+                  <span *ngSwitchCase="'TARDE'">Tarde</span>
+                  <span *ngSwitchCase="'NOCHE'">Noche</span>
+                  <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
+                </ng-container>
+              </span>
+            </div>
 
           </div>
+
         </div>
 
       </div>
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER UNIFORME -->
     <div class="footer">
 
       <button
         *ngIf="type !== 'alert'"
-        class="btn"
+        class="btn edit"
         (click)="editItem()">
         ✏️ Editar
       </button>
 
-      <button class="btn danger" (click)="deleteItem()">
+      <button class="btn delete" (click)="deleteItem()">
         🗑 Eliminar
       </button>
 
-      <button class="btn secondary" (click)="closeModal()">
+      <button class="btn close" (click)="closeModal()">
         Cerrar
       </button>
 
     </div>
 
   </div>
-
 </div>

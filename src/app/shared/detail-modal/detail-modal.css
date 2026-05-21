@@ -1,110 +1,105 @@
-.modal {
+/* OVERLAY */
+.overlay {
   position: fixed;
   inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
 
-/* fondo oscuro */
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-}
-
-/* panel principal */
-.modal-panel {
-  position: relative;
-  width: min(900px, 92vw);
+/* PANEL PRINCIPAL (DASHBOARD) */
+.panel {
+  width: min(1000px, 92vw);
   height: min(85vh, 900px);
 
-  margin: auto;
-  top: 50%;
-  transform: translateY(-50%);
-
-  background: #fafafa;
-
-  border-radius: 26px;
+  background: #ffffff;
+  border-radius: 24px;
 
   display: flex;
   flex-direction: column;
 
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.25),
-    0 2px 10px rgba(0,0,0,0.08);
-
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
   overflow: hidden;
 
   animation: pop 0.25s ease;
 }
 
 /* HEADER */
-.modal-header {
+.header {
   padding: 24px 28px;
-  border-bottom: 1px solid #ececec;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  background: #ffffff;
+  border-bottom: 1px solid #eee;
 }
 
-.modal-header h2 {
-  font-size: 22px;
-  font-weight: 700;
+.title h1 {
   margin: 0;
+  font-size: 26px;
+  font-weight: 800;
   color: #111827;
 }
 
-.icon-close {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
   color: #6b7280;
 }
 
+.close-btn {
+  background: #f3f4f6;
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
 /* BODY */
-.modal-body {
+.content {
   flex: 1;
   padding: 28px;
   overflow-y: auto;
-
-  background: #fafafa;
+  background: #f9fafb;
 }
 
-/* GRID DE TARJETAS */
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-
-/* tarjetas */
-.card {
-  background: #ffffff;
-
-  border: 1px solid #eeeeee;
-
-  padding: 18px;
-  border-radius: 18px;
-
+/* DASHBOARD LAYOUT */
+.dashboard {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  transition: 0.2s;
-
-  /* 👇 sombra suave tipo material */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  gap: 20px;
 }
 
-.card:hover {
-  transform: translateY(-3px);
+/* MAIN CARD */
+.big-card {
+  flex: 1;
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
 
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.big-card h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #111827;
+}
+
+/* INFO ROW */
+.info-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.info-line:last-child {
+  border-bottom: none;
 }
 
 .label {
@@ -113,30 +108,30 @@
 }
 
 .value {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: #111827;
 }
 
 /* FOOTER */
-.modal-footer {
-  padding: 20px;
-  border-top: 1px solid #ececec;
-
+.footer {
+  padding: 18px;
   display: flex;
   gap: 12px;
 
-  background: #ffffff;
+  border-top: 1px solid #eee;
+  background: white;
 }
 
+/* BOTONES IGUALES */
 .btn {
   flex: 1;
   padding: 14px;
 
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
 
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 
   transition: 0.2s;
@@ -146,7 +141,7 @@
   transform: translateY(-2px);
 }
 
-/* botones */
+/* COLORES UNIFICADOS */
 .edit {
   background: #3b82f6;
   color: white;
@@ -162,14 +157,14 @@
   color: #111827;
 }
 
-/* animación */
+/* ANIMACIÓN */
 @keyframes pop {
   from {
-    transform: translateY(-55%) scale(0.95);
+    transform: scale(0.96);
     opacity: 0;
   }
   to {
-    transform: translateY(-50%) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 }
