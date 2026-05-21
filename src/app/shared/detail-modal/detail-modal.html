@@ -1,21 +1,29 @@
-<div class="modal" *ngIf="visible">
-  <div class="modal-backdrop" (click)="closeModal()"></div>
+<div class="overlay" *ngIf="visible">
 
-  <div class="modal-panel">
+  <div class="backdrop" (click)="closeModal()"></div>
+
+  <div class="panel">
 
     <!-- HEADER -->
-    <div class="modal-header">
-      <h2>
-        {{ item?.nombre || item?.descripcion }}
-      </h2>
+    <div class="header">
 
-      <button class="icon-close" (click)="closeModal()">✕</button>
+      <div class="title">
+        <h1>{{ item?.nombre || item?.descripcion }}</h1>
+        <p class="subtitle">
+          {{ type === 'medication' ? 'Medicamento' :
+             type === 'cita' ? 'Cita médica' :
+             type === 'alert' ? 'Alerta' : 'Detalle' }}
+        </p>
+      </div>
+
+      <button class="close-btn" (click)="closeModal()">✕</button>
+
     </div>
 
     <!-- BODY -->
-    <div class="modal-body">
+    <div class="content">
 
-      <div class="info-grid">
+      <div class="grid">
 
         <div class="card" *ngIf="item?.dosis">
           <span class="label">💊 Dosis</span>
@@ -49,24 +57,25 @@
     </div>
 
     <!-- FOOTER -->
-    <div class="modal-footer">
+    <div class="footer">
 
       <button
         *ngIf="type !== 'alert'"
-        class="btn edit"
+        class="btn primary"
         (click)="editItem()">
         ✏️ Editar
       </button>
 
-      <button class="btn delete" (click)="deleteItem()">
+      <button class="btn danger" (click)="deleteItem()">
         🗑 Eliminar
       </button>
 
-      <button class="btn close" (click)="closeModal()">
+      <button class="btn secondary" (click)="closeModal()">
         Cerrar
       </button>
 
     </div>
 
   </div>
+
 </div>

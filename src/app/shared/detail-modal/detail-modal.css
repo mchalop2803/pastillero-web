@@ -1,21 +1,22 @@
-.modal {
+.overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 /* fondo oscuro */
-.modal-backdrop {
+.backdrop {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
-/* panel principal */
-.modal-panel {
+/* PANEL GRANDE */
+.panel {
   position: relative;
-  width: min(900px, 92vw);
+
+  width: min(1100px, 92vw);
   height: min(85vh, 900px);
 
   margin: auto;
@@ -23,73 +24,80 @@
   transform: translateY(-50%);
 
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 26px;
 
   display: flex;
   flex-direction: column;
 
-  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.45);
 
-  animation: pop 0.25s ease;
+  overflow: hidden;
+  animation: open 0.25s ease;
 }
 
 /* HEADER */
-.modal-header {
-  padding: 22px 26px;
-  border-bottom: 1px solid #eee;
+.header {
+  padding: 28px 32px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  border-bottom: 1px solid #eee;
 }
 
-.modal-header h2 {
-  font-size: 22px;
-  font-weight: 700;
+.title h1 {
   margin: 0;
+  font-size: 26px;
+  font-weight: 800;
   color: #111827;
 }
 
-.icon-close {
-  background: transparent;
+.subtitle {
+  margin: 4px 0 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.close-btn {
   border: none;
-  font-size: 20px;
+  background: transparent;
+  font-size: 22px;
   cursor: pointer;
   color: #6b7280;
 }
 
 /* BODY */
-.modal-body {
+.content {
   flex: 1;
-  padding: 26px;
+  padding: 30px;
   overflow-y: auto;
 }
 
-/* GRID DE TARJETAS */
-.info-grid {
+/* GRID */
+.grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
 
-/* tarjetas */
+/* CARDS */
 .card {
   background: #f9fafb;
   border: 1px solid #eef2f7;
 
-  padding: 18px;
-  border-radius: 16px;
+  padding: 20px;
+  border-radius: 18px;
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 
   transition: 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   background: #f3f4f6;
 }
 
@@ -99,14 +107,14 @@
 }
 
 .value {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   color: #111827;
 }
 
 /* FOOTER */
-.modal-footer {
-  padding: 20px;
+.footer {
+  padding: 22px;
   border-top: 1px solid #eee;
 
   display: flex;
@@ -117,7 +125,7 @@
   flex: 1;
   padding: 14px;
 
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
 
   font-weight: 600;
@@ -130,24 +138,23 @@
   transform: translateY(-2px);
 }
 
-/* botones */
-.edit {
+.primary {
   background: #3b82f6;
   color: white;
 }
 
-.delete {
+.danger {
   background: #ef4444;
   color: white;
 }
 
-.close {
+.secondary {
   background: #e5e7eb;
   color: #111827;
 }
 
 /* animación */
-@keyframes pop {
+@keyframes open {
   from {
     transform: translateY(-55%) scale(0.95);
     opacity: 0;
