@@ -36,10 +36,26 @@ export class DashboardLayoutComponent implements OnInit {
 
     if (user) {
 
-      this.userName =
-        user.displayName ||
-        user.email ||
-        'Usuario';
+      // 1. Si existe displayName → usarlo
+      if (user.displayName) {
+
+        this.userName = user.displayName;
+
+      }
+
+      // 2. Si no existe → usar texto antes del @
+      else if (user.email) {
+
+        this.userName =
+          user.email.split('@')[0];
+
+      }
+
+      // 3. Fallback
+      else {
+
+        this.userName = 'Usuario';
+      }
     }
   }
 
