@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+
 import {
   Database,
   ref,
@@ -9,19 +10,32 @@ import {
   off
 } from '@angular/fire/database';
 
-import { Auth, authState } from '@angular/fire/auth'; // 🔴 Aquí falta authState
-import { getAuth } from 'firebase/auth';
+import {
+  Auth,
+  authState
+} from '@angular/fire/auth';
+
 import { Observable, firstValueFrom } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService {
 
   private db = inject(Database);
-  private auth = inject(Auth); // Correctamente inyectado
 
-  // ================= USER =================
+  private auth = inject(Auth);
+
+  // =====================================================
+  // USER
+  // =====================================================
+
   private async getUser() {
-    const user = await firstValueFrom(authState(this.auth)); // authState correctamente usado aquí
+
+    const user =
+      await firstValueFrom(
+        authState(this.auth)
+      );
 
     if (!user?.uid) {
       throw new Error('No user authenticated');
@@ -30,187 +44,460 @@ export class DataService {
     return user;
   }
 
-  private refPath(path: string, uid: string) {
-    return ref(this.db, `users/${uid}/${path}`);
+  private refPath(
+    path: string,
+    uid: string
+  ) {
+
+    return ref(
+      this.db,
+      `users/${uid}/${path}`
+    );
   }
 
   private toArray(data: any): any[] {
+
     if (!data) return [];
-    return Object.entries(data).map(([id, value]: any) => ({ id, ...value }));
+
+    return Object.entries(data).map(
+      ([id, value]: any) => ({
+        id,
+        ...value
+      })
+    );
   }
 
-  // ================= MEDICAMENTS =================
+  // =====================================================
+  // MEDICAMENTS
+  // =====================================================
+
   getMedicaments(): Observable<any[]> {
+
     return new Observable(observer => {
 
       let currentRef: any = null;
 
-      const sub = authState(this.auth).subscribe(user => { // authState correctamente importado aquí
+      const sub =
+        authState(this.auth)
+          .subscribe(user => {
 
-        if (!user?.uid) {
-          observer.next([]);
-          return;
+            if (!user?.uid) {
+              observer.next([]);
+              return;
+            }
+
+            if (currentRef) {
+              off(currentRef);
+            }
+
+            currentRef =
+              this.refPath(
+                'medicaments',
+                user.uid
+              );
+
+            onValue(currentRef, snap => {
+
+              observer.next(
+                this.toArray(snap.val())
+              );
+
+            });
+          });
+
+      return () => {
+
+        sub.unsubscribe();
+
+        if (currentRef) {
+          off(currentRef);
         }
-
-        if (currentRef) return;
-
-        currentRef = this.refPath('medicaments', user.uid);
-
-        onValue(currentRef, snap => {
-          observer.next(this.toArray(snap.val()));
-        });
-      });
-
-      return () => sub.unsubscribe();
+      };
     });
   }
 
   async addMedicament(data: any) {
-    const user = await this.getUser();
-    const r = await push(this.refPath('medicaments', user.uid), data);
+
+    const user =
+      await this.getUser();
+
+    const r =
+      await push(
+        this.refPath(
+          'medicaments',
+          user.uid
+        ),
+        data
+      );
+
     return r.key;
   }
 
-  async updateMedicament(id: string, data: any) {
-    const user = await this.getUser();
-    return update(ref(this.db, `users/${user.uid}/medicaments/${id}`), data);
+  async updateMedicament(
+    id: string,
+    data: any
+  ) {
+
+    const user =
+      await this.getUser();
+
+    await update(
+      ref(
+        this.db,
+        `users/${user.uid}/medicaments/${id}`
+      ),
+      data
+    );
+
+    // 🔥 ACTUALIZAR ALERTAS RELACIONADAS
+    await this.updateAlertsByMedicament(
+      id,
+      {
+        nombre: data.nombre,
+        medicamentImageUrl: data.imageUrl
+      }
+    );
   }
 
   async deleteMedicament(id: string) {
-    const user = await this.getUser();
+
+    const user =
+      await this.getUser();
+
     if (!user) return;
-    await this.deleteAlertByMedicament(id);
-    return remove(ref(this.db, `users/${user.uid}/medicaments/${id}`));
+
+    // 🔥 BORRAR ALERTAS ASOCIADAS
+    await this.deleteAlertsByMedicament(id);
+
+    return remove(
+      ref(
+        this.db,
+        `users/${user.uid}/medicaments/${id}`
+      )
+    );
   }
 
-  // ================= CITAS =================
+  // =====================================================
+  // CITAS
+  // =====================================================
+
   getCitasMedicas(): Observable<any[]> {
+
     return new Observable(observer => {
 
       let currentRef: any = null;
 
-      const sub = authState(this.auth).subscribe(user => {
+      const sub =
+        authState(this.auth)
+          .subscribe(user => {
 
-        if (!user?.uid) {
-          observer.next([]);
-          return;
-        }
+            if (!user?.uid) {
+              observer.next([]);
+              return;
+            }
 
-        if (currentRef) off(currentRef);
+            if (currentRef) {
+              off(currentRef);
+            }
 
-        currentRef = this.refPath('citaMedics', user.uid);
+            currentRef =
+              this.refPath(
+                'citaMedics',
+                user.uid
+              );
 
-        onValue(currentRef, snap => {
-          observer.next(this.toArray(snap.val()));
-        });
-      });
+            onValue(currentRef, snap => {
+
+              observer.next(
+                this.toArray(snap.val())
+              );
+
+            });
+          });
 
       return () => {
+
         sub.unsubscribe();
-        if (currentRef) off(currentRef);
+
+        if (currentRef) {
+          off(currentRef);
+        }
       };
     });
   }
 
   async addCita(data: any) {
-    const user = await this.getUser();
-    return push(this.refPath('citaMedics', user.uid), data);
+
+    const user =
+      await this.getUser();
+
+    return push(
+      this.refPath(
+        'citaMedics',
+        user.uid
+      ),
+      data
+    );
   }
 
-  async updateCita(id: string, data: any) {
-    const user = await this.getUser();
-    return update(ref(this.db, `users/${user.uid}/citaMedics/${id}`), data);
+  async updateCita(
+    id: string,
+    data: any
+  ) {
+
+    const user =
+      await this.getUser();
+
+    return update(
+      ref(
+        this.db,
+        `users/${user.uid}/citaMedics/${id}`
+      ),
+      data
+    );
   }
 
   async deleteCita(id: string) {
-    const user = await this.getUser();
-    return remove(ref(this.db, `users/${user.uid}/citaMedics/${id}`));
+
+    const user =
+      await this.getUser();
+
+    return remove(
+      ref(
+        this.db,
+        `users/${user.uid}/citaMedics/${id}`
+      )
+    );
   }
 
-  // ================= ALERTS =================
+  // =====================================================
+  // ALERTS
+  // =====================================================
+
   getAlerts(): Observable<any[]> {
+
     return new Observable(observer => {
 
       let currentRef: any = null;
 
-      const sub = authState(this.auth).subscribe(user => {
+      const sub =
+        authState(this.auth)
+          .subscribe(user => {
 
-        if (!user?.uid) {
-          observer.next([]);
-          return;
-        }
+            if (!user?.uid) {
+              observer.next([]);
+              return;
+            }
 
-        if (currentRef) off(currentRef);
+            if (currentRef) {
+              off(currentRef);
+            }
 
-        currentRef = this.refPath('alerts', user.uid);
+            currentRef =
+              this.refPath(
+                'alerts',
+                user.uid
+              );
 
-        onValue(currentRef, snap => {
-          observer.next(this.toArray(snap.val()));
-        });
-      });
+            onValue(currentRef, snap => {
+
+              observer.next(
+                this.toArray(snap.val())
+              );
+
+            });
+          });
 
       return () => {
+
         sub.unsubscribe();
-        if (currentRef) off(currentRef);
+
+        if (currentRef) {
+          off(currentRef);
+        }
       };
     });
   }
 
   async addAlert(data: any) {
-    const user = await this.getUser();
-    return push(this.refPath('alerts', user.uid), data);
+
+    const user =
+      await this.getUser();
+
+    const r =
+      await push(
+        this.refPath(
+          'alerts',
+          user.uid
+        ),
+        data
+      );
+
+    return r.key;
   }
 
-  async updateAlert(id: string, data: any) {
-    const user = await this.getUser();
-    return update(ref(this.db, `users/${user.uid}/alerts/${id}`), data);
+  async updateAlert(
+    id: string,
+    data: any
+  ) {
+
+    const user =
+      await this.getUser();
+
+    return update(
+      ref(
+        this.db,
+        `users/${user.uid}/alerts/${id}`
+      ),
+      data
+    );
   }
 
   async deleteAlert(id: string) {
-    const user = await this.getUser();
-    return remove(ref(this.db, `users/${user.uid}/alerts/${id}`));
+
+    const user =
+      await this.getUser();
+
+    return remove(
+      ref(
+        this.db,
+        `users/${user.uid}/alerts/${id}`
+      )
+    );
   }
 
-  // ================= MÉTODOS PARA ALERTAS POR MEDICAMENTO =================
-  async deleteAlertByMedicament(medicamentId: string) {
-    const user = await this.getUser();
-    const alertsRef = ref(this.db, `users/${user.uid}/alerts`);
+  // =====================================================
+  // ALERTAS POR MEDICAMENTO
+  // =====================================================
+
+  async deleteAlertsByMedicament(
+    medicamentId: string
+  ) {
+
+    const user =
+      await this.getUser();
+
+    const alertsRef =
+      ref(
+        this.db,
+        `users/${user.uid}/alerts`
+      );
 
     return new Promise<void>((resolve) => {
-      onValue(alertsRef, snapshot => {
-        const data = snapshot.val();
 
-        if (!data) return resolve();
+      onValue(
+        alertsRef,
+        async snapshot => {
 
-        Object.entries(data).forEach(([key, value]: any) => {
-          if (value.medicamentId === medicamentId) {
-            remove(ref(this.db, `users/${user.uid}/alerts/${key}`));
+          const data = snapshot.val();
+
+          if (!data) {
+            resolve();
+            return;
           }
-        });
 
-        resolve();
-      }, { onlyOnce: true });
+          const promises: Promise<any>[] = [];
+
+          Object.entries(data).forEach(
+            ([key, value]: any) => {
+
+              if (
+                value.medicamentoId === medicamentId ||
+                value.medicamentId === medicamentId
+              ) {
+
+                promises.push(
+                  remove(
+                    ref(
+                      this.db,
+                      `users/${user.uid}/alerts/${key}`
+                    )
+                  )
+                );
+              }
+            }
+          );
+
+          await Promise.all(promises);
+
+          resolve();
+
+        },
+        {
+          onlyOnce: true
+        }
+      );
     });
   }
 
-  async updateAlertByMedicament(medicamentId: string, data: any) {
-    const user = await this.getUser();
-    const alertsRef = ref(this.db, `users/${user.uid}/alerts`);
+  async updateAlertsByMedicament(
+    medicamentId: string,
+    data: any
+  ) {
+
+    const user =
+      await this.getUser();
+
+    const alertsRef =
+      ref(
+        this.db,
+        `users/${user.uid}/alerts`
+      );
 
     return new Promise<void>((resolve) => {
-      onValue(alertsRef, snapshot => {
-        const dataSnap = snapshot.val();
 
-        if (!dataSnap) return resolve();
+      onValue(
+        alertsRef,
+        async snapshot => {
 
-        Object.entries(dataSnap).forEach(([key, value]: any) => {
-          if (value.medicamentId === medicamentId) {
-            update(ref(this.db, `users/${user.uid}/alerts/${key}`), data);
+          const snapData =
+            snapshot.val();
+
+          if (!snapData) {
+            resolve();
+            return;
           }
-        });
 
-        resolve();
-      }, { onlyOnce: true });
+          const promises: Promise<any>[] = [];
+
+          Object.entries(snapData).forEach(
+            ([key, value]: any) => {
+
+              if (
+                value.medicamentoId === medicamentId ||
+                value.medicamentId === medicamentId
+              ) {
+
+                promises.push(
+
+                  update(
+                    ref(
+                      this.db,
+                      `users/${user.uid}/alerts/${key}`
+                    ),
+                    {
+                      nombre:
+                        data.nombre,
+
+                      medicamentImageUrl:
+                        data.medicamentImageUrl ||
+                        data.imageUrl
+                    }
+                  )
+                );
+              }
+            }
+          );
+
+          await Promise.all(promises);
+
+          resolve();
+
+        },
+        {
+          onlyOnce: true
+        }
+      );
     });
   }
 }

@@ -31,6 +31,9 @@ export class Medications {
   calendarEvents: any[] = [];
   selectedDayMedicaments: any[] = [];
   selectedDate: Date | null = null;
+  alertsSub: any;
+  alerts: any[] = [];
+  
 
   calendarOptions: any;
 
@@ -105,107 +108,131 @@ export class Medications {
 
   loadCalendarEvents() {
 
-    this.data.getAlerts().subscribe(alerts => {
+    if (this.alertsSub) {
+      this.alertsSub.unsubscribe();
+    }
 
-      const map = new Map();
+    this.alertsSub =
+      this.data.getAlerts().subscribe(alerts => {
 
-      alerts.forEach(alert => {
+        this.alerts = alerts;
 
-        if (!alert.hora) return;
+        const map = new Map();
 
-        const date = new Date(alert.hora);
+        alerts.forEach(alert => {
 
-        const key =
-          `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${alert.medicamentoId}`;
+          if (!alert.hora) return;
 
-        let backgroundColor = '#3b82f6';
+          const date = new Date(alert.hora);
 
-        const estado =
-          alert.estado?.toLowerCase();
+          const key =
+            `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${alert.medicamentoId}`;
 
-        if (estado === 'pendiente') {
-          backgroundColor = '#f59e0b';
-        }
+          let backgroundColor = '#3b82f6';
 
-        if (estado === 'tomado') {
-          backgroundColor = '#10b981';
-        }
+          const estado =
+            alert.estado?.toLowerCase();
 
-        if (estado === 'omitido') {
-          backgroundColor = '#ef4444';
-        }
+          if (estado === 'pendiente') {
+            backgroundColor = '#f59e0b';
+          }
 
-        if (!map.has(key)) {
+          if (
+            estado === 'tomada' ||
+            estado === 'tomado'
+          ) {
+            backgroundColor = '#10b981';
+          }
 
-          map.set(key, {
+          if (
+            estado === 'perdida' ||
+            estado === 'omitido'
+          ) {
+            backgroundColor = '#ef4444';
+          }
 
-            title: alert.nombre,
+          if (!map.has(key)) {
 
-            start: date,
+            map.set(key, {
 
-            allDay: true,
+              id: alert.id,
 
-            backgroundColor,
-            borderColor: backgroundColor,
+              title: alert.nombre,
 
-            textColor: '#ffffff',
+              start: date,
 
-            extendedProps: {
-              medicamentoId: alert.medicamentoId,
-              estado: alert.estado
-            }
-          });
+              allDay: true,
+
+              backgroundColor,
+              borderColor: backgroundColor,
+
+              textColor: '#ffffff',
+
+              display: 'block',
+
+              extendedProps: {
+                medicamentoId: alert.medicamentoId,
+                estado: alert.estado
+              }
+            });
+          }
+        });
+
+        this.calendarEvents =
+          Array.from(map.values());
+
+        this.calendarOptions.events =
+          [...this.calendarEvents];
+
+        if (this.selectedDate) {
+          this.loadMedicamentsByDay(this.selectedDate);
         }
       });
-
-      this.calendarEvents =
-        Array.from(map.values());
-
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        events: [...this.calendarEvents]
-      };
-    });
   }
 
   loadMedicamentsByDay(date: Date) {
 
     this.selectedDate = date;
 
-    this.data.getAlerts().subscribe(alerts => {
+    const map = new Map();
 
-      const map = new Map();
+    this.alerts.forEach(alert => {
 
-      alerts.forEach(alert => {
+      if (!alert.hora) return;
 
-        if (!alert.hora) return;
+      const d = new Date(alert.hora);
 
-        const d = new Date(alert.hora);
+      const sameDay =
+        d.getDate() === date.getDate() &&
+        d.getMonth() === date.getMonth() &&
+        d.getFullYear() === date.getFullYear();
 
-        const sameDay =
-          d.getDate() === date.getDate() &&
-          d.getMonth() === date.getMonth() &&
-          d.getFullYear() === date.getFullYear();
+      if (!sameDay) return;
 
-        if (!sameDay) return;
+      const key =
+        alert.medicamentoId || alert.nombre;
 
-        const key = alert.medicamentoId || alert.nombre;
+      if (!map.has(key)) {
 
-        if (!map.has(key)) {
-          map.set(key, {
-            medicamentoId: alert.medicamentoId,
-            nombre: alert.nombre,
-            imageUrl: alert.medicamentImageUrl,
-            dosisBase: alert.dosisBase,
-            alerts: []
-          });
-        }
+        map.set(key, {
 
-        map.get(key).alerts.push(alert);
-      });
+          medicamentoId: alert.medicamentoId,
 
-      this.selectedDayMedicaments = Array.from(map.values());
+          nombre: alert.nombre,
+
+          imageUrl: alert.medicamentImageUrl,
+
+          dosisBase: alert.dosisBase,
+
+          alerts: []
+        });
+      }
+
+      map.get(key).alerts.push(alert);
     });
+
+    this.selectedDayMedicaments =
+      Array.from(map.values());
   }
 
   // =========================
@@ -237,39 +264,64 @@ export class Medications {
 
     try {
 
-      let imageUrl = this.newMedicament.imageUrl || '';
+      let imageUrl =
+        this.newMedicament.imageUrl || '';
 
       if (this.selectedFile) {
-        imageUrl = await this.storage.uploadImage(this.selectedFile);
+
+        imageUrl =
+          await this.storage.uploadImage(
+            this.selectedFile
+          );
       }
 
       const data = {
-        nombre: this.newMedicament.nombre,
-        descripcion: this.newMedicament.descripcion,
+
+        nombre:
+          this.newMedicament.nombre,
+
+        descripcion:
+          this.newMedicament.descripcion,
+
         imageUrl,
 
-        fechaInicio: this.newMedicament.fechaInicio
-          ? new Date(this.newMedicament.fechaInicio).getTime()
-          : null,
+        fechaInicio:
+          this.newMedicament.fechaInicio
+            ? new Date(
+                this.newMedicament.fechaInicio
+              ).getTime()
+            : null,
 
-        fechaFin: this.newMedicament.fechaFin
-          ? new Date(this.newMedicament.fechaFin).getTime()
-          : null
+        fechaFin:
+          this.newMedicament.fechaFin
+            ? new Date(
+                this.newMedicament.fechaFin
+              ).getTime()
+            : null
       };
 
       if (this.editingId) {
-        await this.data.updateMedicament(this.editingId, data);
+
+        await this.data.updateMedicament(
+          this.editingId,
+          data
+        );
+
       } else {
+
         await this.data.addMedicament(data);
       }
 
-      this.loadCalendarEvents();
       this.closeModal();
 
     } catch (e) {
+
       console.error(e);
+
       alert('Error guardando medicamento');
+
     } finally {
+
       this.isSaving = false;
     }
   }
@@ -278,11 +330,10 @@ export class Medications {
 
     await this.data.deleteMedicament(id);
 
-    this.loadCalendarEvents();
-
-    // LIMPIAR DÍA SELECCIONADO
     if (this.selectedDate) {
-      this.loadMedicamentsByDay(this.selectedDate);
+      this.loadMedicamentsByDay(
+        this.selectedDate
+      );
     }
   }
 
