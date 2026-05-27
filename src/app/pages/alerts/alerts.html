@@ -2,47 +2,60 @@
 
   <header class="header">
     <h1>⏰ Alarmas</h1>
-  </header>
 
-  <!-- 🔥 CALENDARIO DE CREACIÓN (COMO ANTES) -->
-  <div *ngIf="selectedMedicament" class="create-box">
-
-    <h2>Crear alarma para {{ selectedMedicament.nombre }}</h2>
-
-    <input type="time" [(ngModel)]="newAlert.hora">
-
-    <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
-
-    <select [(ngModel)]="newAlert.frecuencia">
-      <option>Cada 24 horas</option>
-      <option>Cada 12 horas</option>
-      <option>Cada 8 horas</option>
-      <option>Cada 6 horas</option>
-    </select>
-
-    <button (click)="createAlertsFromMedicament()">
-      Crear alarmas
+    <!-- SOLO BOTÓN LIMPIO -->
+    <button class="add-btn" (click)="openCreateModal()">
+      ➕ Crear alarma
     </button>
-
-  </div>
+  </header>
 
   <!-- LISTA -->
   <div class="grid">
 
-    <div *ngFor="let alert of alerts$ | async"
-         class="card"
+    <div class="card small"
+         *ngFor="let alert of alerts$ | async"
          (click)="openDetail(alert)">
 
       <div class="icon">⏰</div>
 
-      <h3>{{ alert.nombre }}</h3>
+      <div class="info">
+        <h3>{{ alert.nombre }}</h3>
 
-      <p>{{ alert.hora | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p>{{ alert.hora | date:'dd/MM HH:mm' }}</p>
 
-      <span>{{ alert.estado }}</span>
+        <span class="status">{{ alert.estado }}</span>
+      </div>
 
     </div>
+  </div>
 
+  <!-- MODAL CREAR (TIPO MEDICAMENTO) -->
+  <div class="modal" *ngIf="isCreateOpen">
+
+    <div class="modal-content">
+
+      <h2>Crear alarma para {{ selectedMedicament?.nombre }}</h2>
+
+      <input type="time" [(ngModel)]="newAlert.hora">
+
+      <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
+
+      <select [(ngModel)]="newAlert.frecuencia">
+        <option>Cada 24 horas</option>
+        <option>Cada 12 horas</option>
+        <option>Cada 8 horas</option>
+        <option>Cada 6 horas</option>
+      </select>
+
+      <div class="actions">
+
+        <button (click)="createAlertsFromMedicament()">Guardar</button>
+
+        <button (click)="closeCreateModal()">Cancelar</button>
+
+      </div>
+
+    </div>
   </div>
 
   <!-- DETAIL -->
