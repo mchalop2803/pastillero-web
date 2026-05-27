@@ -5,12 +5,12 @@
     <div class="header">
 
       <div class="title">
-        <h1>{{ item?.nombre || item?.descripcion }}</h1>
+        <h1>{{ item?.nombre }}</h1>
 
         <p class="subtitle">
-          {{ type === 'medication' ? 'Medicamento' :
-             type === 'cita' ? 'Cita médica' :
-             type === 'alert' ? 'Alerta' : 'Detalle' }}
+          {{ type === 'medication' ? '💊 Medicamento' :
+             type === 'cita' ? '📅 Cita médica' :
+             type === 'alert' ? '⏰ Alerta' : 'Detalle' }}
         </p>
       </div>
 
@@ -18,38 +18,60 @@
 
     </div>
 
-    <!-- BODY DASHBOARD -->
+    <!-- BODY -->
     <div class="content">
 
       <div class="dashboard">
 
-        <!-- BLOQUE PRINCIPAL -->
-        <div class="main-info">
+        <!-- IMAGEN -->
+        <div class="image-box" *ngIf="item?.imageUrl">
+          <img [src]="item.imageUrl" />
+        </div>
 
-          <div class="big-card">
-            <h2>Información principal</h2>
+        <!-- INFO PRINCIPAL -->
+        <div class="big-card">
+          <h2>Información del medicamento</h2>
 
-            <div class="info-line" *ngIf="item?.dosis">
-              <span class="label">💊 Dosis</span>
-              <span class="value">{{ item.dosis }}</span>
-            </div>
+          <div class="info-line" *ngIf="item?.descripcion">
+            <span class="label">📝 Descripción</span>
+            <span class="value">{{ item.descripcion }}</span>
+          </div>
 
-            <div class="info-line" *ngIf="item?.horario || item?.hora">
-              <span class="label">🕒 Hora</span>
-              <span class="value">{{ item.horario || item.hora }}</span>
-            </div>
+          <div class="info-line" *ngIf="item?.dosisBase">
+            <span class="label">💊 Dosis</span>
+            <span class="value">{{ item.dosisBase }}</span>
+          </div>
 
-            <div class="info-line" *ngIf="momentoNormalizado">
-              <span class="label">📅 Momento</span>
-              <span class="value">
-                <ng-container [ngSwitch]="momentoNormalizado">
-                  <span *ngSwitchCase="'MAÑANA'">Mañana</span>
-                  <span *ngSwitchCase="'TARDE'">Tarde</span>
-                  <span *ngSwitchCase="'NOCHE'">Noche</span>
-                  <span *ngSwitchDefault>{{ momentoNormalizado }}</span>
-                </ng-container>
-              </span>
-            </div>
+          <div class="info-line" *ngIf="item?.fechaInicio">
+            <span class="label">📅 Inicio</span>
+            <span class="value">
+              {{ item.fechaInicio | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <div class="info-line" *ngIf="item?.fechaFin">
+            <span class="label">📅 Fin</span>
+            <span class="value">
+              {{ item.fechaFin | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- ALERTAS (si viene del calendario) -->
+        <div class="big-card" *ngIf="item?.alerts?.length">
+
+          <h2>⏰ Alarmas</h2>
+
+          <div class="info-line" *ngFor="let alert of item.alerts">
+
+            <span class="label">
+              🕒 {{ alert.hora | date:'HH:mm' }}
+            </span>
+
+            <span class="value">
+              {{ alert.estado }}
+            </span>
 
           </div>
 
@@ -59,11 +81,10 @@
 
     </div>
 
-    <!-- FOOTER UNIFORME -->
+    <!-- FOOTER -->
     <div class="footer">
 
       <button
-        *ngIf="type !== 'alert'"
         class="btn edit"
         (click)="editItem()">
         ✏️ Editar
