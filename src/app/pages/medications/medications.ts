@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -30,6 +30,7 @@ export class Medications {
   // DATA
   // =========================
   medicaments$!: Observable<any[]>;
+  filteredMeds$!: Observable<any[]>;
 
   alerts: any[] = [];
   alertsSub: any;
@@ -42,7 +43,6 @@ export class Medications {
 
   selectedDayMedicaments: any[] = [];
   selectedDate: Date | null = null;
-
 
   // =========================
   // MED CRUD
@@ -91,6 +91,8 @@ export class Medications {
   ngOnInit() {
 
     this.medicaments$ = this.data.getMedicaments();
+
+    this.filteredMeds$ = this.medicaments$;
 
     this.initCalendar();
     this.loadCalendarEvents();
@@ -227,7 +229,6 @@ export class Medications {
 
     this.selectedDayMedicaments = Array.from(map.values());
   }
-
 
   // =========================
   // MED CRUD
