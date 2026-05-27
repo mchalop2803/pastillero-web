@@ -1,31 +1,63 @@
 <div class="page">
 
   <header class="header">
-    <h1>💊 Medicamentos</h1>
+    <h1>📅 Calendario de medicación</h1>
   </header>
 
-  <div class="grid">
+  <!-- ========================= -->
+  <!-- CALENDARIO -->
+  <!-- ========================= -->
 
-    <div *ngFor="let med of medicaments$ | async"
-         class="card"
-         (click)="openDetail(med)">
+  <div class="calendar">
 
-      <img [src]="med.imageUrl || 'assets/default.png'">
+    <div class="day"
+         *ngFor="let d of calendarDays$ | async"
+         (click)="selectDay(d)"
+         [class.ok]="d.status === 'OK'"
+         [class.warn]="d.status === 'WARN'"
+         [class.pending]="d.status === 'PENDING'">
 
-      <h3>{{ med.nombre }}</h3>
+      <h3>{{ d.day | date:'dd/MM' }}</h3>
+
+      <small>
+        {{ d.items.length }} alarmas
+      </small>
 
     </div>
 
   </div>
 
+  <!-- ========================= -->
+  <!-- DETALLE DEL DÍA -->
+  <!-- ========================= -->
+
+  <div class="day-detail" *ngIf="selectedDay">
+
+    <h2>Alarmas del día</h2>
+
+    <div *ngFor="let item of (calendarDays$ | async)
+                      ?.find(d => d.day === selectedDay)?.items"
+         class="alarm-card"
+         (click)="openDetail(item)">
+
+      <div>
+        💊 {{ item.medicament?.nombre }}
+      </div>
+
+      <div>
+        {{ item.estado }}
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"
-    [type]="'medication'"
-    (close)="closeDetail()"
-    (delete)="deleteFromModal($event)"
-    (edit)="editFromModal($event)"
-    (addAlert)="openAlertModal($event)">
+    [type]="'alert'"
+    (close)="closeDetail()">
   </app-detail-modal>
 
 </div>
