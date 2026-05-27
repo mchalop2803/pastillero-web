@@ -14,8 +14,22 @@
       <div class="icon">⏰</div>
 
       <div class="info">
+
         <h3>{{ alert.nombre }}</h3>
-        <p *ngIf="alert.hora">🕒 {{ alert.hora }}</p>
+
+        <p *ngIf="alert.hora">
+          🕒 {{ alert.hora | date:'HH:mm' }}
+        </p>
+
+        <small class="status"
+          [class.pending]="alert.estado === 'PENDIENTE'"
+          [class.taken]="alert.estado === 'TOMADA'"
+          [class.missed]="alert.estado === 'PERDIDA'">
+
+          {{ alert.estado }}
+
+        </small>
+
       </div>
 
       <span class="badge" *ngIf="alert.medicamentId">
@@ -31,7 +45,9 @@
     [item]="selectedItem"
     [type]="'alert'"
     (close)="closeDetail()"
-    (delete)="deleteFromModal($event)">
+    (delete)="deleteFromModal($event)"
+    (taken)="takenAlert($event)"
+    (missed)="missedAlert($event)">
   </app-detail-modal>
 
 </div>

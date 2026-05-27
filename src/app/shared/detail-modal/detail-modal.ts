@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,6 +23,10 @@ export class DetailModalComponent {
   @Output() close = new EventEmitter();
   @Output() delete = new EventEmitter();
   @Output() edit = new EventEmitter();
+  @Output() addAlert = new EventEmitter();
+
+  @Output() taken = new EventEmitter();
+  @Output() missed = new EventEmitter();
 
   closeModal() {
     this.close.emit();
@@ -30,16 +40,48 @@ export class DetailModalComponent {
     this.edit.emit(this.item);
   }
 
+  addAlertToMedicament() {
+    this.addAlert.emit(this.item);
+  }
+
+  markAsTaken() {
+    this.taken.emit(this.item);
+  }
+
+  markAsMissed() {
+    this.missed.emit(this.item);
+  }
+
+  get isCompleted(): boolean {
+
+    return (
+      this.item?.estado === 'TOMADA'
+    );
+  }
+
   get momentoNormalizado(): string {
 
-  const value = this.item?.momentoDia || this.item?.momentDay;
+    const value =
+      this.item?.momentoDia ||
+      this.item?.momentDay;
 
-  if (!value) return '';
+    if (!value) return '';
 
-  if (value === 'DIA' || value === 'MAÑANA') return 'MAÑANA';
-  if (value === 'TARDE') return 'TARDE';
-  if (value === 'NOCHE') return 'NOCHE';
+    if (
+      value === 'DIA' ||
+      value === 'MAÑANA'
+    ) {
+      return 'MAÑANA';
+    }
 
-  return value;
-}
+    if (value === 'TARDE') {
+      return 'TARDE';
+    }
+
+    if (value === 'NOCHE') {
+      return 'NOCHE';
+    }
+
+    return value;
+  }
 }

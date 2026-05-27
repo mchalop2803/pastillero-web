@@ -1,20 +1,27 @@
 <div class="overlay" *ngIf="visible" (click)="closeModal()">
+
   <div class="panel" (click)="$event.stopPropagation()">
 
     <!-- HEADER -->
     <div class="header">
 
       <div class="title">
+
         <h1>{{ item?.nombre }}</h1>
 
         <p class="subtitle">
+
           {{ type === 'medication' ? '💊 Medicamento' :
              type === 'cita' ? '📅 Cita médica' :
              type === 'alert' ? '⏰ Alerta' : 'Detalle' }}
+
         </p>
+
       </div>
 
-      <button class="close-btn" (click)="closeModal()">✕</button>
+      <button class="close-btn" (click)="closeModal()">
+        ✕
+      </button>
 
     </div>
 
@@ -28,9 +35,10 @@
           <img [src]="item.imageUrl" />
         </div>
 
-        <!-- INFO PRINCIPAL -->
+        <!-- INFO -->
         <div class="big-card">
-          <h2>Información del medicamento</h2>
+
+          <h2>Información</h2>
 
           <div class="info-line">
             <span class="label">📦 Nombre</span>
@@ -42,52 +50,39 @@
             <span class="value">{{ item.descripcion }}</span>
           </div>
 
+          <div class="info-line" *ngIf="item?.hora">
+            <span class="label">🕒 Hora</span>
+            <span class="value">
+              {{ item.hora | date:'HH:mm' }}
+            </span>
+          </div>
+
+          <div class="info-line" *ngIf="item?.estado">
+            <span class="label">📌 Estado</span>
+            <span class="value">
+              {{ item.estado }}
+            </span>
+          </div>
+
           <div class="info-line" *ngIf="item?.dosisBase">
-            <span class="label">💊 Dosis</span>
-            <span class="value">{{ item.dosisBase }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.momentoDia">
-            <span class="label">⏰ Momento del día</span>
-            <span class="value">{{ item.momentoDia }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.horario">
-            <span class="label">🕒 Horario</span>
-            <span class="value">{{ item.horario }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.fechaInicio">
-            <span class="label">📅 Inicio</span>
+            <span class="label">💊 Dosis base</span>
             <span class="value">
-              {{ item.fechaInicio | date:'dd/MM/yyyy' }}
+              {{ item.dosisBase }}
             </span>
           </div>
 
-          <div class="info-line" *ngIf="item?.fechaFin">
-            <span class="label">📅 Fin</span>
+          <div class="info-line" *ngIf="item?.dosisTomada">
+            <span class="label">✅ Dosis tomada</span>
             <span class="value">
-              {{ item.fechaFin | date:'dd/MM/yyyy' }}
+              {{ item.dosisTomada }}
             </span>
           </div>
 
-        </div>
-
-        <!-- ALERTAS -->
-        <div class="big-card" *ngIf="item?.alerts?.length">
-
-          <h2>⏰ Alarmas</h2>
-
-          <div class="info-line" *ngFor="let alert of item.alerts">
-
-            <span class="label">
-              🕒 {{ alert.hora | date:'HH:mm' }}
-            </span>
-
+          <div class="info-line" *ngIf="item?.horaTomada">
+            <span class="label">⏰ Hora tomada</span>
             <span class="value">
-              {{ alert.estado }}
+              {{ item.horaTomada }}
             </span>
-
           </div>
 
         </div>
@@ -102,18 +97,57 @@
       <button
         class="btn edit"
         (click)="editItem()">
+
         ✏️ Editar
+
       </button>
 
-      <button class="btn delete" (click)="deleteItem()">
+      <button
+        class="btn delete"
+        (click)="deleteItem()">
+
         🗑 Eliminar
+
       </button>
 
-      <button class="btn close" (click)="closeModal()">
+      <button
+        *ngIf="type === 'medication'"
+        class="btn add-alert"
+        (click)="addAlertToMedicament()">
+
+        ⏰ Añadir alarma
+
+      </button>
+
+      <button
+        *ngIf="type === 'alert' && !isCompleted"
+        class="btn taken"
+        (click)="markAsTaken()">
+
+        ✅ Sí tomada
+
+      </button>
+
+      <button
+        *ngIf="type === 'alert' && !isCompleted"
+        class="btn missed"
+        (click)="markAsMissed()">
+
+        ❌ No tomada
+
+      </button>
+
+      <button
+        *ngIf="type !== 'medication'"
+        class="btn close"
+        (click)="closeModal()">
+
         Cerrar
+
       </button>
 
     </div>
 
   </div>
+
 </div>
