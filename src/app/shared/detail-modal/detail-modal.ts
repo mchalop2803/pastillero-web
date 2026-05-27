@@ -33,9 +33,8 @@ export class DetailModalComponent {
     this.edit.emit(this.item);
   }
 
-  // 🔥 ESTO ES LO IMPORTANTE (sin alertForm)
   createAlertFromMedication() {
-    this.createAlert.emit();
+    this.createAlert.emit(this.item);
   }
 
   markAsTaken() {

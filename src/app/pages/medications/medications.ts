@@ -344,7 +344,15 @@ export class Medications {
   // =========================
   openAlertModal(med: any) {
 
-    this.selectedMedForAlert = med;
+    if (!med) return;
+
+    this.selectedMedForAlert = {
+      id: med.id || med.medicamentoId,
+      nombre: med.nombre,
+      fechaInicio: med.fechaInicio,
+      fechaFin: med.fechaFin,
+      imageUrl: med.imageUrl
+    };
 
     this.alertForm = {
       hora: '',
@@ -363,7 +371,11 @@ export class Medications {
   async createAlertFromModal() {
 
     const med = this.selectedMedForAlert;
-    if (!med) return;
+
+    if (!med || !med.id) {
+      console.error('Medicamento inválido para crear alarma', med);
+      return;
+    }
 
     const [hour, minute] = this.alertForm.hora.split(':').map(Number);
 
@@ -374,6 +386,11 @@ export class Medications {
 
     const start = new Date(med.fechaInicio);
     const end = new Date(med.fechaFin);
+
+    if (!start || !end) {
+      console.error('Fechas inválidas');
+      return;
+    }
 
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
@@ -387,7 +404,7 @@ export class Medications {
 
       await this.data.addAlert({
         nombre: med.nombre,
-        medicamentoId: med.id,
+        medicamentoId: med.id, // 🔥 YA NO FALLA
         medicamentImageUrl: med.imageUrl,
         dosisBase: this.alertForm.dosisBase,
         hora: alarm.getTime(),
