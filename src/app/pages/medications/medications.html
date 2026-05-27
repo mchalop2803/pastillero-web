@@ -307,36 +307,43 @@
 
   </div>
 
-  <div class="modal" *ngIf="isAlertCreateOpen">
+  <div class="alert-modal" *ngIf="isAlertCreateOpen">
 
-    <div class="modal-content">
+    <div class="alert-modal-content">
 
-        <h2>Crear alarma</h2>
+      <h2>➕ Crear alarma</h2>
 
-        <p>Medicamento: {{ selectedMedForAlert?.nombre }}</p>
+      <p><b>Medicamento:</b> {{ selectedMedForAlert?.nombre }}</p>
 
-        <label>Hora</label>
-        <input type="time" [(ngModel)]="alertForm.hora" />
+      <label>Hora</label>
+      <input type="time" [(ngModel)]="alertForm.hora" />
 
-        <label>Dosis</label>
-        <input type="text" [(ngModel)]="alertForm.dosisBase" />
+      <label>Dosis</label>
+      <input type="text" [(ngModel)]="alertForm.dosisBase" />
 
-        <label>Frecuencia</label>
-        <select [(ngModel)]="alertForm.frecuencia">
-          <option>Cada 24 horas</option>
-          <option>Cada 12 horas</option>
-          <option>Cada 8 horas</option>
-          <option>Cada 6 horas</option>
-        </select>
+      <label>Frecuencia</label>
+      <select [(ngModel)]="alertForm.frecuencia">
+        <option>Cada 24 horas</option>
+        <option>Cada 12 horas</option>
+        <option>Cada 8 horas</option>
+        <option>Cada 6 horas</option>
+      </select>
 
-        <div class="actions">
-          <button (click)="createAlertFromModal()">Crear</button>
-          <button (click)="closeAlertCreateModal()">Cancelar</button>
-        </div>
+      <div class="actions">
+
+        <button class="add" (click)="createAlertFromModal()">
+          Crear alarma
+        </button>
+
+        <button class="cancel" (click)="closeAlertCreateModal()">
+          Cancelar
+        </button>
 
       </div>
 
     </div>
+
+  </div>
 
   <!-- DETAIL MODAL -->
 
