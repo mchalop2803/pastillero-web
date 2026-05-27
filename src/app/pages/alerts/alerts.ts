@@ -62,48 +62,6 @@ export class Alerts {
     this.isCreateOpen = false;
   }
 
-  // =========================
-  // CREATE
-  // =========================
-
-  async createAlertsFromMedicament() {
-
-    const med = this.selectedMedicament;
-    if (!med) return;
-
-    const [hour, minute] = this.newAlert.hora.split(':').map(Number);
-
-    let interval = 24;
-    if (this.newAlert.frecuencia === 'Cada 12 horas') interval = 12;
-    if (this.newAlert.frecuencia === 'Cada 8 horas') interval = 8;
-    if (this.newAlert.frecuencia === 'Cada 6 horas') interval = 6;
-
-    const start = new Date(med.fechaInicio);
-    const end = new Date(med.fechaFin);
-
-    const current = new Date(start);
-
-    while (current <= end) {
-
-      const alarm = new Date(current);
-      alarm.setHours(hour, minute, 0, 0);
-
-      await this.data.addAlert({
-        nombre: med.nombre,
-        medicamentoId: med.id,
-        medicamentImageUrl: med.imageUrl,
-        dosisBase: this.newAlert.dosisBase,
-        hora: alarm.getTime(),
-        estado: alarm.getTime() < Date.now() ? 'PERDIDA' : 'PENDIENTE'
-      });
-
-      current.setDate(current.getDate() + 1);
-    }
-
-    this.refreshAlerts();
-    this.closeCreateModal();
-  }
-
   // DETAIL (igual que antes)
   openDetail(item: any) {
     this.selectedItem = item;
