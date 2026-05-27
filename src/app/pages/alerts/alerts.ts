@@ -6,11 +6,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { DataService } from '../../services/data';
+import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DetailModalComponent   ],
   templateUrl: './alerts.html',
   styleUrls: ['./alerts.css'],
 })
@@ -23,7 +24,6 @@ export class Alerts {
 
   selectedMedicament: any = null;
 
-  // 🔥 CONTROL MODAL CREAR
   isCreateOpen = false;
 
   newAlert = {
