@@ -367,11 +367,16 @@ export class Medications {
 
     const [hour, minute] = this.alertForm.hora.split(':').map(Number);
 
+    let interval = 24;
+    if (this.alertForm.frecuencia === 'Cada 12 horas') interval = 12;
+    if (this.alertForm.frecuencia === 'Cada 8 horas') interval = 8;
+    if (this.alertForm.frecuencia === 'Cada 6 horas') interval = 6;
+
     const start = new Date(med.fechaInicio);
     const end = new Date(med.fechaFin);
 
-    start.setHours(0,0,0,0);
-    end.setHours(23,59,59,999);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
 
     const current = new Date(start);
 

@@ -17,10 +17,7 @@ export class DetailModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
-
-  // 🔥 ESTE ES EL IMPORTANTE (abrir pantalla creación alarma)
-  @Output() createAlert = new EventEmitter<any>();
-
+  @Output() createAlert = new EventEmitter<void>();
   @Output() taken = new EventEmitter<any>();
   @Output() missed = new EventEmitter<any>();
 
@@ -36,8 +33,9 @@ export class DetailModalComponent {
     this.edit.emit(this.item);
   }
 
+  // 🔥 ESTO ES LO IMPORTANTE (sin alertForm)
   createAlertFromMedication() {
-    this.createAlert.emit(this.item);
+    this.createAlert.emit();
   }
 
   markAsTaken() {
@@ -56,7 +54,6 @@ export class DetailModalComponent {
 
   get formattedHour(): string {
     if (!this.item?.hora) return '';
-
     return new Date(this.item.hora).toLocaleTimeString('es-ES', {
       hour: '2-digit',
       minute: '2-digit'
