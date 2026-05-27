@@ -1,9 +1,41 @@
 <div class="page">
 
   <header class="header">
-    <h1>⏰ Alarma</h1>
-    <p>Recordatorios de medicamentos generados automáticamente</p>
+    <h1>⏰ Alarmas</h1>
   </header>
+
+  <!-- ========================= -->
+  <!-- CREATE FROM MEDICAMENT -->
+  <!-- ========================= -->
+
+  <div *ngIf="selectedMedicament" class="create-box">
+
+    <h2>
+      Crear alarma para {{ selectedMedicament.nombre }}
+    </h2>
+
+    <input type="time" [(ngModel)]="newAlert.hora">
+
+    <input type="text"
+           placeholder="Dosis"
+           [(ngModel)]="newAlert.dosisBase">
+
+    <select [(ngModel)]="newAlert.frecuencia">
+      <option>Cada 24 horas</option>
+      <option>Cada 12 horas</option>
+      <option>Cada 8 horas</option>
+      <option>Cada 6 horas</option>
+    </select>
+
+    <button (click)="createAlertsFromMedicament()">
+      Crear alarmas
+    </button>
+
+  </div>
+
+  <!-- ========================= -->
+  <!-- ALERT LIST -->
+  <!-- ========================= -->
 
   <div class="grid">
 
@@ -13,33 +45,19 @@
 
       <div class="icon">⏰</div>
 
-      <div class="info">
+      <h3>{{ alert.nombre }}</h3>
 
-        <h3>{{ alert.nombre }}</h3>
+      <p>
+        {{ alert.hora | date:'dd/MM/yyyy HH:mm' }}
+      </p>
 
-        <p *ngIf="alert.hora">
-          📅 {{ alert.hora | date:'dd/MM/yyyy HH:mm' }}
-        </p>
-
-        <small class="status"
-          [class.pending]="alert.estado === 'PENDIENTE'"
-          [class.taken]="alert.estado === 'TOMADA'"
-          [class.missed]="alert.estado === 'PERDIDA'">
-
-          {{ alert.estado }}
-
-        </small>
-
-      </div>
-
-      <span class="badge" *ngIf="alert.medicamentoId">
-        Auto
-      </span>
+      <span>{{ alert.estado }}</span>
 
     </div>
 
   </div>
 
+  <!-- DETAIL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"

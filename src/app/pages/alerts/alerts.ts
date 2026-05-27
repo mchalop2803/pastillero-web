@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+
 import { DataService } from '../../services/data';
-import { Observable, map } from 'rxjs';
 import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-alerts',
@@ -18,54 +21,49 @@ export class Alerts {
   selectedItem: any = null;
   isDetailOpen = false;
 
-  constructor(private data: DataService) {}
+  // 🔥 medicamento recibido desde navigation
+  selectedMedicament: any = null;
+
+  newAlert = {
+    hora: '',
+    dosisBase: '',
+    frecuencia: 'Cada 24 horas'
+  };
+
+  constructor(
+    private data: DataService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.refreshAlerts();
+
+    this.route.params.subscribe(async params => {
+
+      const id = params['id'];
+
+      if (id) {
+
+        const meds = await firstValueFrom(
+          this.data.getMedicaments()
+        );
+
+        this.selectedMedicament =
+          meds.find((m: any) => m.id === id);
+      }
+    });
   }
 
   // =========================
-  // REFRESH REACTIVO
+  // LISTA ALERTAS
   // =========================
+
   refreshAlerts() {
-
-    this.alerts$ = this.data.getAlerts().pipe(
-
-      map(alerts => {
-
-        const now = Date.now();
-
-        return alerts.map(alert => {
-
-          const copy = { ...alert };
-
-          // AUTO MARK AS MISSED
-          if (
-            copy.estado !== 'TOMADA' &&
-            copy.estado !== 'PERDIDA' &&
-            copy.hora < now
-          ) {
-            const diff = now - copy.hora;
-            const limit = 30 * 60 * 1000;
-
-            if (diff > limit) {
-
-              copy.estado = 'PERDIDA';
-
-              this.data.updateAlert(copy.id, {
-                estado: 'PERDIDA'
-              });
-            }
-          }
-
-          return copy;
-        });
-      })
-    );
+    this.alerts$ = this.data.getAlerts();
   }
 
   // =========================
-  // DETAIL MODAL
+  // DETAIL
   // =========================
 
   openDetail(item: any) {
@@ -74,45 +72,95 @@ export class Alerts {
   }
 
   closeDetail() {
-    this.isDetailOpen = false;
     this.selectedItem = null;
+    this.isDetailOpen = false;
   }
 
   async deleteFromModal(item: any) {
-
     await this.data.deleteAlert(item.id);
     this.refreshAlerts();
     this.closeDetail();
   }
 
   // =========================
-  // ACTIONS (ANDROID STYLE)
+  // ACTIONS
   // =========================
 
   async takenAlert(item: any) {
 
     const dosis = prompt('Introduce la dosis tomada');
-    if (dosis === null) return;
+    if (!dosis) return;
 
     const now = new Date();
-
-    const horaTomada =
-      `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     await this.data.updateAlert(item.id, {
       estado: 'TOMADA',
       dosisTomada: dosis,
-      horaTomada
+      horaTomada: `${now.getHours()}:${now.getMinutes()}`
     });
 
     this.refreshAlerts();
   }
 
   async missedAlert(item: any) {
-
     await this.data.updateAlert(item.id, {
       estado: 'PERDIDA'
     });
+
+    this.refreshAlerts();
+  }
+
+  // =========================
+  // CREATE ALERTS (ANDROID LOGIC)
+  // =========================
+
+  async createAlertsFromMedicament() {
+
+    const med = this.selectedMedicament;
+    if (!med) return;
+
+    const [hour, minute] =
+      this.newAlert.hora.split(':').map(Number);
+
+    let interval = 24;
+
+    if (this.newAlert.frecuencia === 'Cada 12 horas') interval = 12;
+    if (this.newAlert.frecuencia === 'Cada 8 horas') interval = 8;
+    if (this.newAlert.frecuencia === 'Cada 6 horas') interval = 6;
+
+    const start = new Date(med.fechaInicio);
+    const end = new Date(med.fechaFin);
+
+    start.setHours(0,0,0,0);
+    end.setHours(23,59,59,999);
+
+    const current = new Date(start);
+
+    while (current <= end) {
+
+      let alarm = new Date(current);
+
+      alarm.setHours(hour, minute, 0, 0);
+
+      while (alarm.getDate() === current.getDate()) {
+
+        await this.data.addAlert({
+          nombre: med.nombre,
+          medicamentoId: med.id,
+          medicamentImageUrl: med.imageUrl,
+          dosisBase: this.newAlert.dosisBase,
+          hora: alarm.getTime(),
+          estado:
+            alarm.getTime() < Date.now()
+              ? 'PERDIDA'
+              : 'PENDIENTE'
+        });
+
+        alarm.setHours(alarm.getHours() + interval);
+      }
+
+      current.setDate(current.getDate() + 1);
+    }
 
     this.refreshAlerts();
   }

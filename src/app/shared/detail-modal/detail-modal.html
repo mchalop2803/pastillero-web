@@ -24,7 +24,9 @@
     <div class="content">
 
       <!-- IMAGE -->
-      <div class="image-box" *ngIf="item?.imageUrl || item?.medicamentImageUrl">
+      <div class="image-box"
+           *ngIf="item?.imageUrl || item?.medicamentImageUrl">
+
         <img [src]="item?.imageUrl || item?.medicamentImageUrl" />
       </div>
 
@@ -94,8 +96,9 @@
 
         <button class="btn delete" (click)="deleteItem()">🗑 Eliminar</button>
 
+        <!-- 👇 ESTO ES LO IMPORTANTE -->
         <button class="btn add-alert" (click)="addAlertToMedicament()">
-          ⏰ Añadir alarma
+          ➕ Crear alarma
         </button>
 
       </ng-container>

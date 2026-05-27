@@ -4,43 +4,22 @@
     <h1>💊 Medicamentos</h1>
   </header>
 
-  <div class="calendar-container">
-    <full-calendar [options]="calendarOptions"></full-calendar>
-  </div>
-
-  <!-- MEDS DEL DÍA -->
-  <div *ngIf="selectedDayMedicaments.length">
-
-    <div *ngFor="let med of selectedDayMedicaments">
-
-      <h3>{{ med.nombre }}</h3>
-
-      <button (click)="openAlertModal(med)">
-        ➕ Crear alarma
-      </button>
-
-      <div *ngFor="let a of med.alerts">
-        🕒 {{ a.hora | date:'HH:mm' }} - {{ a.estado }}
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- GRID MEDICAMENTOS -->
+  <!-- GRID -->
   <div class="grid">
 
     <div *ngFor="let med of medicaments$ | async"
+         class="card"
          (click)="openDetail(med)">
 
       <img [src]="med.imageUrl || 'assets/default.png'">
 
       <h3>{{ med.nombre }}</h3>
+
     </div>
 
   </div>
 
-  <!-- DETAIL -->
+  <!-- DETAIL MODAL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"

@@ -60,6 +60,8 @@ export class DetailModalComponent {
   }
 
   get canTakeActions(): boolean {
-    return this.item?.hora && Date.now() >= this.item.hora && this.item.estado !== 'TOMADA';
+    return this.item?.hora &&
+      Date.now() >= this.item.hora &&
+      this.item.estado !== 'TOMADA';
   }
 }
