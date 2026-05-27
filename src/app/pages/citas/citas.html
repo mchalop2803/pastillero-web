@@ -1,68 +1,149 @@
 <div class="page">
-  <h1>📅 Citas</h1>
-  <p class="subtitle">Control de citas médicas</p>
 
-  <button class="add" (click)="openAddModal()">➕ Añadir cita</button>
+  <header class="header">
+    <h1>📅 Citas médicas</h1>
+    <p>Control de citas médicas</p>
+  </header>
 
-  <div class="grid">
-    <div *ngFor="let cita of citas$ | async"
-         class="card"
-         (click)="openDetail(cita)">
+  <!-- CALENDARIO -->
+
+  <div class="calendar-container">
+
+    <full-calendar
+      [options]="calendarOptions">
+    </full-calendar>
+
+  </div>
+
+  <!-- CITAS DEL DÍA -->
+
+  <div
+    class="selected-day"
+    *ngIf="selectedDayCitas.length"
+  >
+
+    <h2>Citas del día</h2>
+
+    <div
+      class="med-day-card"
+      *ngFor="let cita of selectedDayCitas"
+      (click)="openDetail(cita)"
+    >
 
       <div class="info">
+
         <h3>{{ cita.descripcion }}</h3>
 
-        <p *ngIf="cita.fecha">
+        <p>
           📅 {{ cita.fecha }}
         </p>
 
-        <p *ngIf="cita.hora">
+        <p>
           ⏰ {{ cita.hora }}
         </p>
+
       </div>
 
-      <button class="delete"
-              (click)="deleteCita(cita.id); $event.stopPropagation()">
+    </div>
+
+  </div>
+
+  <!-- BOTÓN -->
+
+  <button
+    class="add-btn"
+    (click)="openAddModal()"
+  >
+    ➕ Añadir cita
+  </button>
+
+  <!-- GRID -->
+
+  <div class="grid">
+
+    <div
+      *ngFor="let cita of citas$ | async"
+      class="card"
+      (click)="openDetail(cita)"
+    >
+
+      <div class="info">
+
+        <h3>{{ cita.descripcion }}</h3>
+
+        <p>📅 {{ cita.fecha }}</p>
+
+        <p>⏰ {{ cita.hora }}</p>
+
+      </div>
+
+      <button
+        class="delete"
+        (click)="deleteCita(cita.id); $event.stopPropagation()"
+      >
         🗑
       </button>
 
     </div>
+
   </div>
 
+  <!-- MODAL -->
+
   <div class="modal" *ngIf="isModalOpen">
+
     <div class="modal-content">
 
-      <h2>{{ editingId ? 'Editar cita' : 'Añadir Cita' }}</h2>
+      <h2>
+        {{ editingId ? 'Editar cita' : 'Añadir cita' }}
+      </h2>
 
       <form (ngSubmit)="addCita()">
 
-        <input [(ngModel)]="newCita.descripcion"
-               name="descripcion"
-               placeholder="Descripcion"
-               required />
+        <input
+          [(ngModel)]="newCita.descripcion"
+          name="descripcion"
+          placeholder="Descripción"
+          required
+        />
 
-        <input type="date"
-               [(ngModel)]="newCita.fecha"
-               name="fecha"
-               required />
+        <input
+          type="date"
+          [(ngModel)]="newCita.fecha"
+          name="fecha"
+          required
+        />
 
-        <input type="time"
-               [(ngModel)]="newCita.hora"
-               name="hora"
-               required />
+        <input
+          type="time"
+          [(ngModel)]="newCita.hora"
+          name="hora"
+          required
+        />
 
-        <button class="add" type="submit">
-          {{ editingId ? 'Actualizar' : 'Guardar' }}
-        </button>
+        <div class="actions">
 
-        <button class="delete" type="button" (click)="closeModal()">
-          Cancelar
-        </button>
+          <button class="add" type="submit">
+            {{ editingId ? 'Actualizar' : 'Guardar' }}
+          </button>
+
+          <button
+            class="cancel"
+            type="button"
+            (click)="closeModal()"
+          >
+            Cancelar
+          </button>
+
+        </div>
 
       </form>
 
     </div>
+
   </div>
+
+  <!-- DETAIL -->
 
   <app-detail-modal
     [visible]="isDetailOpen"
@@ -71,4 +152,5 @@
     (delete)="deleteFromModal($event)"
     (edit)="editFromModal($event)">
   </app-detail-modal>
+
 </div>
