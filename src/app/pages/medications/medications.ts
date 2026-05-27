@@ -262,23 +262,17 @@ async addMedicament() {
 
     const data = {
 
-      nombre:
-        this.newMedicament.nombre,
-
-      descripcion:
-        this.newMedicament.descripcion,
-
+      nombre: this.newMedicament.nombre,
+      descripcion: this.newMedicament.descripcion,
       imageUrl,
 
-      fechaInicio:
-        new Date(
-          this.newMedicament.fechaInicio
-        ).getTime(),
+      fechaInicio: this.newMedicament.fechaInicio
+        ? new Date(this.newMedicament.fechaInicio).getTime()
+        : null,
 
-      fechaFin:
-        new Date(
-          this.newMedicament.fechaFin
-        ).getTime()
+      fechaFin: this.newMedicament.fechaFin
+        ? new Date(this.newMedicament.fechaFin).getTime()
+        : null
     };
 
     if (this.editingId) {
@@ -319,8 +313,20 @@ await this.data.deleteMedicament(id);
 
 openAddModal() {
 
-this.isAddModalOpen = true;
+  this.editingId = null;
 
+  this.newMedicament = {
+    nombre: '',
+    descripcion: '',
+    imageUrl: '',
+    fechaInicio: '',
+    fechaFin: ''
+  };
+
+  this.previewUrl = null;
+  this.selectedFile = null;
+
+  this.isAddModalOpen = true;
 }
 
 closeModal() {
@@ -357,14 +363,27 @@ this.closeDetail();
 
 editFromModal(item: any) {
 
-this.editingId = item.id;
+  this.editingId = item.id;
 
-this.newMedicament = { ...item };
+  this.newMedicament = {
+    nombre: item.nombre || '',
+    descripcion: item.descripcion || '',
+    imageUrl: item.imageUrl || '',
 
-this.closeDetail();
+    fechaInicio: item.fechaInicio
+      ? new Date(item.fechaInicio).toISOString().split('T')[0]
+      : '',
 
-this.isAddModalOpen = true;
+    fechaFin: item.fechaFin
+      ? new Date(item.fechaFin).toISOString().split('T')[0]
+      : ''
+  };
 
+  this.previewUrl = item.imageUrl || null;
+  this.selectedFile = null;
+
+  this.closeDetail();
+  this.isAddModalOpen = true;
 }
 
 onFileChange(event: any) {
