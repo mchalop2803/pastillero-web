@@ -2,20 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { DataService } from '../../services/data';
-import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    DetailModalComponent
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './alerts.html',
   styleUrls: ['./alerts.css'],
 })
@@ -28,7 +23,7 @@ export class Alerts {
 
   selectedMedicament: any = null;
 
-  // 🔥 MODAL CREATE ALERT
+  // 🔥 CONTROL MODAL CREAR
   isCreateOpen = false;
 
   newAlert = {
@@ -39,37 +34,27 @@ export class Alerts {
 
   constructor(
     private data: DataService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+
     this.refreshAlerts();
 
-    this.route.params.subscribe(async params => {
-      const id = params['id'];
+    const id = this.route.snapshot.paramMap.get('id');
 
-      if (id) {
-        const meds = await firstValueFrom(this.data.getMedicaments());
+    if (id) {
+      const meds = await firstValueFrom(this.data.getMedicaments());
+      this.selectedMedicament = meds.find((m: any) => m.id === id);
 
-        this.selectedMedicament =
-          meds.find((m: any) => m.id === id);
-
-        // 🔥 auto abrir modal como Activity
-        this.isCreateOpen = true;
-      }
-    });
+      // 🔥 abre modal automáticamente (Android Intent behavior)
+      this.isCreateOpen = true;
+    }
   }
 
   refreshAlerts() {
     this.alerts$ = this.data.getAlerts();
-  }
-
-  openCreateModal() {
-    this.isCreateOpen = true;
-  }
-
-  closeCreateModal() {
-    this.isCreateOpen = false;
   }
 
   openDetail(item: any) {
@@ -111,6 +96,23 @@ export class Alerts {
     this.refreshAlerts();
   }
 
+  // =========================
+  // MODAL CONTROL (LO QUE TE FALTABA)
+  // =========================
+
+  openCreateModal() {
+    this.isCreateOpen = true;
+  }
+
+  closeCreateModal() {
+    this.isCreateOpen = false;
+    this.router.navigate(['/alerts']); // limpia modo android
+  }
+
+  // =========================
+  // CREATE LOGIC (NO TOCADA)
+  // =========================
+
   async createAlertsFromMedicament() {
 
     const med = this.selectedMedicament;
@@ -136,7 +138,6 @@ export class Alerts {
     while (current <= end) {
 
       let alarm = new Date(current);
-
       alarm.setHours(hour, minute, 0, 0);
 
       while (alarm.getDate() === current.getDate()) {

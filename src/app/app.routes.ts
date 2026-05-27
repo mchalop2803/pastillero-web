@@ -34,9 +34,9 @@ export const routes: Routes = [
 
       { path: 'citas', component: Citas },
 
-      { path: 'alerts', component: Alerts },
-
-      { path: 'alerts/new/:id', component: Alerts },
+      { path: 'alerts', component: Alerts},
+      
+      { path: 'alerts/new/:id', component: Alerts},
 
       { path: '', redirectTo: 'medications', pathMatch: 'full' }
     ]
