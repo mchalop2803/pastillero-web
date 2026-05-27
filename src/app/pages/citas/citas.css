@@ -6,20 +6,20 @@
 }
 
 /* HEADER */
-h1 {
+.header h1 {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
   color: #111827;
 }
 
-.subtitle {
+.header p {
   color: #6b7280;
   margin-bottom: 20px;
 }
 
-/* BOTÓN AÑADIR (IGUAL QUE MEDICAMENTOS) */
-.add {
+/* BOTÓN IGUAL MEDICAMENTOS */
+.add-btn {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border: none;
@@ -36,110 +36,20 @@ h1 {
   transition: all 0.2s ease;
 }
 
-.add:hover {
+.add-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
-}
-
-/* GRID (IGUAL MEDICAMENTOS) */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
-}
-
-/* CARD (MISMO DISEÑO QUE MEDICAMENTOS) */
-.card {
-  background: #ffffff;
-  border-radius: 20px;
-
-  padding: 14px;
-
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.04);
-
-  position: relative;
-  cursor: pointer;
-
-  transition: all 0.25s ease;
-
-  overflow: hidden;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-}
-
-/* INFO */
-.info h3 {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.info p {
-  margin: 4px 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* BADGES (CONSISTENTE CON MEDICAMENTOS) */
-.badge {
-  display: inline-block;
-  margin-top: 6px;
-
-  font-size: 11px;
-  padding: 4px 10px;
-
-  border-radius: 999px;
-
-  background: #dbeafe;
-  color: #1d4ed8;
-
-  font-weight: 500;
-}
-
-/* DELETE BUTTON */
-.delete {
-  position: absolute;
-
-  top: 10px;
-  right: 10px;
-
-  background: #3b82f6;
-
-  border: none;
-  color: white;
-
-  border-radius: 10px;
-
-  padding: 6px 8px;
-
-  font-size: 12px;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.delete:hover {
-  background: #3b82f6;
-  transform: scale(1.05);
 }
 
 /* CALENDARIO */
 .calendar-container {
   background: white;
-
   border-radius: 24px;
-
   padding: 20px;
-
   margin: 25px 0;
 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  position: relative;
+  z-index: 1;
 }
 
 /* CITAS DEL DÍA */
@@ -148,23 +58,22 @@ h1 {
 }
 
 .med-day-card {
-
   display: flex;
   gap: 18px;
 
   background: white;
-
   border-radius: 18px;
 
   padding: 18px;
-
   margin-bottom: 14px;
 
   box-shadow: 0 2px 10px rgba(0,0,0,.08);
 
   cursor: pointer;
-
   transition: 0.2s;
+
+  position: relative;
+  z-index: 1;
 }
 
 .med-day-card:hover {
@@ -175,7 +84,53 @@ h1 {
   flex: 1;
 }
 
-/* MODAL (OPCIONAL PERO UNIFICADO) */
+/* GRID (MISMO ESTILO MEDICAMENTOS) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+/* CARD */
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+
+  padding: 14px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+/* DELETE */
+.delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  background: #ef4444;
+  border: none;
+  color: white;
+
+  border-radius: 10px;
+  padding: 6px 8px;
+
+  cursor: pointer;
+}
+
+/* ========================= */
+/* 🔥 MODAL (IMPORTANTE FIX Z-INDEX)
+/* ========================= */
+
 .modal {
   position: fixed;
   inset: 0;
@@ -186,49 +141,11 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  z-index: 10000; /* 🔥 CLAVE */
 }
 
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.actions .add,
-.actions .cancel {
-
-  flex: 1;
-
-  height: 44px;
-
-  border-radius: 12px;
-  border: none;
-
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.actions .add {
-  background: #3b82f6;
-  color: white;
-}
-
-.actions .add:hover {
-  background: #2563eb;
-}
-
-.actions .cancel {
-  background: #2563eb;
-  color: white;
-}
-
-.actions .cancel:hover {
-  background: #2563eb;
-}
-
+/* MODAL CONTENT */
 .modal-content {
   background: white;
 
@@ -239,11 +156,16 @@ h1 {
 
   border-radius: 24px;
 
-  box-shadow: 0 25px 70px rgba(0,0,0,0.35),
-              0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.35);
 
   display: flex;
   flex-direction: column;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  position: relative;
+  z-index: 10001; /* 🔥 POR ENCIMA DEL CALENDARIO */
 }
 
 /* INPUTS */
@@ -257,7 +179,6 @@ input {
   border: 1px solid #e5e7eb;
 
   outline: none;
-  transition: 0.2s;
 }
 
 input:focus {
@@ -265,17 +186,40 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 
-/* BOTONES MODAL */
-.modal .add {
-  background: #3b82f6;
-  color: white;
+/* ACTIONS */
+.actions {
+  display: flex;
+  gap: 10px;
   margin-top: 10px;
 }
 
-.modal .delete {
-  position: static;
-  width: 100%;
-  margin-top: 10px;
+.actions .add,
+.actions .cancel {
+  flex: 1;
+  height: 44px;
 
   border-radius: 12px;
+  border: none;
+
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actions .add {
+  background: #3b82f6;
+  color: white;
+}
+
+.actions .cancel {
+  background: #6b7280;
+  color: white;
+}
+
+/* ========================= */
+/* 🔥 DETAIL MODAL FIX */
+/* ========================= */
+
+app-detail-modal {
+  position: relative;
+  z-index: 15000; /* MÁS ALTO QUE TODO */
 }
