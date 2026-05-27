@@ -12,7 +12,7 @@ export class DetailModalComponent {
 
   @Input() visible = false;
   @Input() item: any;
-  @Input() type: 'medication' | 'alert' | 'create-alert' = 'medication';
+  @Input() type: 'medication' | 'alert' | 'create-alert' | 'cita' = 'medication';
 
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<any>();

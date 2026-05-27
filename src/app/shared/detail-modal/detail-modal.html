@@ -6,14 +6,20 @@
     <div class="header">
 
       <div class="title">
-        <h1>{{ item?.nombre }}</h1>
+        <h1> {{ item?.nombre || item?.descripcion || 'Detalle'}}</h1>
 
         <p class="subtitle">
-          {{ type === 'medication'
+
+          {{
+            type === 'medication'
               ? '💊 Medicamento'
               : type === 'alert'
               ? '⏰ Alarma'
-              : '➕ Crear alarma' }}
+              : type === 'cita'
+              ? '📅 Cita médica'
+              : '➕ Crear alarma'
+          }}
+
         </p>
       </div>
 
@@ -56,6 +62,19 @@
 
       </div>
 
+      <!-- CITA -->
+      <ng-container *ngIf="type === 'cita'">
+
+        <button class="btn edit" (click)="editItem()">
+          ✏️ Editar
+        </button>
+
+        <button class="btn delete" (click)="deleteItem()">
+          🗑 Eliminar
+        </button>
+
+      </ng-container>
+
       <!-- ALERT -->
       <div class="big-card" *ngIf="type === 'alert'">
 
@@ -79,6 +98,28 @@
         <div class="info-line" *ngIf="item?.dosisTomada">
           <span class="label">💊 Dosis tomada</span>
           <span class="value">{{ item?.dosisTomada }}</span>
+        </div>
+
+      </div>
+
+      <!-- CITA MÉDICA -->
+      <div class="big-card" *ngIf="type === 'cita'">
+
+        <h2>Información de la cita</h2>
+
+        <div class="info-line">
+          <span class="label">🩺 Descripción</span>
+          <span class="value">{{ item?.descripcion }}</span>
+        </div>
+
+        <div class="info-line">
+          <span class="label">📅 Fecha</span>
+          <span class="value">{{ item?.fecha }}</span>
+        </div>
+
+        <div class="info-line">
+          <span class="label">⏰ Hora</span>
+          <span class="value">{{ item?.hora }}</span>
         </div>
 
       </div>
