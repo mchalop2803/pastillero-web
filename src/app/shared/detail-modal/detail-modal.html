@@ -23,14 +23,13 @@
     <!-- BODY -->
     <div class="content">
 
-      <!-- IMAGE -->
       <div class="image-box"
            *ngIf="item?.imageUrl || item?.medicamentImageUrl">
 
         <img [src]="item?.imageUrl || item?.medicamentImageUrl" />
       </div>
 
-      <!-- ================= MEDICATION ================= -->
+      <!-- MEDICATION -->
       <div class="big-card" *ngIf="type === 'medication'">
 
         <h2>Información del medicamento</h2>
@@ -57,7 +56,7 @@
 
       </div>
 
-      <!-- ================= ALERT ================= -->
+      <!-- ALERT -->
       <div class="big-card" *ngIf="type === 'alert'">
 
         <h2>Información de alarma</h2>
@@ -84,7 +83,7 @@
 
       </div>
 
-      <!-- ================= CREATE ALERT ================= -->
+      <!-- CREATE ALERT -->
       <div class="big-card" *ngIf="type === 'create-alert'">
 
         <h2>Crear alarma</h2>
@@ -94,8 +93,8 @@
           <span class="value">{{ item?.nombre }}</span>
         </div>
 
-        <p style="margin-top:10px; opacity:0.7;">
-          Configura los datos desde el formulario inferior del sistema.
+        <p style="opacity:.7; margin-top:10px;">
+          Usa el formulario inferior para configurar la alarma.
         </p>
 
       </div>
@@ -105,7 +104,7 @@
     <!-- FOOTER -->
     <div class="footer">
 
-      <!-- MEDICATION ACTIONS -->
+      <!-- MEDICATION -->
       <ng-container *ngIf="type === 'medication'">
 
         <button class="btn edit" (click)="editItem()">✏️ Editar</button>
@@ -118,7 +117,7 @@
 
       </ng-container>
 
-      <!-- ALERT ACTIONS -->
+      <!-- ALERT -->
       <ng-container *ngIf="type === 'alert'">
 
         <button class="btn delete" (click)="deleteItem()">🗑 Eliminar</button>
@@ -136,8 +135,8 @@
       <!-- CREATE ALERT -->
       <ng-container *ngIf="type === 'create-alert'">
 
-        <button class="btn add-alert" (click)="createAlertFromMedication()">
-          ➕ Continuar creación
+        <button class="btn add" (click)="createAlert.emit(alertForm)">
+          Crear alarma
         </button>
 
       </ng-container>

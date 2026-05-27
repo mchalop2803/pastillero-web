@@ -65,6 +65,7 @@ export class Medications {
   };
 
   selectedFile: File | null = null;
+  previewUrl: string | null = null;
 
   // =========================
   // DETAIL MODAL
@@ -73,7 +74,7 @@ export class Medications {
   isDetailOpen = false;
 
   // =========================
-  // ALERT CREATION MODAL (NUEVO LIMPIO)
+  // ALERT CREATION FLOW
   // =========================
   isAlertCreateOpen = false;
   selectedMedForAlert: any = null;
@@ -142,7 +143,6 @@ export class Medications {
 
         if (!alert.hora) continue;
 
-        // auto mark perdida
         if (
           alert.estado !== 'TOMADA' &&
           alert.estado !== 'PERDIDA' &&
@@ -335,10 +335,12 @@ export class Medications {
         ? new Date(item.fechaFin).toISOString().split('T')[0]
         : ''
     };
+
+    this.previewUrl = item.imageUrl || null;
   }
 
   // =========================
-  // ALERT FLOW (CORRECTO)
+  // ALERT FLOW (MODAL)
   // =========================
   openAlertModal(med: any) {
 
@@ -364,11 +366,6 @@ export class Medications {
     if (!med) return;
 
     const [hour, minute] = this.alertForm.hora.split(':').map(Number);
-
-    let interval = 24;
-    if (this.alertForm.frecuencia === 'Cada 12 horas') interval = 12;
-    if (this.alertForm.frecuencia === 'Cada 8 horas') interval = 8;
-    if (this.alertForm.frecuencia === 'Cada 6 horas') interval = 6;
 
     const start = new Date(med.fechaInicio);
     const end = new Date(med.fechaFin);
@@ -400,7 +397,7 @@ export class Medications {
   }
 
   // =========================
-  // ADD MED
+  // ADD / EDIT MED
   // =========================
   openAddModal() {
     this.isAddModalOpen = true;
@@ -412,6 +409,15 @@ export class Medications {
   }
 
   onFileChange(e: any) {
-    this.selectedFile = e.target.files[0];
+    const file = e.target.files[0];
+    this.selectedFile = file;
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 }
