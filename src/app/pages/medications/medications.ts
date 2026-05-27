@@ -78,17 +78,29 @@ export class Medications {
 
   initCalendar() {
 
-    this.calendarOptions = {
-      plugins: [dayGridPlugin, interactionPlugin],
-      initialView: 'dayGridMonth',
-      locale: esLocale,
-      height: 'auto',
-      events: this.calendarEvents,
+      this.calendarOptions = {
 
-      dateClick: (info: any) => {
-        this.loadMedicamentsByDay(info.date);
-      }
-    };
+    plugins: [
+      dayGridPlugin,
+      interactionPlugin
+    ],
+
+    initialView: 'dayGridMonth',
+
+    locale: esLocale,
+
+    height: 'auto',
+
+    events: this.calendarEvents,
+
+    eventDisplay: 'block',
+
+    dayMaxEvents: true,
+
+    dateClick: (info: any) => {
+      this.loadMedicamentsByDay(info.date);
+    }
+  };
   }
 
   loadCalendarEvents() {
@@ -106,23 +118,52 @@ export class Medications {
         const key =
           `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${alert.medicamentoId}`;
 
+        let backgroundColor = '#3b82f6';
+
+        const estado =
+          alert.estado?.toLowerCase();
+
+        if (estado === 'pendiente') {
+          backgroundColor = '#f59e0b';
+        }
+
+        if (estado === 'tomado') {
+          backgroundColor = '#10b981';
+        }
+
+        if (estado === 'omitido') {
+          backgroundColor = '#ef4444';
+        }
+
         if (!map.has(key)) {
+
           map.set(key, {
+
             title: alert.nombre,
+
             start: date,
+
             allDay: true,
+
+            backgroundColor,
+            borderColor: backgroundColor,
+
+            textColor: '#ffffff',
+
             extendedProps: {
-              medicamentoId: alert.medicamentoId
+              medicamentoId: alert.medicamentoId,
+              estado: alert.estado
             }
           });
         }
       });
 
-      this.calendarEvents = Array.from(map.values());
+      this.calendarEvents =
+        Array.from(map.values());
 
       this.calendarOptions = {
         ...this.calendarOptions,
-        events: this.calendarEvents
+        events: [...this.calendarEvents]
       };
     });
   }
@@ -222,6 +263,7 @@ export class Medications {
         await this.data.addMedicament(data);
       }
 
+      this.loadCalendarEvents();
       this.closeModal();
 
     } catch (e) {
@@ -233,7 +275,15 @@ export class Medications {
   }
 
   async deleteMedicament(id: string) {
+
     await this.data.deleteMedicament(id);
+
+    this.loadCalendarEvents();
+
+    // LIMPIAR DÍA SELECCIONADO
+    if (this.selectedDate) {
+      this.loadMedicamentsByDay(this.selectedDate);
+    }
   }
 
   // =========================
