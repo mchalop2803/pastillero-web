@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 import { DataService } from '../../services/data';
 import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [CommonModule, DetailModalComponent],
+  imports: [
+    CommonModule,
+    FormsModule, // 🔥 ESTO ES LO QUE TE FALTA
+    DetailModalComponent
+  ],
   templateUrl: './alerts.html',
   styleUrls: ['./alerts.css'],
 })
@@ -21,7 +26,6 @@ export class Alerts {
   selectedItem: any = null;
   isDetailOpen = false;
 
-  // 🔥 medicamento recibido desde navigation
   selectedMedicament: any = null;
 
   newAlert = {
@@ -39,11 +43,9 @@ export class Alerts {
     this.refreshAlerts();
 
     this.route.params.subscribe(async params => {
-
       const id = params['id'];
 
       if (id) {
-
         const meds = await firstValueFrom(
           this.data.getMedicaments()
         );
@@ -54,17 +56,9 @@ export class Alerts {
     });
   }
 
-  // =========================
-  // LISTA ALERTAS
-  // =========================
-
   refreshAlerts() {
     this.alerts$ = this.data.getAlerts();
   }
-
-  // =========================
-  // DETAIL
-  // =========================
 
   openDetail(item: any) {
     this.selectedItem = item;
@@ -82,12 +76,7 @@ export class Alerts {
     this.closeDetail();
   }
 
-  // =========================
-  // ACTIONS
-  // =========================
-
   async takenAlert(item: any) {
-
     const dosis = prompt('Introduce la dosis tomada');
     if (!dosis) return;
 
@@ -109,10 +98,6 @@ export class Alerts {
 
     this.refreshAlerts();
   }
-
-  // =========================
-  // CREATE ALERTS (ANDROID LOGIC)
-  // =========================
 
   async createAlertsFromMedicament() {
 
