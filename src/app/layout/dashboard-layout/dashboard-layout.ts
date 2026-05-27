@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './dashboard-layout.html',
   styleUrls: ['./dashboard-layout.css']
 })
