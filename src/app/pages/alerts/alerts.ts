@@ -13,7 +13,7 @@ import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule, // 🔥 ESTO ES LO QUE TE FALTA
+    FormsModule,
     DetailModalComponent
   ],
   templateUrl: './alerts.html',
@@ -27,6 +27,9 @@ export class Alerts {
   isDetailOpen = false;
 
   selectedMedicament: any = null;
+
+  // 🔥 MODAL CREATE ALERT
+  isCreateOpen = false;
 
   newAlert = {
     hora: '',
@@ -46,18 +49,27 @@ export class Alerts {
       const id = params['id'];
 
       if (id) {
-        const meds = await firstValueFrom(
-          this.data.getMedicaments()
-        );
+        const meds = await firstValueFrom(this.data.getMedicaments());
 
         this.selectedMedicament =
           meds.find((m: any) => m.id === id);
+
+        // 🔥 auto abrir modal como Activity
+        this.isCreateOpen = true;
       }
     });
   }
 
   refreshAlerts() {
     this.alerts$ = this.data.getAlerts();
+  }
+
+  openCreateModal() {
+    this.isCreateOpen = true;
+  }
+
+  closeCreateModal() {
+    this.isCreateOpen = false;
   }
 
   openDetail(item: any) {
@@ -148,5 +160,6 @@ export class Alerts {
     }
 
     this.refreshAlerts();
+    this.closeCreateModal();
   }
 }
