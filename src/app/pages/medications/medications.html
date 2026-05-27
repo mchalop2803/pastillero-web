@@ -2,320 +2,53 @@
 
   <header class="header">
     <h1>💊 Medicamentos</h1>
-    <p>Controla tu medicación diaria</p>
   </header>
 
-  <!-- FILTROS -->
-
-  <div class="filters">
-
-    <button
-      [class.active]="filter === 'TODOS'"
-      (click)="setFilter('TODOS')"
-    >
-      Todos
-    </button>
-
-    <button
-      [class.active]="filter === 'MAÑANA'"
-      (click)="setFilter('MAÑANA')"
-    >
-      🌅 Mañana
-      <small>06:01 - 12:00</small>
-    </button>
-
-    <button
-      [class.active]="filter === 'TARDE'"
-      (click)="setFilter('TARDE')"
-    >
-      🌇 Tarde
-      <small>12:01 - 20:00</small>
-    </button>
-
-    <button
-      [class.active]="filter === 'NOCHE'"
-      (click)="setFilter('NOCHE')"
-    >
-      🌙 Noche
-      <small>20:01 - 06:00</small>
-    </button>
-
-  </div>
-
-  <!-- CALENDARIO -->
-
   <div class="calendar-container">
-
-    <full-calendar
-      [options]="calendarOptions">
-    </full-calendar>
-
+    <full-calendar [options]="calendarOptions"></full-calendar>
   </div>
 
-  <!-- MEDICAMENTOS DEL DÍA -->
+  <!-- MEDS DEL DÍA -->
+  <div *ngIf="selectedDayMedicaments.length">
 
-  <div
-    class="selected-day"
-    *ngIf="selectedDayMedicaments.length"
-  >
+    <div *ngFor="let med of selectedDayMedicaments">
 
-    <h2>
-      Medicamentos del día
-    </h2>
+      <h3>{{ med.nombre }}</h3>
 
-    <div
-      class="med-day-card"
-      *ngFor="let med of selectedDayMedicaments"
-    >
-
-      <img
-        [src]="med.imageUrl || 'assets/default-med.png'"
-      />
-
-      <div class="info">
-
-        <h3>{{ med.nombre }}</h3>
-
-        <p>
-          💊 {{ med.dosisBase }}
-        </p>
-
-        <!-- ALARMAS -->
-
-        <div
-          class="alarm"
-          *ngFor="let alert of med.alerts"
-        >
-
-          <span>
-            🕒
-            {{ alert.hora | date:'HH:mm' }}
-          </span>
-
-          <span
-            class="status"
-            [ngClass]="alert.estado?.toLowerCase()"
-          >
-            {{ alert.estado }}
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- BOTÓN CREAR -->
-
-  <button
-    class="add-btn"
-    (click)="openAddModal()"
-    [disabled]="isSaving"
-  >
-
-    {{
-      isSaving
-        ? '⏳ Guardando...'
-        : '➕ Nueva medicación'
-    }}
-
-  </button>
-
-  <!-- GRID -->
-
-  <div class="grid">
-
-    <div
-      *ngFor="let med of filteredMeds$ | async"
-      class="card"
-      (click)="openDetail(med)"
-    >
-
-      <div class="image-container">
-
-        <img
-          [src]="
-            med.imageUrl ||
-            'assets/default-med.png'
-          "
-        />
-
-      </div>
-
-      <div class="info">
-
-        <h3>{{ med.nombre }}</h3>
-
-        <p>
-          {{ med.descripcion }}
-        </p>
-
-        <p>
-          📅
-          {{ med.fechaInicio | date:'dd/MM/yyyy' }}
-          -
-          {{ med.fechaFin | date:'dd/MM/yyyy' }}
-        </p>
-
-        <span
-          class="moment"
-          *ngIf="med.momentoDia"
-        >
-          {{ med.momentoDia }}
-        </span>
-
-        <span
-          class="hour"
-          *ngIf="med.horario"
-        >
-          🕒 {{ med.horario }}
-        </span>
-
-      </div>
-
-      <button
-        class="delete"
-        (click)="
-          deleteMedicament(med.id);
-          $event.stopPropagation()
-        "
-        [disabled]="isSaving"
-      >
-        🗑
+      <button (click)="openAlertModal(med)">
+        ➕ Crear alarma
       </button>
 
-    </div>
-
-  </div>
-
-  <!-- MODAL ADD / EDIT -->
-
-  <div class="modal" *ngIf="isAddModalOpen">
-
-    <div class="modal-content">
-
-      <h2>
-        {{
-          editingId
-            ? 'Editar medicamento'
-            : 'Nuevo medicamento'
-        }}
-      </h2>
-
-      <!-- IMAGEN -->
-
-      <div class="image-preview">
-
-        <img
-          [src]="
-            selectedFile
-              ? previewUrl
-              : newMedicament.imageUrl ||
-                'assets/default-med.png'
-          "
-        />
-
+      <div *ngFor="let a of med.alerts">
+        🕒 {{ a.hora | date:'HH:mm' }} - {{ a.estado }}
       </div>
 
-      <form (ngSubmit)="addMedicament()">
-
-        <!-- NOMBRE -->
-
-        <input
-          [(ngModel)]="newMedicament.nombre"
-          name="nombre"
-          placeholder="Nombre medicamento"
-          required
-        />
-
-        <!-- DESCRIPCIÓN -->
-
-        <textarea
-          [(ngModel)]="newMedicament.descripcion"
-          name="descripcion"
-          placeholder="Descripción"
-          rows="4"
-        ></textarea>
-
-        <!-- FECHA INICIO -->
-
-        <label>
-          Fecha inicio
-        </label>
-
-        <input
-          type="date"
-          [(ngModel)]="newMedicament.fechaInicio"
-          name="fechaInicio"
-          required
-        />
-
-        <!-- FECHA FIN -->
-
-        <label>
-          Fecha fin
-        </label>
-
-        <input
-          type="date"
-          [(ngModel)]="newMedicament.fechaFin"
-          name="fechaFin"
-          required
-        />
-
-        <!-- IMAGEN -->
-
-        <input
-          type="file"
-          accept="image/*"
-          (change)="onFileChange($event)"
-        />
-
-        <!-- BOTONES -->
-
-        <div class="actions">
-
-          <button
-            class="add"
-            type="submit"
-            [disabled]="isSaving"
-          >
-
-            {{
-              isSaving
-                ? 'Guardando...'
-                : 'Guardar'
-            }}
-
-          </button>
-
-          <button
-            class="cancel"
-            type="button"
-            (click)="closeModal()"
-          >
-            Cancelar
-          </button>
-
-        </div>
-
-      </form>
-
     </div>
 
   </div>
 
-  <!-- DETAIL MODAL -->
+  <!-- GRID MEDICAMENTOS -->
+  <div class="grid">
 
+    <div *ngFor="let med of medicaments$ | async"
+         (click)="openDetail(med)">
+
+      <img [src]="med.imageUrl || 'assets/default.png'">
+
+      <h3>{{ med.nombre }}</h3>
+    </div>
+
+  </div>
+
+  <!-- DETAIL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"
+    [type]="'medication'"
     (close)="closeDetail()"
     (delete)="deleteFromModal($event)"
-    (addAlert)="openAlertModal($event)"
-    (edit)="editFromModal($event)">
+    (edit)="editFromModal($event)"
+    (addAlert)="openAlertModal($event)">
   </app-detail-modal>
 
 </div>

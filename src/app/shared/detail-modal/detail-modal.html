@@ -6,110 +6,78 @@
     <div class="header">
 
       <div class="title">
-
         <h1>{{ item?.nombre }}</h1>
 
         <p class="subtitle">
-          {{
-            type === 'medication'
+          {{ type === 'medication'
               ? '💊 Medicamento'
               : type === 'alert'
               ? '⏰ Alarma'
-              : 'Detalle'
-          }}
+              : 'Detalle' }}
         </p>
-
       </div>
 
       <button class="close-btn" (click)="closeModal()">✕</button>
-
     </div>
 
-    <!-- CONTENT -->
+    <!-- BODY -->
     <div class="content">
 
-      <div class="dashboard">
+      <!-- IMAGE -->
+      <div class="image-box" *ngIf="item?.imageUrl || item?.medicamentImageUrl">
+        <img [src]="item?.imageUrl || item?.medicamentImageUrl" />
+      </div>
 
-        <!-- IMAGE -->
-        <div class="image-box"
-             *ngIf="item?.imageUrl || item?.medicamentImageUrl">
+      <!-- ================= MEDICATION ================= -->
+      <div class="big-card" *ngIf="type === 'medication'">
 
-          <img
-            [src]="item?.imageUrl || item?.medicamentImageUrl"
-          />
+        <h2>Información del medicamento</h2>
 
+        <div class="info-line">
+          <span class="label">📦 Nombre</span>
+          <span class="value">{{ item?.nombre }}</span>
         </div>
 
-        <!-- ===================== -->
-        <!-- MEDICATION DETAIL -->
-        <!-- ===================== -->
-        <div class="big-card" *ngIf="type === 'medication'">
-
-          <h2>Información del medicamento</h2>
-
-          <div class="info-line">
-            <span class="label">📦 Nombre</span>
-            <span class="value">{{ item?.nombre }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.descripcion">
-            <span class="label">📝 Descripción</span>
-            <span class="value">{{ item?.descripcion }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.fechaInicio">
-            <span class="label">📅 Inicio</span>
-            <span class="value">
-              {{ item.fechaInicio | date:'dd/MM/yyyy' }}
-            </span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.fechaFin">
-            <span class="label">📅 Fin</span>
-            <span class="value">
-              {{ item.fechaFin | date:'dd/MM/yyyy' }}
-            </span>
-          </div>
-
+        <div class="info-line" *ngIf="item?.descripcion">
+          <span class="label">📝 Descripción</span>
+          <span class="value">{{ item?.descripcion }}</span>
         </div>
 
-        <!-- ===================== -->
-        <!-- ALERT DETAIL -->
-        <!-- ===================== -->
-        <div class="big-card" *ngIf="type === 'alert'">
+        <div class="info-line" *ngIf="item?.fechaInicio">
+          <span class="label">📅 Inicio</span>
+          <span class="value">{{ item.fechaInicio | date:'dd/MM/yyyy' }}</span>
+        </div>
 
-          <h2>Información de alarma</h2>
+        <div class="info-line" *ngIf="item?.fechaFin">
+          <span class="label">📅 Fin</span>
+          <span class="value">{{ item.fechaFin | date:'dd/MM/yyyy' }}</span>
+        </div>
 
-          <div class="info-line">
-            <span class="label">💊 Medicamento</span>
-            <span class="value">{{ item?.nombre }}</span>
-          </div>
+      </div>
 
-          <div class="info-line">
-            <span class="label">🕒 Hora</span>
-            <span class="value">{{ formattedHour }}</span>
-          </div>
+      <!-- ================= ALERT ================= -->
+      <div class="big-card" *ngIf="type === 'alert'">
 
-          <div class="info-line" *ngIf="item?.dosisBase">
-            <span class="label">💊 Dosis</span>
-            <span class="value">{{ item?.dosisBase }}</span>
-          </div>
+        <h2>Información de alarma</h2>
 
-          <div class="info-line">
-            <span class="label">📌 Estado</span>
+        <div class="info-line">
+          <span class="label">💊 Medicamento</span>
+          <span class="value">{{ item?.nombre }}</span>
+        </div>
 
-            <span class="value"
-                  [ngClass]="item?.estado?.toLowerCase()">
-              {{ item?.estado }}
-            </span>
+        <div class="info-line">
+          <span class="label">🕒 Hora</span>
+          <span class="value">{{ formattedHour }}</span>
+        </div>
 
-          </div>
+        <div class="info-line">
+          <span class="label">📌 Estado</span>
+          <span class="value">{{ item?.estado }}</span>
+        </div>
 
-          <div class="info-line" *ngIf="item?.dosisTomada">
-            <span class="label">💊 Dosis tomada</span>
-            <span class="value">{{ item?.dosisTomada }}</span>
-          </div>
-
+        <div class="info-line" *ngIf="item?.dosisTomada">
+          <span class="label">💊 Dosis tomada</span>
+          <span class="value">{{ item?.dosisTomada }}</span>
         </div>
 
       </div>
@@ -119,7 +87,7 @@
     <!-- FOOTER -->
     <div class="footer">
 
-      <!-- MEDICATION -->
+      <!-- MEDICATION ACTIONS -->
       <ng-container *ngIf="type === 'medication'">
 
         <button class="btn edit" (click)="editItem()">✏️ Editar</button>
@@ -132,22 +100,16 @@
 
       </ng-container>
 
-      <!-- ALERT -->
+      <!-- ALERT ACTIONS -->
       <ng-container *ngIf="type === 'alert'">
 
         <button class="btn delete" (click)="deleteItem()">🗑 Eliminar</button>
 
-        <button
-          class="btn success"
-          *ngIf="canTakeActions"
-          (click)="markAsTaken()">
+        <button class="btn success" *ngIf="canTakeActions" (click)="markAsTaken()">
           ✅ Sí tomada
         </button>
 
-        <button
-          class="btn danger"
-          *ngIf="canTakeActions"
-          (click)="markAsMissed()">
+        <button class="btn danger" *ngIf="canTakeActions" (click)="markAsMissed()">
           ❌ No tomada
         </button>
 
@@ -156,5 +118,4 @@
     </div>
 
   </div>
-
 </div>

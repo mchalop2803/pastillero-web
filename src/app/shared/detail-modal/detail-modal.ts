@@ -1,20 +1,10 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
-
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-modal',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule],
   templateUrl: './detail-modal.html',
   styleUrls: ['./detail-modal.css']
 })
@@ -22,7 +12,7 @@ export class DetailModalComponent {
 
   @Input() visible = false;
   @Input() item: any;
-  @Input() type: string = '';
+  @Input() type: 'medication' | 'alert' = 'medication';
 
   @Output() close = new EventEmitter();
   @Output() delete = new EventEmitter();
@@ -49,7 +39,7 @@ export class DetailModalComponent {
 
   markAsTaken() {
     const dosis = prompt('Dosis tomada');
-    if (dosis === null) return;
+    if (!dosis) return;
 
     this.taken.emit({
       ...this.item,
@@ -61,26 +51,15 @@ export class DetailModalComponent {
     this.missed.emit(this.item);
   }
 
-  get isTaken(): boolean {
-    return this.item?.estado === 'TOMADA';
-  }
-
-  get isMissed(): boolean {
-    return this.item?.estado === 'PERDIDA';
-  }
-
-  get canTakeActions(): boolean {
-    if (!this.item?.hora) return false;
-
-    return Date.now() >= this.item.hora && !this.isTaken;
-  }
-
   get formattedHour(): string {
     if (!this.item?.hora) return '';
-
     return new Date(this.item.hora).toLocaleTimeString('es-ES', {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  get canTakeActions(): boolean {
+    return this.item?.hora && Date.now() >= this.item.hora && this.item.estado !== 'TOMADA';
   }
 }
