@@ -4,49 +4,29 @@
     <h1>⏰ Alarmas</h1>
   </header>
 
-  <!-- ========================= -->
-  <!-- TARJETA CREAR (ESTILO MEDICAMENTOS) -->
-  <!-- ========================= -->
+  <!-- 🔥 CALENDARIO DE CREACIÓN (COMO ANTES) -->
+  <div *ngIf="selectedMedicament" class="create-box">
 
-  <div class="grid" *ngIf="isCreateOpen">
+    <h2>Crear alarma para {{ selectedMedicament.nombre }}</h2>
 
-    <div class="card create-card">
+    <input type="time" [(ngModel)]="newAlert.hora">
 
-      <h2>Crear alarma</h2>
+    <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
 
-      <p>{{ selectedMedicament?.nombre }}</p>
+    <select [(ngModel)]="newAlert.frecuencia">
+      <option>Cada 24 horas</option>
+      <option>Cada 12 horas</option>
+      <option>Cada 8 horas</option>
+      <option>Cada 6 horas</option>
+    </select>
 
-      <input type="time" [(ngModel)]="newAlert.hora">
-
-      <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
-
-      <select [(ngModel)]="newAlert.frecuencia">
-        <option>Cada 24 horas</option>
-        <option>Cada 12 horas</option>
-        <option>Cada 8 horas</option>
-        <option>Cada 6 horas</option>
-      </select>
-
-      <div class="actions">
-
-        <button class="add" (click)="createAlertsFromMedicament()">
-          Guardar
-        </button>
-
-        <button class="cancel" (click)="closeCreateModal()">
-          Cancelar
-        </button>
-
-      </div>
-
-    </div>
+    <button (click)="createAlertsFromMedicament()">
+      Crear alarmas
+    </button>
 
   </div>
 
-  <!-- ========================= -->
   <!-- LISTA -->
-  <!-- ========================= -->
-
   <div class="grid">
 
     <div *ngFor="let alert of alerts$ | async"
@@ -55,13 +35,11 @@
 
       <div class="icon">⏰</div>
 
-      <div class="info">
-        <h3>{{ alert.nombre }}</h3>
+      <h3>{{ alert.nombre }}</h3>
 
-        <p>{{ alert.hora | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p>{{ alert.hora | date:'dd/MM/yyyy HH:mm' }}</p>
 
-        <span>{{ alert.estado }}</span>
-      </div>
+      <span>{{ alert.estado }}</span>
 
     </div>
 

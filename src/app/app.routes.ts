@@ -13,15 +13,9 @@ import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
 
-  // =========================
-  // PUBLIC
-  // =========================
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
-  // =========================
-  // APP (PROTEGIDA)
-  // =========================
   {
     path: '',
     component: DashboardLayoutComponent,
@@ -34,14 +28,12 @@ export const routes: Routes = [
 
       { path: 'citas', component: Citas },
 
-      { path: 'alerts', component: Alerts},
+      { path: 'alerts', component: Alerts },
+      { path: 'alerts/:id', component: Alerts },
 
       { path: '', redirectTo: 'medications', pathMatch: 'full' }
     ]
   },
 
-  // =========================
-  // FALLBACK
-  // =========================
   { path: '**', redirectTo: 'login' }
 ];

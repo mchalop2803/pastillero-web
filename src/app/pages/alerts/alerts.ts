@@ -2,15 +2,16 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { DataService } from '../../services/data';
+import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DetailModalComponent],
   templateUrl: './alerts.html',
   styleUrls: ['./alerts.css'],
 })
@@ -23,40 +24,29 @@ export class Alerts {
 
   selectedMedicament: any = null;
 
-  isCreateOpen = false;
-
   newAlert = {
     hora: '',
     dosisBase: '',
     frecuencia: 'Cada 24 horas'
   };
 
-  constructor(
-    private data: DataService,
-    private router: Router
-  ) {}
+  constructor(private data: DataService, private route: ActivatedRoute) {}
 
   async ngOnInit() {
 
     this.refreshAlerts();
 
-    // 🔥 recibe medicamento desde router state (NO PARAMS)
-    const nav = this.router.getCurrentNavigation();
-    const med = nav?.extras?.state?.['medicament'];
+    const id = this.route.snapshot.paramMap.get('id');
 
-    if (med) {
-      this.selectedMedicament = med;
-      this.isCreateOpen = true;
+    if (id) {
+      const meds = await firstValueFrom(this.data.getMedicaments());
+      this.selectedMedicament = meds.find((m: any) => m.id === id);
     }
   }
 
   refreshAlerts() {
     this.alerts$ = this.data.getAlerts();
   }
-
-  // =========================
-  // DETAIL
-  // =========================
 
   openDetail(item: any) {
     this.selectedItem = item;
@@ -98,20 +88,7 @@ export class Alerts {
   }
 
   // =========================
-  // MODAL CONTROL
-  // =========================
-
-  openCreateModal() {
-    this.isCreateOpen = true;
-  }
-
-  closeCreateModal() {
-    this.isCreateOpen = false;
-    this.selectedMedicament = null;
-  }
-
-  // =========================
-  // CREACIÓN MASIVA (TU CALENDARIO)
+  // CALENDARIO (TU LÓGICA ORIGINAL RESTAURADA)
   // =========================
 
   async createAlertsFromMedicament() {
@@ -149,7 +126,9 @@ export class Alerts {
           medicamentImageUrl: med.imageUrl,
           dosisBase: this.newAlert.dosisBase,
           hora: alarm.getTime(),
-          estado: alarm.getTime() < Date.now() ? 'PERDIDA' : 'PENDIENTE'
+          estado: alarm.getTime() < Date.now()
+            ? 'PERDIDA'
+            : 'PENDIENTE'
         });
 
         alarm.setHours(alarm.getHours() + interval);
@@ -159,6 +138,5 @@ export class Alerts {
     }
 
     this.refreshAlerts();
-    this.closeCreateModal();
   }
 }

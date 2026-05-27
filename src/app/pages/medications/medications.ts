@@ -31,10 +31,6 @@ export class Medications {
     this.medicaments$ = this.data.getMedicaments();
   }
 
-  // =========================
-  // DETAIL MEDICATION
-  // =========================
-
   openDetail(item: any) {
     this.selectedItem = item;
     this.isDetailOpen = true;
@@ -50,19 +46,11 @@ export class Medications {
     this.closeDetail();
   }
 
-  editFromModal(item: any) {
-    // aquí ya tienes tu lógica de edición si la necesitas
-  }
+  editFromModal(item: any) {}
 
-  // =========================
-  // ANDROID STYLE NAVIGATION
-  // =========================
-
+  // 🔥 SOLO VUELVE AL CALENDARIO (SIN STATE NI INVENTOS)
   openAlertModal(med: any) {
     this.closeDetail();
-
-    this.router.navigate(['/alerts'], {
-      state: { medicament: med }
-    });
+    this.router.navigate(['/alerts', med.id]);
   }
 }

@@ -4,7 +4,6 @@
     <h1>💊 Medicamentos</h1>
   </header>
 
-  <!-- GRID -->
   <div class="grid">
 
     <div *ngFor="let med of medicaments$ | async"
@@ -19,7 +18,6 @@
 
   </div>
 
-  <!-- DETAIL MODAL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"
