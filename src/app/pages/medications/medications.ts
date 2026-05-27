@@ -26,41 +26,36 @@ import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 })
 export class Medications {
 
+  // =========================
+  // DATA
+  // =========================
   medicaments$!: Observable<any[]>;
   filteredMeds$!: Observable<any[]>;
 
+  alerts: any[] = [];
+  alertsSub: any;
+
+  // =========================
+  // CALENDAR
+  // =========================
   calendarEvents: any[] = [];
+  calendarOptions: any;
+
   selectedDayMedicaments: any[] = [];
   selectedDate: Date | null = null;
 
-  alertsSub: any;
-  alerts: any[] = [];
-
-  calendarOptions: any;
-
+  // =========================
+  // FILTER
+  // =========================
   filter = 'TODOS';
-  isSaving = false;
 
+  // =========================
+  // MED CRUD
+  // =========================
   isAddModalOpen = false;
   editingId: string | null = null;
+  isSaving = false;
 
-  selectedItem: any = null;
-  isDetailOpen = false;
-
-  selectedFile: File | null = null;
-  previewUrl: string | null = null;
-
-  // ALERT MODAL
-  isAlertModalOpen = false;
-  selectedMedicamentForAlert: any = null;
-
-  newAlert: any = {
-    hora: '',
-    dosisBase: '',
-    frecuencia: 'Cada 24 horas'
-  };
-
-  // MEDICAMENTO
   newMedicament: any = {
     nombre: '',
     descripcion: '',
@@ -69,11 +64,34 @@ export class Medications {
     fechaFin: ''
   };
 
+  selectedFile: File | null = null;
+
+  // =========================
+  // DETAIL MODAL
+  // =========================
+  selectedItem: any = null;
+  isDetailOpen = false;
+
+  // =========================
+  // ALERT CREATION MODAL (NUEVO LIMPIO)
+  // =========================
+  isAlertCreateOpen = false;
+  selectedMedForAlert: any = null;
+
+  alertForm = {
+    hora: '',
+    dosisBase: '',
+    frecuencia: 'Cada 24 horas'
+  };
+
   constructor(
     private data: DataService,
     private storage: StorageService
   ) {}
 
+  // =========================
+  // INIT
+  // =========================
   ngOnInit() {
 
     this.medicaments$ = this.data.getMedicaments();
@@ -88,15 +106,12 @@ export class Medications {
   }
 
   ngOnDestroy() {
-    if (this.alertsSub) {
-      this.alertsSub.unsubscribe();
-    }
+    if (this.alertsSub) this.alertsSub.unsubscribe();
   }
 
   // =========================
-  // CALENDARIO
+  // CALENDAR
   // =========================
-
   initCalendar() {
     this.calendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -114,23 +129,20 @@ export class Medications {
 
   loadCalendarEvents() {
 
-    if (this.alertsSub) {
-      this.alertsSub.unsubscribe();
-    }
+    if (this.alertsSub) this.alertsSub.unsubscribe();
 
     this.alertsSub = this.data.getAlerts().subscribe(async alerts => {
 
       this.alerts = alerts;
 
       const map = new Map();
-
       const now = Date.now();
 
       for (const alert of alerts) {
 
         if (!alert.hora) continue;
 
-        // AUTO MARK PERDIDA
+        // auto mark perdida
         if (
           alert.estado !== 'TOMADA' &&
           alert.estado !== 'PERDIDA' &&
@@ -151,7 +163,6 @@ export class Medications {
         let color = '#3b82f6';
 
         const estado = alert.estado?.toLowerCase();
-
         if (estado === 'pendiente') color = '#f59e0b';
         if (estado === 'tomada') color = '#10b981';
         if (estado === 'perdida') color = '#ef4444';
@@ -188,9 +199,8 @@ export class Medications {
   }
 
   // =========================
-  // MEDICAMENTOS DEL DÍA
+  // DAY VIEW
   // =========================
-
   loadMedicamentsByDay(date: Date) {
 
     this.selectedDate = date;
@@ -229,9 +239,8 @@ export class Medications {
   }
 
   // =========================
-  // FILTRO
+  // FILTER
   // =========================
-
   setFilter(value: string) {
     this.filter = value;
   }
@@ -241,9 +250,8 @@ export class Medications {
   }
 
   // =========================
-  // CRUD
+  // MED CRUD
   // =========================
-
   async addMedicament() {
 
     if (this.isSaving) return;
@@ -294,7 +302,6 @@ export class Medications {
   // =========================
   // DETAIL
   // =========================
-
   openDetail(item: any) {
     this.selectedItem = item;
     this.isDetailOpen = true;
@@ -331,38 +338,47 @@ export class Medications {
   }
 
   // =========================
-  // ALERTAS DESDE MEDICAMENTO (NUEVO)
+  // ALERT FLOW (CORRECTO)
   // =========================
-
   openAlertModal(med: any) {
 
-    this.selectedMedicamentForAlert = med;
+    this.selectedMedForAlert = med;
 
-    this.newAlert = {
+    this.alertForm = {
       hora: '',
       dosisBase: '',
       frecuencia: 'Cada 24 horas'
     };
 
-    this.isAlertModalOpen = true;
+    this.isAlertCreateOpen = true;
   }
 
-  async createAlert() {
+  closeAlertCreateModal() {
+    this.isAlertCreateOpen = false;
+    this.selectedMedForAlert = null;
+  }
 
-    const med = this.selectedMedicamentForAlert;
+  async createAlertFromModal() {
+
+    const med = this.selectedMedForAlert;
     if (!med) return;
 
-    const [hour, minute] = this.newAlert.hora.split(':').map(Number);
+    const [hour, minute] = this.alertForm.hora.split(':').map(Number);
 
-    const inicio = new Date(med.fechaInicio);
-    const fin = new Date(med.fechaFin);
+    let interval = 24;
+    if (this.alertForm.frecuencia === 'Cada 12 horas') interval = 12;
+    if (this.alertForm.frecuencia === 'Cada 8 horas') interval = 8;
+    if (this.alertForm.frecuencia === 'Cada 6 horas') interval = 6;
 
-    inicio.setHours(0,0,0,0);
-    fin.setHours(23,59,59,999);
+    const start = new Date(med.fechaInicio);
+    const end = new Date(med.fechaFin);
 
-    const current = new Date(inicio);
+    start.setHours(0,0,0,0);
+    end.setHours(23,59,59,999);
 
-    while (current <= fin) {
+    const current = new Date(start);
+
+    while (current <= end) {
 
       const alarm = new Date(current);
       alarm.setHours(hour, minute, 0, 0);
@@ -371,7 +387,7 @@ export class Medications {
         nombre: med.nombre,
         medicamentoId: med.id,
         medicamentImageUrl: med.imageUrl,
-        dosisBase: this.newAlert.dosisBase,
+        dosisBase: this.alertForm.dosisBase,
         hora: alarm.getTime(),
         estado: alarm.getTime() < Date.now() ? 'PERDIDA' : 'PENDIENTE'
       });
@@ -379,17 +395,20 @@ export class Medications {
       current.setDate(current.getDate() + 1);
     }
 
-    this.isAlertModalOpen = false;
+    this.closeAlertCreateModal();
     this.loadCalendarEvents();
+  }
+
+  // =========================
+  // ADD MED
+  // =========================
+  openAddModal() {
+    this.isAddModalOpen = true;
   }
 
   closeModal() {
     this.isAddModalOpen = false;
     this.editingId = null;
-  }
-
-  openAddModal() {
-    this.isAddModalOpen = true;
   }
 
   onFileChange(e: any) {

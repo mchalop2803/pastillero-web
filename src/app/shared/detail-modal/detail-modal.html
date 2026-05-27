@@ -13,7 +13,7 @@
               ? '💊 Medicamento'
               : type === 'alert'
               ? '⏰ Alarma'
-              : 'Detalle' }}
+              : '➕ Crear alarma' }}
         </p>
       </div>
 
@@ -84,6 +84,22 @@
 
       </div>
 
+      <!-- ================= CREATE ALERT ================= -->
+      <div class="big-card" *ngIf="type === 'create-alert'">
+
+        <h2>Crear alarma</h2>
+
+        <div class="info-line">
+          <span class="label">💊 Medicamento</span>
+          <span class="value">{{ item?.nombre }}</span>
+        </div>
+
+        <p style="margin-top:10px; opacity:0.7;">
+          Configura los datos desde el formulario inferior del sistema.
+        </p>
+
+      </div>
+
     </div>
 
     <!-- FOOTER -->
@@ -96,8 +112,7 @@
 
         <button class="btn delete" (click)="deleteItem()">🗑 Eliminar</button>
 
-        <!-- 👇 ESTO ES LO IMPORTANTE -->
-        <button class="btn add-alert" (click)="addAlertToMedicament()">
+        <button class="btn add-alert" (click)="createAlertFromMedication()">
           ➕ Crear alarma
         </button>
 
@@ -114,6 +129,15 @@
 
         <button class="btn danger" *ngIf="canTakeActions" (click)="markAsMissed()">
           ❌ No tomada
+        </button>
+
+      </ng-container>
+
+      <!-- CREATE ALERT -->
+      <ng-container *ngIf="type === 'create-alert'">
+
+        <button class="btn add-alert" (click)="createAlertFromMedication()">
+          ➕ Continuar creación
         </button>
 
       </ng-container>

@@ -312,9 +312,10 @@
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"
+    [type]="selectedItem?._mode === 'create-alert' ? 'create-alert' : 'medication'"
     (close)="closeDetail()"
+    (createAlert)="createAlertFromModal($event)"
     (delete)="deleteFromModal($event)"
-    (addAlert)="openAlertModal($event)"
     (edit)="editFromModal($event)">
   </app-detail-modal>
 
