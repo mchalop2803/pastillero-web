@@ -314,7 +314,7 @@
     [item]="selectedItem"
     [type]="selectedItem?._mode === 'create-alert' ? 'create-alert' : 'medication'"
     (close)="closeDetail()"
-    (createAlert)="createAlertFromModal($event)"
+    (createAlert)="createAlertFromModal()"
     (delete)="deleteFromModal($event)"
     (edit)="editFromModal($event)">
   </app-detail-modal>
