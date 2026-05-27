@@ -75,6 +75,31 @@
   gap: 20px;
 }
 
+.image-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 10px;
+
+  background: white;
+  border-radius: 18px;
+
+  max-height: 220px;
+  overflow: hidden;
+}
+
+.image-box img {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+
+  border-radius: 14px;
+}
+
 /* MAIN CARD */
 .big-card {
   flex: 1;
