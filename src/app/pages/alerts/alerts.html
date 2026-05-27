@@ -29,35 +29,6 @@
     </div>
   </div>
 
-  <!-- MODAL CREAR (TIPO MEDICAMENTO) -->
-  <div class="modal" *ngIf="isCreateOpen">
-
-    <div class="modal-content">
-
-      <h2>Crear alarma para {{ selectedMedicament?.nombre }}</h2>
-
-      <input type="time" [(ngModel)]="newAlert.hora">
-
-      <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
-
-      <select [(ngModel)]="newAlert.frecuencia">
-        <option>Cada 24 horas</option>
-        <option>Cada 12 horas</option>
-        <option>Cada 8 horas</option>
-        <option>Cada 6 horas</option>
-      </select>
-
-      <div class="actions">
-
-        <button (click)="createAlertsFromMedicament()">Guardar</button>
-
-        <button (click)="closeCreateModal()">Cancelar</button>
-
-      </div>
-
-    </div>
-  </div>
-
   <!-- DETAIL -->
   <app-detail-modal
     [visible]="isDetailOpen"
