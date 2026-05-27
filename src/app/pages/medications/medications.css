@@ -259,6 +259,60 @@ input:focus, select:focus {
   margin-top: 10px;
 }
 
+.calendar-container {
+  background: white;
+  border-radius: 24px;
+  padding: 20px;
+  margin: 25px 0;
+}
+
+.selected-day {
+  margin-bottom: 30px;
+}
+
+.med-day-card {
+
+  display: flex;
+  gap: 18px;
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 18px;
+
+  margin-bottom: 14px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.med-day-card img {
+
+  width: 90px;
+  height: 90px;
+
+  border-radius: 18px;
+
+  object-fit: cover;
+}
+
+.alarm {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 10px;
+
+  background: #f7f7f7;
+
+  padding: 10px 14px;
+
+  border-radius: 12px;
+}
+
 /* 🔥 BOTONES UNIFICADOS */
 .actions .add,
 .actions .cancel {
