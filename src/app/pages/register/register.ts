@@ -1,7 +1,17 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
-import { Database, ref, set } from '@angular/fire/database';
+
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  updateProfile
+} from '@angular/fire/auth';
+
+import {
+  Database,
+  ref,
+  set
+} from '@angular/fire/database';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -36,12 +46,11 @@ export class Register {
 
   async register() {
 
-    // Reiniciar errores
     this.error = '';
     this.errorField = '';
 
     // =========================
-    // VALIDAR CAMPOS VACÍOS
+    // VALIDACIONES
     // =========================
 
     if (!this.name) {
@@ -86,10 +95,6 @@ export class Register {
       return;
     }
 
-    // =========================
-    // VALIDAR NOMBRE/APELLIDOS
-    // =========================
-
     const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
     if (!nameRegex.test(this.name)) {
@@ -104,10 +109,6 @@ export class Register {
       return;
     }
 
-    // =========================
-    // VALIDAR EMAIL
-    // =========================
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(this.email)) {
@@ -116,19 +117,11 @@ export class Register {
       return;
     }
 
-    // =========================
-    // VALIDAR CONTRASEÑA
-    // =========================
-
     if (this.password.length < 6) {
       this.error = 'La contraseña debe tener al menos 6 caracteres';
       this.errorField = 'password';
       return;
     }
-
-    // =========================
-    // VALIDAR DNI
-    // =========================
 
     const nifRegex = /^[0-9]{8}[A-Za-z]$/;
 
@@ -138,10 +131,6 @@ export class Register {
       return;
     }
 
-    // =========================
-    // VALIDAR TELÉFONO
-    // =========================
-
     const phoneRegex = /^[0-9]{9}$/;
 
     if (!phoneRegex.test(this.phone)) {
@@ -149,10 +138,6 @@ export class Register {
       this.errorField = 'phone';
       return;
     }
-
-    // =========================
-    // VALIDAR EDAD
-    // =========================
 
     if (this.age < 1 || this.age > 120) {
       this.error = 'Introduce una edad válida';
@@ -168,10 +153,19 @@ export class Register {
 
       this.loading = true;
 
-      const userCredential = await createUserWithEmailAndPassword(
-        this.auth,
-        this.email,
-        this.password
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          this.auth,
+          this.email,
+          this.password
+        );
+
+      // 🔥 GUARDAR NOMBRE EN AUTH
+      await updateProfile(
+        userCredential.user,
+        {
+          displayName: `${this.name} ${this.surname}`
+        }
       );
 
       const uid = userCredential.user.uid;
@@ -182,10 +176,14 @@ export class Register {
         surname: this.surname,
         nif: this.nif,
         phone: this.phone,
-        age: this.age
+        age: this.age,
+        email: this.email
       };
 
-      await set(ref(this.db, `users/${uid}`), userData);
+      await set(
+        ref(this.db, `users/${uid}`),
+        userData
+      );
 
       this.router.navigate(['/login']);
 
