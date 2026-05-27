@@ -84,7 +84,6 @@
   flex: 1;
 }
 
-/* GRID (MISMO ESTILO MEDICAMENTOS) */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -127,10 +126,6 @@
   cursor: pointer;
 }
 
-/* ========================= */
-/* 🔥 MODAL (IMPORTANTE FIX Z-INDEX)
-/* ========================= */
-
 .modal {
   position: fixed;
   inset: 0;
@@ -142,7 +137,7 @@
   justify-content: center;
   align-items: center;
 
-  z-index: 10000; /* 🔥 CLAVE */
+  z-index: 10000;
 }
 
 /* MODAL CONTENT */
@@ -165,7 +160,7 @@
   overflow-y: auto;
 
   position: relative;
-  z-index: 10001; /* 🔥 POR ENCIMA DEL CALENDARIO */
+  z-index: 10001;
 }
 
 /* INPUTS */
@@ -211,15 +206,11 @@ input:focus {
 }
 
 .actions .cancel {
-  background: #6b7280;
+  background: #3b82f6;
   color: white;
 }
 
-/* ========================= */
-/* 🔥 DETAIL MODAL FIX */
-/* ========================= */
-
 app-detail-modal {
   position: relative;
-  z-index: 15000; /* MÁS ALTO QUE TODO */
+  z-index: 15000;
 }

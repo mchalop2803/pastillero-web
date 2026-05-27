@@ -138,34 +138,48 @@
 }
 
 /* FOOTER */
+/* FOOTER */
 .footer {
   padding: 18px;
   display: flex;
-  gap: 12px;
+  gap: 14px;
 
   border-top: 1px solid #eee;
   background: white;
 }
 
-/* BOTONES IGUALES */
+/* BOTONES BASE */
 .btn {
   flex: 1;
-  padding: 14px;
+
+  height: 54px;              /* 🔥 MÁS GRANDE */
+  padding: 0 16px;
 
   border-radius: 14px;
   border: none;
 
   font-weight: 700;
+  font-size: 15px;           /* 🔥 MÁS LEGIBLE */
+
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: all 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
+/* hover general */
 .btn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
-/* COLORES UNIFICADOS */
+/* ========================= */
+/* COLORES */
+/* ========================= */
+
 .edit {
   background: #3b82f6;
   color: white;
