@@ -6,27 +6,43 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-detail-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './detail-modal.html',
   styleUrls: ['./detail-modal.css']
 })
 export class DetailModalComponent {
 
   @Input() visible = false;
+
   @Input() item: any;
+
   @Input() type: string = '';
 
-  @Output() close = new EventEmitter();
-  @Output() delete = new EventEmitter();
-  @Output() edit = new EventEmitter();
-  @Output() addAlert = new EventEmitter();
+  @Output() close =
+    new EventEmitter();
 
-  @Output() taken = new EventEmitter();
-  @Output() missed = new EventEmitter();
+  @Output() delete =
+    new EventEmitter();
+
+  @Output() edit =
+    new EventEmitter();
+
+  @Output() addAlert =
+    new EventEmitter();
+
+  @Output() taken =
+    new EventEmitter();
+
+  @Output() missed =
+    new EventEmitter();
 
   closeModal() {
     this.close.emit();
@@ -45,43 +61,58 @@ export class DetailModalComponent {
   }
 
   markAsTaken() {
-    this.taken.emit(this.item);
+
+    const dosis =
+      prompt('Dosis tomada');
+
+    if (dosis === null) return;
+
+    this.taken.emit({
+      ...this.item,
+      dosisTomada: dosis
+    });
   }
 
   markAsMissed() {
     this.missed.emit(this.item);
   }
 
-  get isCompleted(): boolean {
+  get isTaken(): boolean {
 
     return (
       this.item?.estado === 'TOMADA'
     );
   }
 
-  get momentoNormalizado(): string {
+  get isMissed(): boolean {
 
-    const value =
-      this.item?.momentoDia ||
-      this.item?.momentDay;
+    return (
+      this.item?.estado === 'PERDIDA'
+    );
+  }
 
-    if (!value) return '';
+  get canTakeActions(): boolean {
 
-    if (
-      value === 'DIA' ||
-      value === 'MAÑANA'
-    ) {
-      return 'MAÑANA';
-    }
+    if (!this.item?.hora) return false;
 
-    if (value === 'TARDE') {
-      return 'TARDE';
-    }
+    return (
+      Date.now() >= this.item.hora &&
+      !this.isTaken
+    );
+  }
 
-    if (value === 'NOCHE') {
-      return 'NOCHE';
-    }
+  get formattedHour(): string {
 
-    return value;
+    if (!this.item?.hora) return '';
+
+    return new Date(
+      this.item.hora
+    ).toLocaleTimeString(
+      'es-ES',
+      {
+        hour: '2-digit',
+        minute: '2-digit'
+      }
+    );
   }
 }

@@ -181,6 +181,39 @@
   color: white;
 }
 
+.success {
+  background: #10b981;
+  color: white;
+}
+
+.success:hover {
+  background: #059669;
+}
+
+.danger {
+  background: #ef4444;
+  color: white;
+}
+
+.danger:hover {
+  background: #dc2626;
+}
+
+.tomada {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.perdida {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.pendiente {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
 /* ANIMACIÓN */
 @keyframes pop {
   from {
@@ -191,4 +224,5 @@
     transform: scale(1);
     opacity: 1;
   }
+  
 }

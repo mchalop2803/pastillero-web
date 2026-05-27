@@ -21,40 +21,52 @@ export class Alerts {
   constructor(private data: DataService) {}
 
   ngOnInit() {
+    this.refreshAlerts();
+  }
+
+  // =========================
+  // REFRESH REACTIVO
+  // =========================
+  refreshAlerts() {
 
     this.alerts$ = this.data.getAlerts().pipe(
 
       map(alerts => {
 
+        const now = Date.now();
+
         return alerts.map(alert => {
 
+          const copy = { ...alert };
+
+          // AUTO MARK AS MISSED
           if (
-            alert.estado !== 'TOMADA' &&
-            alert.estado !== 'PERDIDA' &&
-            alert.hora < Date.now()
+            copy.estado !== 'TOMADA' &&
+            copy.estado !== 'PERDIDA' &&
+            copy.hora < now
           ) {
-
-            const diff =
-              Date.now() - alert.hora;
-
-            const limit =
-              30 * 60 * 1000;
+            const diff = now - copy.hora;
+            const limit = 30 * 60 * 1000;
 
             if (diff > limit) {
 
-              this.data.updateAlert(alert.id, {
+              copy.estado = 'PERDIDA';
+
+              this.data.updateAlert(copy.id, {
                 estado: 'PERDIDA'
               });
-
-              alert.estado = 'PERDIDA';
             }
           }
 
-          return alert;
+          return copy;
         });
       })
     );
   }
+
+  // =========================
+  // DETAIL MODAL
+  // =========================
 
   openDetail(item: any) {
     this.selectedItem = item;
@@ -69,15 +81,17 @@ export class Alerts {
   async deleteFromModal(item: any) {
 
     await this.data.deleteAlert(item.id);
-
+    this.refreshAlerts();
     this.closeDetail();
   }
 
+  // =========================
+  // ACTIONS (ANDROID STYLE)
+  // =========================
+
   async takenAlert(item: any) {
 
-    const dosis =
-      prompt('Introduce la dosis tomada');
-
+    const dosis = prompt('Introduce la dosis tomada');
     if (dosis === null) return;
 
     const now = new Date();
@@ -86,15 +100,12 @@ export class Alerts {
       `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     await this.data.updateAlert(item.id, {
-
       estado: 'TOMADA',
-
       dosisTomada: dosis,
-
       horaTomada
     });
 
-    item.estado = 'TOMADA';
+    this.refreshAlerts();
   }
 
   async missedAlert(item: any) {
@@ -103,6 +114,6 @@ export class Alerts {
       estado: 'PERDIDA'
     });
 
-    item.estado = 'PERDIDA';
+    this.refreshAlerts();
   }
 }

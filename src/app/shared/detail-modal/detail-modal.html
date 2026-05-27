@@ -1,88 +1,164 @@
-<div class="overlay" *ngIf="visible" (click)="closeModal()">
+<div
+  class="overlay"
+  *ngIf="visible"
+  (click)="closeModal()"
+>
 
-  <div class="panel" (click)="$event.stopPropagation()">
+  <div
+    class="panel"
+    (click)="$event.stopPropagation()"
+  >
 
     <!-- HEADER -->
+
     <div class="header">
 
       <div class="title">
 
-        <h1>{{ item?.nombre }}</h1>
+        <h1>
+          {{ item?.nombre }}
+        </h1>
 
         <p class="subtitle">
 
-          {{ type === 'medication' ? '💊 Medicamento' :
-             type === 'cita' ? '📅 Cita médica' :
-             type === 'alert' ? '⏰ Alerta' : 'Detalle' }}
+          {{
+            type === 'medication'
+              ? '💊 Medicamento'
+              : type === 'alert'
+              ? '⏰ Alarma'
+              : 'Detalle'
+          }}
 
         </p>
 
       </div>
 
-      <button class="close-btn" (click)="closeModal()">
+      <button
+        class="close-btn"
+        (click)="closeModal()"
+      >
         ✕
       </button>
 
     </div>
 
-    <!-- BODY -->
+    <!-- CONTENT -->
+
     <div class="content">
 
       <div class="dashboard">
 
-        <!-- IMAGEN -->
-        <div class="image-box" *ngIf="item?.imageUrl">
-          <img [src]="item.imageUrl" />
+        <!-- IMAGE -->
+
+        <div
+          class="image-box"
+          *ngIf="item?.imageUrl || item?.medicamentImageUrl"
+        >
+
+          <img
+            [src]="
+              item?.imageUrl ||
+              item?.medicamentImageUrl
+            "
+          />
+
         </div>
 
-        <!-- INFO -->
-        <div class="big-card">
+        <!-- ALERT DETAIL -->
 
-          <h2>Información</h2>
+        <div
+          class="big-card"
+          *ngIf="type === 'alert'"
+        >
+
+          <h2>
+            Información de alarma
+          </h2>
 
           <div class="info-line">
-            <span class="label">📦 Nombre</span>
-            <span class="value">{{ item?.nombre }}</span>
-          </div>
 
-          <div class="info-line" *ngIf="item?.descripcion">
-            <span class="label">📝 Descripción</span>
-            <span class="value">{{ item.descripcion }}</span>
-          </div>
-
-          <div class="info-line" *ngIf="item?.hora">
-            <span class="label">🕒 Hora</span>
-            <span class="value">
-              {{ item.hora | date:'HH:mm' }}
+            <span class="label">
+              💊 Medicamento
             </span>
+
+            <span class="value">
+              {{ item?.nombre }}
+            </span>
+
           </div>
 
-          <div class="info-line" *ngIf="item?.estado">
-            <span class="label">📌 Estado</span>
-            <span class="value">
-              {{ item.estado }}
+          <div class="info-line">
+
+            <span class="label">
+              🕒 Hora
             </span>
+
+            <span class="value">
+              {{ formattedHour }}
+            </span>
+
           </div>
 
-          <div class="info-line" *ngIf="item?.dosisBase">
-            <span class="label">💊 Dosis base</span>
-            <span class="value">
-              {{ item.dosisBase }}
+          <div
+            class="info-line"
+            *ngIf="item?.dosisBase"
+          >
+
+            <span class="label">
+              💊 Dosis
             </span>
+
+            <span class="value">
+              {{ item?.dosisBase }}
+            </span>
+
           </div>
 
-          <div class="info-line" *ngIf="item?.dosisTomada">
-            <span class="label">✅ Dosis tomada</span>
-            <span class="value">
-              {{ item.dosisTomada }}
+          <div class="info-line">
+
+            <span class="label">
+              📌 Estado
             </span>
+
+            <span
+              class="value"
+              [ngClass]="
+                item?.estado?.toLowerCase()
+              "
+            >
+              {{ item?.estado }}
+            </span>
+
           </div>
 
-          <div class="info-line" *ngIf="item?.horaTomada">
-            <span class="label">⏰ Hora tomada</span>
-            <span class="value">
-              {{ item.horaTomada }}
+          <div
+            class="info-line"
+            *ngIf="item?.horaTomada"
+          >
+
+            <span class="label">
+              ✅ Hora tomada
             </span>
+
+            <span class="value">
+              {{ item?.horaTomada }}
+            </span>
+
+          </div>
+
+          <div
+            class="info-line"
+            *ngIf="item?.dosisTomada"
+          >
+
+            <span class="label">
+              💊 Dosis tomada
+            </span>
+
+            <span class="value">
+              {{ item?.dosisTomada }}
+            </span>
+
           </div>
 
         </div>
@@ -92,59 +168,75 @@
     </div>
 
     <!-- FOOTER -->
+
     <div class="footer">
 
-      <button
-        class="btn edit"
-        (click)="editItem()">
+      <!-- MEDICATION -->
 
-        ✏️ Editar
-
-      </button>
-
-      <button
-        class="btn delete"
-        (click)="deleteItem()">
-
-        🗑 Eliminar
-
-      </button>
-
-      <button
+      <ng-container
         *ngIf="type === 'medication'"
-        class="btn add-alert"
-        (click)="addAlertToMedicament()">
+      >
 
-        ⏰ Añadir alarma
+        <button
+          class="btn edit"
+          (click)="editItem()"
+        >
+          ✏️ Editar
+        </button>
 
-      </button>
+        <button
+          class="btn delete"
+          (click)="deleteItem()"
+        >
+          🗑 Eliminar
+        </button>
 
-      <button
-        *ngIf="type === 'alert' && !isCompleted"
-        class="btn taken"
-        (click)="markAsTaken()">
+        <button
+          class="btn add-alert"
+          (click)="addAlertToMedicament()"
+        >
+          ⏰ Añadir alarma
+        </button>
 
-        ✅ Sí tomada
+      </ng-container>
 
-      </button>
+      <!-- ALERT -->
 
-      <button
-        *ngIf="type === 'alert' && !isCompleted"
-        class="btn missed"
-        (click)="markAsMissed()">
+      <ng-container
+        *ngIf="type === 'alert'"
+      >
 
-        ❌ No tomada
+        <button
+          class="btn edit"
+          (click)="editItem()"
+        >
+          ✏️ Editar
+        </button>
 
-      </button>
+        <button
+          class="btn delete"
+          (click)="deleteItem()"
+        >
+          🗑 Eliminar
+        </button>
 
-      <button
-        *ngIf="type !== 'medication'"
-        class="btn close"
-        (click)="closeModal()">
+        <button
+          *ngIf="canTakeActions"
+          class="btn success"
+          (click)="markAsTaken()"
+        >
+          ✅ Sí tomada
+        </button>
 
-        Cerrar
+        <button
+          *ngIf="canTakeActions"
+          class="btn danger"
+          (click)="markAsMissed()"
+        >
+          ❌ No tomada
+        </button>
 
-      </button>
+      </ng-container>
 
     </div>
 
