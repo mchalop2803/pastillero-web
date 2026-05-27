@@ -61,7 +61,8 @@ export class Medications {
   openAlertModal(med: any) {
     this.closeDetail();
 
-    // 🔥 igual que Intent en Android
-    this.router.navigate(['/alerts/new', med.id]);
+    this.router.navigate(['/alerts'], {
+      state: { medicament: med }
+    });
   }
 }

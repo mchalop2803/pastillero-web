@@ -2,55 +2,23 @@
 
   <header class="header">
     <h1>⏰ Alarmas</h1>
-
-    <!-- 🔥 BOTÓN ESTILO ANDROID -->
-    <button class="add-btn" (click)="openCreateModal()">
-      ➕ Crear alarma
-    </button>
   </header>
 
   <!-- ========================= -->
-  <!-- LISTA -->
+  <!-- TARJETA CREAR (ESTILO MEDICAMENTOS) -->
   <!-- ========================= -->
 
-  <div class="grid">
+  <div class="grid" *ngIf="isCreateOpen">
 
-    <div *ngFor="let alert of alerts$ | async"
-         class="card"
-         (click)="openDetail(alert)">
+    <div class="card create-card">
 
-      <div class="icon">⏰</div>
+      <h2>Crear alarma</h2>
 
-      <div class="info">
-        <h3>{{ alert.nombre }}</h3>
-
-        <p>
-          {{ alert.hora | date:'dd/MM/yyyy HH:mm' }}
-        </p>
-
-        <span>{{ alert.estado }}</span>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- ========================= -->
-  <!-- MODAL CREATE (NUEVO BONITO) -->
-  <!-- ========================= -->
-
-  <div class="modal" *ngIf="isCreateOpen">
-    <div class="modal-content">
-
-      <h2>
-        Crear alarma para {{ selectedMedicament?.nombre }}
-      </h2>
+      <p>{{ selectedMedicament?.nombre }}</p>
 
       <input type="time" [(ngModel)]="newAlert.hora">
 
-      <input type="text"
-             placeholder="Dosis"
-             [(ngModel)]="newAlert.dosisBase">
+      <input type="text" placeholder="Dosis" [(ngModel)]="newAlert.dosisBase">
 
       <select [(ngModel)]="newAlert.frecuencia">
         <option>Cada 24 horas</option>
@@ -72,12 +40,34 @@
       </div>
 
     </div>
+
   </div>
 
   <!-- ========================= -->
-  <!-- DETAIL -->
+  <!-- LISTA -->
   <!-- ========================= -->
 
+  <div class="grid">
+
+    <div *ngFor="let alert of alerts$ | async"
+         class="card"
+         (click)="openDetail(alert)">
+
+      <div class="icon">⏰</div>
+
+      <div class="info">
+        <h3>{{ alert.nombre }}</h3>
+
+        <p>{{ alert.hora | date:'dd/MM/yyyy HH:mm' }}</p>
+
+        <span>{{ alert.estado }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- DETAIL -->
   <app-detail-modal
     [visible]="isDetailOpen"
     [item]="selectedItem"

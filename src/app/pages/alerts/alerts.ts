@@ -2,16 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { DataService } from '../../services/data';
-import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [CommonModule, FormsModule, DetailModalComponent   ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './alerts.html',
   styleUrls: ['./alerts.css'],
 })
@@ -34,7 +33,6 @@ export class Alerts {
 
   constructor(
     private data: DataService,
-    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -42,13 +40,12 @@ export class Alerts {
 
     this.refreshAlerts();
 
-    const id = this.route.snapshot.paramMap.get('id');
+    // 🔥 recibe medicamento desde router state (NO PARAMS)
+    const nav = this.router.getCurrentNavigation();
+    const med = nav?.extras?.state?.['medicament'];
 
-    if (id) {
-      const meds = await firstValueFrom(this.data.getMedicaments());
-      this.selectedMedicament = meds.find((m: any) => m.id === id);
-
-      // 🔥 abre modal automáticamente (Android Intent behavior)
+    if (med) {
+      this.selectedMedicament = med;
       this.isCreateOpen = true;
     }
   }
@@ -56,6 +53,10 @@ export class Alerts {
   refreshAlerts() {
     this.alerts$ = this.data.getAlerts();
   }
+
+  // =========================
+  // DETAIL
+  // =========================
 
   openDetail(item: any) {
     this.selectedItem = item;
@@ -97,7 +98,7 @@ export class Alerts {
   }
 
   // =========================
-  // MODAL CONTROL (LO QUE TE FALTABA)
+  // MODAL CONTROL
   // =========================
 
   openCreateModal() {
@@ -106,11 +107,11 @@ export class Alerts {
 
   closeCreateModal() {
     this.isCreateOpen = false;
-    this.router.navigate(['/alerts']); // limpia modo android
+    this.selectedMedicament = null;
   }
 
   // =========================
-  // CREATE LOGIC (NO TOCADA)
+  // CREACIÓN MASIVA (TU CALENDARIO)
   // =========================
 
   async createAlertsFromMedicament() {
@@ -148,10 +149,7 @@ export class Alerts {
           medicamentImageUrl: med.imageUrl,
           dosisBase: this.newAlert.dosisBase,
           hora: alarm.getTime(),
-          estado:
-            alarm.getTime() < Date.now()
-              ? 'PERDIDA'
-              : 'PENDIENTE'
+          estado: alarm.getTime() < Date.now() ? 'PERDIDA' : 'PENDIENTE'
         });
 
         alarm.setHours(alarm.getHours() + interval);
