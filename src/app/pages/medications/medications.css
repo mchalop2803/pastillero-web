@@ -213,6 +213,11 @@
   align-items: center;
 }
 
+.calendar-container {
+  position: relative;
+  z-index: 1;
+}
+
 .modal-content {
   background: white;
 
