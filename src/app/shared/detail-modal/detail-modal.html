@@ -32,6 +32,11 @@
         <div class="big-card">
           <h2>Información del medicamento</h2>
 
+          <div class="info-line">
+            <span class="label">📦 Nombre</span>
+            <span class="value">{{ item?.nombre }}</span>
+          </div>
+
           <div class="info-line" *ngIf="item?.descripcion">
             <span class="label">📝 Descripción</span>
             <span class="value">{{ item.descripcion }}</span>
@@ -40,6 +45,16 @@
           <div class="info-line" *ngIf="item?.dosisBase">
             <span class="label">💊 Dosis</span>
             <span class="value">{{ item.dosisBase }}</span>
+          </div>
+
+          <div class="info-line" *ngIf="item?.momentoDia">
+            <span class="label">⏰ Momento del día</span>
+            <span class="value">{{ item.momentoDia }}</span>
+          </div>
+
+          <div class="info-line" *ngIf="item?.horario">
+            <span class="label">🕒 Horario</span>
+            <span class="value">{{ item.horario }}</span>
           </div>
 
           <div class="info-line" *ngIf="item?.fechaInicio">
@@ -58,7 +73,7 @@
 
         </div>
 
-        <!-- ALERTAS (si viene del calendario) -->
+        <!-- ALERTAS -->
         <div class="big-card" *ngIf="item?.alerts?.length">
 
           <h2>⏰ Alarmas</h2>
@@ -78,6 +93,8 @@
         </div>
 
       </div>
+
+    </div>
 
     </div>
 
