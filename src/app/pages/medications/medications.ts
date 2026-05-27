@@ -30,7 +30,6 @@ export class Medications {
   // DATA
   // =========================
   medicaments$!: Observable<any[]>;
-  filteredMeds$!: Observable<any[]>;
 
   alerts: any[] = [];
   alertsSub: any;
@@ -44,10 +43,6 @@ export class Medications {
   selectedDayMedicaments: any[] = [];
   selectedDate: Date | null = null;
 
-  // =========================
-  // FILTER
-  // =========================
-  filter = 'TODOS';
 
   // =========================
   // MED CRUD
@@ -96,11 +91,6 @@ export class Medications {
   ngOnInit() {
 
     this.medicaments$ = this.data.getMedicaments();
-
-    this.filteredMeds$ =
-      this.medicaments$.pipe(
-        map(meds => this.applyFilter(meds))
-      );
 
     this.initCalendar();
     this.loadCalendarEvents();
@@ -238,16 +228,6 @@ export class Medications {
     this.selectedDayMedicaments = Array.from(map.values());
   }
 
-  // =========================
-  // FILTER
-  // =========================
-  setFilter(value: string) {
-    this.filter = value;
-  }
-
-  applyFilter(meds: any[]) {
-    return meds;
-  }
 
   // =========================
   // MED CRUD
