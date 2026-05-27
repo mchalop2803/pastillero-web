@@ -61,12 +61,14 @@ isDetailOpen = false;
 
 selectedFile: File | null = null;
 
+previewUrl: string | null = null;
+
 newMedicament: any = {
-nombre: '',
-description: '',
-imageUrl: '',
-fechaInicio: 0,
-fechaFin: 0
+  nombre: '',
+  descripcion: '',
+  imageUrl: '',
+  fechaInicio: '',
+  fechaFin: ''
 };
 
 constructor(
@@ -241,62 +243,68 @@ return meds;
 
 async addMedicament() {
 
-if (this.isSaving) return;
+  if (this.isSaving) return;
 
-this.isSaving = true;
+  this.isSaving = true;
 
-try {
+  try {
 
-  let imageUrl = '';
+    let imageUrl =
+      this.newMedicament.imageUrl || '';
 
-  if (this.selectedFile) {
+    if (this.selectedFile) {
 
-    imageUrl =
-      await this.storage.uploadImage(
-        this.selectedFile
+      imageUrl =
+        await this.storage.uploadImage(
+          this.selectedFile
+        );
+    }
+
+    const data = {
+
+      nombre:
+        this.newMedicament.nombre,
+
+      descripcion:
+        this.newMedicament.descripcion,
+
+      imageUrl,
+
+      fechaInicio:
+        new Date(
+          this.newMedicament.fechaInicio
+        ).getTime(),
+
+      fechaFin:
+        new Date(
+          this.newMedicament.fechaFin
+        ).getTime()
+    };
+
+    if (this.editingId) {
+
+      await this.data.updateMedicament(
+        this.editingId,
+        data
       );
+
+    } else {
+
+      await this.data.addMedicament(data);
+    }
+
+    this.closeModal();
+
+  } catch (e) {
+
+    console.error(e);
+
+    alert('Error guardando medicamento');
+
+  } finally {
+
+    this.isSaving = false;
   }
-
-  const data = {
-
-    nombre:
-      this.newMedicament.nombre,
-
-    description:
-      this.newMedicament.description,
-
-    imageUrl,
-
-    fechaInicio:
-      this.newMedicament.fechaInicio,
-
-    fechaFin:
-      this.newMedicament.fechaFin
-  };
-
-  if (this.editingId) {
-
-    await this.data.updateMedicament(
-      this.editingId,
-      data
-    );
-
-  } else {
-
-    await this.data.addMedicament(data);
-  }
-
-  this.closeModal();
-
-} catch (e) {
-
-  console.error(e);
-
-} finally {
-
-  this.isSaving = false;
-}
-
 }
 
 async deleteMedicament(id: string) {
@@ -361,8 +369,15 @@ this.isAddModalOpen = true;
 
 onFileChange(event: any) {
 
-this.selectedFile =
-  event.target.files[0] || null;
+  this.selectedFile =
+    event.target.files[0] || null;
 
+  if (this.selectedFile) {
+
+    this.previewUrl =
+      URL.createObjectURL(
+        this.selectedFile
+      );
+  }
 }
 }

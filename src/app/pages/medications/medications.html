@@ -148,7 +148,16 @@
 
         <h3>{{ med.nombre }}</h3>
 
-        <p>{{ med.description }}</p>
+        <p>
+          {{ med.descripcion }}
+        </p>
+
+        <p>
+          📅
+          {{ med.fechaInicio | date:'dd/MM/yyyy' }}
+          -
+          {{ med.fechaFin | date:'dd/MM/yyyy' }}
+        </p>
 
         <span
           class="moment"
@@ -183,10 +192,7 @@
 
   <!-- MODAL ADD / EDIT -->
 
-  <div
-    class="modal"
-    *ngIf="isAddModalOpen"
-  >
+  <div class="modal" *ngIf="isAddModalOpen">
 
     <div class="modal-content">
 
@@ -198,37 +204,76 @@
         }}
       </h2>
 
+      <!-- IMAGEN -->
+
+      <div class="image-preview">
+
+        <img
+          [src]="
+            selectedFile
+              ? previewUrl
+              : newMedicament.imageUrl ||
+                'assets/default-med.png'
+          "
+        />
+
+      </div>
+
       <form (ngSubmit)="addMedicament()">
+
+        <!-- NOMBRE -->
 
         <input
           [(ngModel)]="newMedicament.nombre"
           name="nombre"
-          placeholder="Nombre"
+          placeholder="Nombre medicamento"
           required
         />
+
+        <!-- DESCRIPCIÓN -->
+
+        <textarea
+          [(ngModel)]="newMedicament.descripcion"
+          name="descripcion"
+          placeholder="Descripción"
+          rows="4"
+        ></textarea>
+
+        <!-- FECHA INICIO -->
+
+        <label>
+          Fecha inicio
+        </label>
 
         <input
-          [(ngModel)]="newMedicament.dosis"
-          name="dosis"
-          placeholder="Dosis"
+          type="date"
+          [(ngModel)]="newMedicament.fechaInicio"
+          name="fechaInicio"
           required
         />
+
+        <!-- FECHA FIN -->
+
+        <label>
+          Fecha fin
+        </label>
 
         <input
-          type="time"
-          [(ngModel)]="newMedicament.horario"
-          name="horario"
+          type="date"
+          [(ngModel)]="newMedicament.fechaFin"
+          name="fechaFin"
           required
         />
 
-        <div *ngIf="!editingId">
+        <!-- IMAGEN -->
 
-          <input
-            type="file"
-            (change)="onFileChange($event)"
-          />
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+        />
 
-        </div>
+        <!-- BOTONES -->
 
         <div class="actions">
 
@@ -250,7 +295,6 @@
             class="cancel"
             type="button"
             (click)="closeModal()"
-            [disabled]="isSaving"
           >
             Cancelar
           </button>
