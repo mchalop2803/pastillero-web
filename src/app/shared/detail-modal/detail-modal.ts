@@ -17,7 +17,7 @@ export class DetailModalComponent {
   @Output() close = new EventEmitter<void>();
   @Output() delete = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
-  @Output() createAlert = new EventEmitter<void>();
+  @Output() createAlert = new EventEmitter<any>();
   @Output() taken = new EventEmitter<any>();
   @Output() missed = new EventEmitter<any>();
 

@@ -135,8 +135,8 @@
       <!-- CREATE ALERT -->
       <ng-container *ngIf="type === 'create-alert'">
 
-        <button class="btn add" (click)="createAlertFromMedication()">
-          Crear alarma
+        <button class="btn add" (click)="createAlert.emit(item)">
+          ➕ Crear alarma
         </button>
 
       </ng-container>
