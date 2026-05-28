@@ -33,7 +33,6 @@ export class Register {
   phone = '';
   age: number | null = null;
 
-  // NUEVO
   errors: any = {};
 
   loading = false;
@@ -46,13 +45,9 @@ export class Register {
 
   async register() {
 
-    // NUEVO
     this.errors = {};
 
-    // =========================
-    // LIMPIAR ESPACIOS
-    // =========================
-
+    // limpiar espacios
     this.name = this.name.trim();
     this.surname = this.surname.trim();
     this.email = this.email.trim();
@@ -60,191 +55,102 @@ export class Register {
     this.nif = this.nif.trim();
     this.phone = this.phone.trim();
 
-    // =========================
-    // VALIDACIONES
-    // =========================
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+    const nifRegex = /^[0-9]{8}[A-Za-z]$/;
+    const phoneRegex = /^[0-9]{9}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const nameRegex =
-      /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+    let hasErrors = false;
 
-    const nifRegex =
-      /^[0-9]{8}[A-Za-z]$/;
-
-    const phoneRegex =
-      /^[0-9]{9}$/;
-
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // =========================
+    // =====================
     // NOMBRE
-    // =========================
-
+    // =====================
     if (!this.name) {
-
-      this.errors.name =
-        'El nombre es obligatorio';
-
-      return;
+      this.errors.name = 'El nombre es obligatorio';
+      hasErrors = true;
+    } else if (!nameRegex.test(this.name)) {
+      this.errors.name = 'Solo letras permitidas';
+      hasErrors = true;
+    } else if (this.name.length > 30) {
+      this.errors.name = 'Máximo 30 caracteres';
+      hasErrors = true;
     }
 
-    if (!nameRegex.test(this.name)) {
-
-      this.errors.name =
-        'El nombre solo puede contener letras';
-
-      return;
-    }
-
-    if (this.name.length > 30) {
-
-      this.errors.name =
-        'Máximo 30 caracteres';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // APELLIDOS
-    // =========================
-
+    // =====================
     if (!this.surname) {
-
-      this.errors.surname =
-        'Los apellidos son obligatorios';
-
-      return;
+      this.errors.surname = 'Los apellidos son obligatorios';
+      hasErrors = true;
+    } else if (!nameRegex.test(this.surname)) {
+      this.errors.surname = 'Solo letras permitidas';
+      hasErrors = true;
     }
 
-    if (!nameRegex.test(this.surname)) {
-
-      this.errors.surname =
-        'Los apellidos solo pueden contener letras';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // EMAIL
-    // =========================
-
+    // =====================
     if (!this.email) {
-
-      this.errors.email =
-        'El email es obligatorio';
-
-      return;
+      this.errors.email = 'El email es obligatorio';
+      hasErrors = true;
+    } else if (!emailRegex.test(this.email)) {
+      this.errors.email = 'Email inválido';
+      hasErrors = true;
     }
 
-    if (!emailRegex.test(this.email)) {
-
-      this.errors.email =
-        'Introduce un email válido';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // PASSWORD
-    // =========================
-
+    // =====================
     if (!this.password) {
-
-      this.errors.password =
-        'La contraseña es obligatoria';
-
-      return;
+      this.errors.password = 'La contraseña es obligatoria';
+      hasErrors = true;
+    } else if (this.password.length < 6) {
+      this.errors.password = 'Mínimo 6 caracteres';
+      hasErrors = true;
+    } else if (!/[A-Za-z]/.test(this.password) || !/\d/.test(this.password)) {
+      this.errors.password = 'Debe contener letras y números';
+      hasErrors = true;
     }
 
-    if (this.password.length < 6) {
-
-      this.errors.password =
-        'Mínimo 6 caracteres';
-
-      return;
-    }
-
-    const hasLetter =
-      /[A-Za-z]/.test(this.password);
-
-    const hasNumber =
-      /\d/.test(this.password);
-
-    if (!hasLetter || !hasNumber) {
-
-      this.errors.password =
-        'Debe contener letras y números';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // DNI
-    // =========================
-
+    // =====================
     if (!this.nif) {
-
-      this.errors.nif =
-        'El DNI es obligatorio';
-
-      return;
+      this.errors.nif = 'El DNI es obligatorio';
+      hasErrors = true;
+    } else if (!nifRegex.test(this.nif)) {
+      this.errors.nif = 'Formato incorrecto (12345678A)';
+      hasErrors = true;
     }
 
-    if (!nifRegex.test(this.nif)) {
-
-      this.errors.nif =
-        'Formato DNI incorrecto (12345678A)';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // TELÉFONO
-    // =========================
-
+    // =====================
     if (!this.phone) {
-
-      this.errors.phone =
-        'El teléfono es obligatorio';
-
-      return;
+      this.errors.phone = 'El teléfono es obligatorio';
+      hasErrors = true;
+    } else if (!phoneRegex.test(this.phone)) {
+      this.errors.phone = 'Debe tener 9 dígitos';
+      hasErrors = true;
     }
 
-    if (!phoneRegex.test(this.phone)) {
-
-      this.errors.phone =
-        'El teléfono debe tener 9 dígitos';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // EDAD
-    // =========================
-
-    if (
-      this.age === null ||
-      this.age === undefined
-    ) {
-
-      this.errors.age =
-        'La edad es obligatoria';
-
-      return;
+    // =====================
+    if (this.age === null || this.age === undefined) {
+      this.errors.age = 'La edad es obligatoria';
+      hasErrors = true;
+    } else if (this.age < 1 || this.age > 120) {
+      this.errors.age = 'Edad no válida';
+      hasErrors = true;
     }
 
-    if (this.age < 1 || this.age > 120) {
+    // si hay errores, NO continuar
+    if (hasErrors) return;
 
-      this.errors.age =
-        'Introduce una edad válida';
-
-      return;
-    }
-
-    // =========================
+    // =====================
     // FIREBASE
-    // =========================
-
+    // =====================
     try {
 
       this.loading = true;
@@ -256,80 +162,52 @@ export class Register {
           this.password
         );
 
-      await updateProfile(
-        userCredential.user,
-        {
-          displayName:
-            `${this.name} ${this.surname}`
-        }
-      );
+      await updateProfile(userCredential.user, {
+        displayName: `${this.name} ${this.surname}`
+      });
 
       const uid = userCredential.user.uid;
 
       const userData = {
-
         id: uid,
-
         name: this.name,
-
         surname: this.surname,
-
         nif: this.nif,
-
         phone: this.phone,
-
         age: this.age,
-
         email: this.email
       };
 
-      await set(
-        ref(this.db, `users/${uid}`),
-        userData
-      );
+      await set(ref(this.db, `users/${uid}`), userData);
 
       this.router.navigate(['/login']);
 
     } catch (err: any) {
 
-      console.error(err);
-
       switch (err.code) {
 
         case 'auth/email-already-in-use':
-
-          this.errors.email =
-            'El email ya está en uso';
-
+          this.errors.email = 'El email ya está en uso';
           break;
 
         case 'auth/invalid-email':
-
-          this.errors.email =
-            'Introduce un email válido';
-
+          this.errors.email = 'Email inválido';
           break;
 
         case 'auth/weak-password':
-
-          this.errors.password =
-            'La contraseña es demasiado débil';
-
+          this.errors.password = 'Contraseña débil';
           break;
 
         default:
-
-          alert('Error al registrar usuario');
+          this.errors.general = 'Error al registrar usuario';
       }
 
     } finally {
-
       this.loading = false;
     }
   }
 
   goToLogin() {
-
     this.router.navigate(['/login']);
   }
 }
