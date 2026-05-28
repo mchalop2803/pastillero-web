@@ -1,4 +1,4 @@
-<div class="register-container">
+<form class="register-container" (ngSubmit)="register()">
 
   <div class="register-card">
 
@@ -126,7 +126,7 @@
       {{ errors['general'] }}
     </p>
 
-    <button (click)="register()" [disabled]="loading">
+    <button type="submit" [disabled]="loading">
 
       <span *ngIf="!loading">Registrar</span>
       <span *ngIf="loading">Creando...</span>
@@ -140,4 +140,4 @@
 
   </div>
 
-</div>
+</form>
