@@ -67,7 +67,7 @@ export class Register {
 
   async register() {
 
-    this.errors = {};
+    Object.keys(this.errors).forEach(k => delete this.errors[k]);
 
     // =========================
     // VALIDACIONES VACÍOS
@@ -166,21 +166,23 @@ export class Register {
 
         case 'auth/email-already-in-use':
         case 'auth/email-already-exists':
-          this.setEmailError('Este correo ya está registrado');
+
+          this.errors['email'] = 'Este correo ya está registrado';
+          this.cdr.detectChanges(); // 👈 IMPORTANTE
           break;
 
         case 'auth/invalid-email':
-          this.setEmailError('Correo electrónico inválido');
+          this.errors['email'] = 'Correo electrónico inválido';
+          this.cdr.detectChanges();
           break;
 
         case 'auth/weak-password':
-          this.setError('password', 'La contraseña es demasiado débil');
+          this.errors['password'] = 'La contraseña es demasiado débil';
           break;
 
         default:
-          this.setError('general', 'Error al registrar usuario');
+          this.errors['general'] = 'Error al registrar usuario';
       }
-
     } finally {
       this.loading = false;
     }
