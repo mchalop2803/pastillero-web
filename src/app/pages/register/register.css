@@ -75,7 +75,7 @@ input {
   width: 100%;
   padding: 12px;
 
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 
   border: 1px solid #e5e7eb;
   border-radius: 10px;
@@ -100,6 +100,10 @@ input::placeholder {
 .input-error {
   border-color: #ef4444 !important;
   box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important;
+}
+
+.input-error::placeholder {
+  color: #ef4444;
 }
 
 /* BUTTON */
@@ -131,13 +135,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* ERROR TEXT */
-.error {
-  color: #ef4444;
-  margin-top: 10px;
-  font-size: 13px;
-}
-
 /* LOGIN LINK */
 .login-link {
   margin-top: 15px;
@@ -164,4 +161,23 @@ button:disabled {
 
 .warning-text {
   color: #f59e0b;
+}
+
+.field-error {
+  color: #ef4444;
+  font-size: 11px;
+
+  text-align: left;
+
+  margin-top: -6px;
+  margin-bottom: 10px;
+
+  padding-left: 2px;
+
+  font-weight: 500;
+}
+
+.general-error {
+  text-align: center;
+  margin-top: 10px;
 }
