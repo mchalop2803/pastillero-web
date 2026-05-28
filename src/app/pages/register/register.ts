@@ -34,7 +34,6 @@ export class Register {
   age: number | null = null;
 
   errors: any = {};
-
   loading = false;
 
   constructor(
@@ -45,9 +44,10 @@ export class Register {
 
   async register() {
 
+    console.log('CLICK REGISTER');
+
     this.errors = {};
 
-    // limpiar espacios
     this.name = this.name.trim();
     this.surname = this.surname.trim();
     this.email = this.email.trim();
@@ -145,12 +145,8 @@ export class Register {
       hasErrors = true;
     }
 
-    // si hay errores, NO continuar
     if (hasErrors) return;
 
-    // =====================
-    // FIREBASE
-    // =====================
     try {
 
       this.loading = true;
@@ -168,7 +164,7 @@ export class Register {
 
       const uid = userCredential.user.uid;
 
-      const userData = {
+      await set(ref(this.db, `users/${uid}`), {
         id: uid,
         name: this.name,
         surname: this.surname,
@@ -176,9 +172,7 @@ export class Register {
         phone: this.phone,
         age: this.age,
         email: this.email
-      };
-
-      await set(ref(this.db, `users/${uid}`), userData);
+      });
 
       this.router.navigate(['/login']);
 
