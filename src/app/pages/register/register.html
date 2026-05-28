@@ -46,6 +46,7 @@
 
     <!-- Email -->
     <label>Correo electrónico</label>
+
     <input
       type="email"
       name="email"
@@ -53,11 +54,16 @@
       [(ngModel)]="email"
       (input)="clearError('email')"
       [ngClass]="{
-        'input-error': errors['email']
+        'input-error': !!errors['email']
       }"
       required
     />
+
     <small>Debe ser un correo válido.</small>
+
+    <p class="field-error" *ngIf="errors['email']">
+      {{ errors['email'] }}
+    </p>
 
     <p class="field-error" *ngIf="errors['email']">
       {{ errors['email'] }}

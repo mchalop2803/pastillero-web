@@ -15,6 +15,7 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-register',
@@ -40,7 +41,8 @@ export class Register {
   constructor(
     private auth: Auth,
     private db: Database,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async register() {
@@ -172,14 +174,15 @@ export class Register {
         case 'auth/email-already-in-use':
         case 'auth/email-already-exists':
 
-          this.errors['email'] = 'Este correo ya está registrado';
-
           setTimeout(() => {
-            const emailInput = document.querySelector(
-              'input[name="email"]'
-            ) as HTMLInputElement;
 
-            emailInput?.focus();
+            this.errors = {
+              ...this.errors,
+              email: 'Este correo ya está registrado'
+            };
+
+            this.cdr.detectChanges();
+
           });
 
           break;
