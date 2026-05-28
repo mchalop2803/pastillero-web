@@ -130,7 +130,9 @@ export class Register {
 
     try {
 
-      this.loading = true;
+      setTimeout(() => {
+        this.loading = true;
+      });
 
       const userCredential =
         await createUserWithEmailAndPassword(
@@ -163,11 +165,23 @@ export class Register {
 
       console.error(err);
 
+      this.loading = false;
+
       switch (err.code) {
 
         case 'auth/email-already-in-use':
         case 'auth/email-already-exists':
+
           this.errors['email'] = 'Este correo ya está registrado';
+
+          setTimeout(() => {
+            const emailInput = document.querySelector(
+              'input[name="email"]'
+            ) as HTMLInputElement;
+
+            emailInput?.focus();
+          });
+
           break;
 
         case 'auth/invalid-email':
