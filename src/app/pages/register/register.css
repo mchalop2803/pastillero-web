@@ -85,33 +85,59 @@ input {
 
   font-size: 14px;
   box-sizing: border-box;
+
+  background-color: white;
+  color: #111827;
 }
 
+/* INPUT FOCUS NORMAL */
 input:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 
-input.input-error:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
-}
-
+/* PLACEHOLDER */
 input::placeholder {
   color: #9ca3af;
 }
 
-/* ERROR INPUT */
-.input-error {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+input.input-error,
+input.input-error:focus,
+input.ng-invalid.ng-touched,
+input.ng-invalid.ng-dirty {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.18) !important;
 }
 
-.input-error::placeholder {
+/* PLACEHOLDER ERROR */
+input.input-error::placeholder {
   color: #ef4444;
 }
 
-/* BUTTON */
+.field-error {
+  display: block;
+
+  color: #ef4444;
+  font-size: 12px;
+
+  text-align: left;
+
+  margin-top: -2px;
+  margin-bottom: 10px;
+
+  padding-left: 2px;
+
+  font-weight: 600;
+
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.general-error {
+  text-align: center;
+  margin-top: 10px;
+}
+
 button {
   width: 100%;
   padding: 12px;
@@ -138,9 +164,9 @@ button:hover {
 button:disabled {
   background: #93c5fd;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* LOGIN LINK */
 .login-link {
   margin-top: 15px;
   font-size: 13px;
@@ -159,7 +185,6 @@ button:disabled {
   color: #1d4ed8;
 }
 
-/* STATUS COLORS */
 .success-text {
   color: #10b981;
 }
@@ -168,21 +193,35 @@ button:disabled {
   color: #f59e0b;
 }
 
-.field-error {
-  color: #ef4444;
-  font-size: 11px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
 
-  text-align: left;
-
-  margin-top: -2px;
-  margin-bottom: 10px;
-
-  padding-left: 2px;
-
-  font-weight: 500;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.general-error {
-  text-align: center;
-  margin-top: 10px;
+
+@media (max-width: 480px) {
+
+  .register-card {
+    width: 100%;
+    padding: 25px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  input {
+    font-size: 13px;
+  }
+
+  button {
+    font-size: 14px;
+  }
 }

@@ -52,7 +52,9 @@
       placeholder="Ej: juan@gmail.com"
       [(ngModel)]="email"
       (input)="clearError('email')"
-      [class.input-error]="errors['email']"
+      [ngClass]="{
+        'input-error': errors['email']
+      }"
       required
     />
     <small>Debe ser un correo válido.</small>
