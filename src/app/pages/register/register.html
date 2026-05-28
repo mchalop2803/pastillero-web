@@ -12,101 +12,130 @@
     <label>Nombre</label>
     <input
       type="text"
+      placeholder="Ej: Juan"
       [(ngModel)]="name"
-      [class.input-error]="errors.name"
+      [class.input-error]="errors['name']"
+      maxlength="30"
+      required
     />
-    <p class="field-error" *ngIf="errors.name">
-      {{ errors.name }}
+    <small>Solo letras. Máximo 30 caracteres.</small>
+
+    <p class="field-error" *ngIf="errors['name']">
+      {{ errors['name'] }}
     </p>
 
     <!-- Apellidos -->
     <label>Apellidos</label>
     <input
       type="text"
+      placeholder="Ej: García López"
       [(ngModel)]="surname"
-      [class.input-error]="errors.surname"
+      [class.input-error]="errors['surname']"
+      maxlength="50"
+      required
     />
-    <p class="field-error" *ngIf="errors.surname">
-      {{ errors.surname }}
+    <small>Introduce tus apellidos completos.</small>
+
+    <p class="field-error" *ngIf="errors['surname']">
+      {{ errors['surname'] }}
     </p>
 
     <!-- Email -->
-    <label>Email</label>
+    <label>Correo electrónico</label>
     <input
       type="email"
+      placeholder="Ej: juan@gmail.com"
       [(ngModel)]="email"
-      [class.input-error]="errors.email"
+      [class.input-error]="errors['email']"
+      required
     />
-    <p class="field-error" *ngIf="errors.email">
-      {{ errors.email }}
+    <small>Debe ser un correo válido.</small>
+
+    <p class="field-error" *ngIf="errors['email']">
+      {{ errors['email'] }}
     </p>
 
-    <!-- Password -->
+    <!-- Contraseña -->
     <label>Contraseña</label>
     <input
       type="password"
+      placeholder="Mínimo 6 caracteres"
       [(ngModel)]="password"
-      [class.input-error]="errors.password"
+      [class.input-error]="errors['password']"
+      minlength="6"
+      required
     />
-    <p class="field-error" *ngIf="errors.password">
-      {{ errors.password }}
+    <small>
+      Usa al menos 6 caracteres, incluyendo números y letras.
+    </small>
+
+    <p class="field-error" *ngIf="errors['password']">
+      {{ errors['password'] }}
     </p>
 
     <!-- DNI -->
     <label>DNI</label>
     <input
       type="text"
+      placeholder="Ej: 12345678A"
       [(ngModel)]="nif"
-      [class.input-error]="errors.nif"
+      [class.input-error]="errors['nif']"
+      maxlength="9"
+      required
     />
-    <p class="field-error" *ngIf="errors.nif">
-      {{ errors.nif }}
+    <small>Formato válido: 12345678A</small>
+
+    <p class="field-error" *ngIf="errors['nif']">
+      {{ errors['nif'] }}
     </p>
 
     <!-- Teléfono -->
     <label>Teléfono</label>
     <input
       type="text"
+      placeholder="Ej: 612345678"
       [(ngModel)]="phone"
-      [class.input-error]="errors.phone"
+      [class.input-error]="errors['phone']"
+      maxlength="9"
+      required
     />
-    <p class="field-error" *ngIf="errors.phone">
-      {{ errors.phone }}
+    <small>Debe contener 9 dígitos.</small>
+
+    <p class="field-error" *ngIf="errors['phone']">
+      {{ errors['phone'] }}
     </p>
 
     <!-- Edad -->
     <label>Edad</label>
     <input
       type="number"
+      placeholder="Ej: 25"
       [(ngModel)]="age"
-      [class.input-error]="errors.age"
+      [class.input-error]="errors['age']"
+      min="1"
+      max="120"
+      required
     />
-    <p class="field-error" *ngIf="errors.age">
-      {{ errors.age }}
+    <small>Introduce una edad válida.</small>
+
+    <p class="field-error" *ngIf="errors['age']">
+      {{ errors['age'] }}
     </p>
 
-    <!-- BOTÓN CORREGIDO -->
-    <button
-      type="button"
-      (click)="register()"
-      [disabled]="loading"
-    >
-      Registrar
+    <p class="field-error general-error" *ngIf="errors['general']">
+      {{ errors['general'] }}
+    </p>
 
-      <span *ngIf="!loading">
-        Registrar
-      </span>
+    <button (click)="register()" [disabled]="loading">
 
-      <span *ngIf="loading">
-        Creando...
-      </span>
+      <span *ngIf="!loading">Registrar</span>
+      <span *ngIf="loading">Creando...</span>
+
     </button>
 
     <p class="login-link">
       ¿Ya tienes una cuenta?
-      <span (click)="goToLogin()">
-        Iniciar sesión
-      </span>
+      <span (click)="goToLogin()">Iniciar sesión</span>
     </p>
 
   </div>

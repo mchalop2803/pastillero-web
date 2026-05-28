@@ -33,7 +33,8 @@ export class Register {
   phone = '';
   age: number | null = null;
 
-  errors: any = {};
+  errors: { [key: string]: string } = {};
+
   loading = false;
 
   constructor(
@@ -44,108 +45,88 @@ export class Register {
 
   async register() {
 
-    console.log('CLICK REGISTER');
-
     this.errors = {};
 
-    this.name = this.name.trim();
-    this.surname = this.surname.trim();
-    this.email = this.email.trim();
-    this.password = this.password.trim();
-    this.nif = this.nif.trim();
-    this.phone = this.phone.trim();
+    // =========================
+    // VALIDACIONES VACÍOS
+    // =========================
 
-    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+    if (!this.name) {
+      this.errors['name'] = 'El nombre es obligatorio';
+    }
+
+    if (!this.surname) {
+      this.errors['surname'] = 'Los apellidos son obligatorios';
+    }
+
+    if (!this.email) {
+      this.errors['email'] = 'El correo electrónico es obligatorio';
+    }
+
+    if (!this.password) {
+      this.errors['password'] = 'La contraseña es obligatoria';
+    }
+
+    if (!this.nif) {
+      this.errors['nif'] = 'El DNI es obligatorio';
+    }
+
+    if (!this.phone) {
+      this.errors['phone'] = 'El teléfono es obligatorio';
+    }
+
+    if (!this.age && this.age !== 0) {
+      this.errors['age'] = 'La edad es obligatoria';
+    }
+
+    // =========================
+    // VALIDACIONES FORMATOS
+    // =========================
+
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nifRegex = /^[0-9]{8}[A-Za-z]$/;
     const phoneRegex = /^[0-9]{9}$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    let hasErrors = false;
-
-    // =====================
-    // NOMBRE
-    // =====================
-    if (!this.name) {
-      this.errors.name = 'El nombre es obligatorio';
-      hasErrors = true;
-    } else if (!nameRegex.test(this.name)) {
-      this.errors.name = 'Solo letras permitidas';
-      hasErrors = true;
-    } else if (this.name.length > 30) {
-      this.errors.name = 'Máximo 30 caracteres';
-      hasErrors = true;
+    if (this.name && !nameRegex.test(this.name)) {
+      this.errors['name'] = 'El nombre solo puede contener letras';
     }
 
-    // =====================
-    // APELLIDOS
-    // =====================
-    if (!this.surname) {
-      this.errors.surname = 'Los apellidos son obligatorios';
-      hasErrors = true;
-    } else if (!nameRegex.test(this.surname)) {
-      this.errors.surname = 'Solo letras permitidas';
-      hasErrors = true;
+    if (this.surname && !nameRegex.test(this.surname)) {
+      this.errors['surname'] = 'Los apellidos solo pueden contener letras';
     }
 
-    // =====================
-    // EMAIL
-    // =====================
-    if (!this.email) {
-      this.errors.email = 'El email es obligatorio';
-      hasErrors = true;
-    } else if (!emailRegex.test(this.email)) {
-      this.errors.email = 'Email inválido';
-      hasErrors = true;
+    if (this.email && !emailRegex.test(this.email)) {
+      this.errors['email'] = 'Introduce un correo electrónico válido';
     }
 
-    // =====================
-    // PASSWORD
-    // =====================
-    if (!this.password) {
-      this.errors.password = 'La contraseña es obligatoria';
-      hasErrors = true;
-    } else if (this.password.length < 6) {
-      this.errors.password = 'Mínimo 6 caracteres';
-      hasErrors = true;
-    } else if (!/[A-Za-z]/.test(this.password) || !/\d/.test(this.password)) {
-      this.errors.password = 'Debe contener letras y números';
-      hasErrors = true;
+    if (this.password && this.password.length < 6) {
+      this.errors['password'] = 'La contraseña debe tener al menos 6 caracteres';
     }
 
-    // =====================
-    // DNI
-    // =====================
-    if (!this.nif) {
-      this.errors.nif = 'El DNI es obligatorio';
-      hasErrors = true;
-    } else if (!nifRegex.test(this.nif)) {
-      this.errors.nif = 'Formato incorrecto (12345678A)';
-      hasErrors = true;
+    if (this.nif && !nifRegex.test(this.nif)) {
+      this.errors['nif'] = 'El DNI debe tener formato 12345678A';
     }
 
-    // =====================
-    // TELÉFONO
-    // =====================
-    if (!this.phone) {
-      this.errors.phone = 'El teléfono es obligatorio';
-      hasErrors = true;
-    } else if (!phoneRegex.test(this.phone)) {
-      this.errors.phone = 'Debe tener 9 dígitos';
-      hasErrors = true;
+    if (this.phone && !phoneRegex.test(this.phone)) {
+      this.errors['phone'] = 'El teléfono debe contener 9 dígitos';
     }
 
-    // =====================
-    // EDAD
-    // =====================
-    if (this.age === null || this.age === undefined) {
-      this.errors.age = 'La edad es obligatoria';
-      hasErrors = true;
-    } else if (this.age < 1 || this.age > 120) {
-      this.errors.age = 'Edad no válida';
-      hasErrors = true;
+    if (this.age && (this.age < 1 || this.age > 120)) {
+      this.errors['age'] = 'Introduce una edad válida';
     }
 
-    if (hasErrors) return;
+    // =========================
+    // BLOQUEAR SI HAY ERRORES
+    // =========================
+
+    if (Object.keys(this.errors).length > 0) {
+      return;
+    }
+
+    // =========================
+    // REGISTRO FIREBASE
+    // =========================
 
     try {
 
@@ -164,7 +145,7 @@ export class Register {
 
       const uid = userCredential.user.uid;
 
-      await set(ref(this.db, `users/${uid}`), {
+      const userData = {
         id: uid,
         name: this.name,
         surname: this.surname,
@@ -172,28 +153,32 @@ export class Register {
         phone: this.phone,
         age: this.age,
         email: this.email
-      });
+      };
+
+      await set(ref(this.db, `users/${uid}`), userData);
 
       this.router.navigate(['/login']);
 
     } catch (err: any) {
 
+      console.error(err);
+
       switch (err.code) {
 
         case 'auth/email-already-in-use':
-          this.errors.email = 'El email ya está en uso';
+          this.errors['email'] = 'Este correo ya está registrado';
           break;
 
         case 'auth/invalid-email':
-          this.errors.email = 'Email inválido';
+          this.errors['email'] = 'Correo electrónico inválido';
           break;
 
         case 'auth/weak-password':
-          this.errors.password = 'Contraseña débil';
+          this.errors['password'] = 'La contraseña es demasiado débil';
           break;
 
         default:
-          this.errors.general = 'Error al registrar usuario';
+          this.errors['general'] = 'Error al registrar usuario';
       }
 
     } finally {
