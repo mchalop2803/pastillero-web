@@ -33,8 +33,8 @@ export class Register {
   phone = '';
   age: number | null = null;
 
-  error = '';
-  errorField = '';
+  // NUEVO
+  errors: any = {};
 
   loading = false;
 
@@ -46,8 +46,8 @@ export class Register {
 
   async register() {
 
-    this.error = '';
-    this.errorField = '';
+    // NUEVO
+    this.errors = {};
 
     // =========================
     // LIMPIAR ESPACIOS
@@ -82,26 +82,24 @@ export class Register {
 
     if (!this.name) {
 
-      this.error = 'El nombre es obligatorio';
-      this.errorField = 'name';
+      this.errors.name =
+        'El nombre es obligatorio';
 
       return;
     }
 
     if (!nameRegex.test(this.name)) {
 
-      this.error =
+      this.errors.name =
         'El nombre solo puede contener letras';
-
-      this.errorField = 'name';
 
       return;
     }
 
     if (this.name.length > 30) {
 
-      this.error = 'Máximo 30 caracteres';
-      this.errorField = 'name';
+      this.errors.name =
+        'Máximo 30 caracteres';
 
       return;
     }
@@ -112,20 +110,16 @@ export class Register {
 
     if (!this.surname) {
 
-      this.error =
+      this.errors.surname =
         'Los apellidos son obligatorios';
-
-      this.errorField = 'surname';
 
       return;
     }
 
     if (!nameRegex.test(this.surname)) {
 
-      this.error =
+      this.errors.surname =
         'Los apellidos solo pueden contener letras';
-
-      this.errorField = 'surname';
 
       return;
     }
@@ -136,20 +130,16 @@ export class Register {
 
     if (!this.email) {
 
-      this.error =
+      this.errors.email =
         'El email es obligatorio';
-
-      this.errorField = 'email';
 
       return;
     }
 
     if (!emailRegex.test(this.email)) {
 
-      this.error =
+      this.errors.email =
         'Introduce un email válido';
-
-      this.errorField = 'email';
 
       return;
     }
@@ -160,20 +150,16 @@ export class Register {
 
     if (!this.password) {
 
-      this.error =
+      this.errors.password =
         'La contraseña es obligatoria';
-
-      this.errorField = 'password';
 
       return;
     }
 
     if (this.password.length < 6) {
 
-      this.error =
+      this.errors.password =
         'Mínimo 6 caracteres';
-
-      this.errorField = 'password';
 
       return;
     }
@@ -186,10 +172,8 @@ export class Register {
 
     if (!hasLetter || !hasNumber) {
 
-      this.error =
+      this.errors.password =
         'Debe contener letras y números';
-
-      this.errorField = 'password';
 
       return;
     }
@@ -200,20 +184,16 @@ export class Register {
 
     if (!this.nif) {
 
-      this.error =
+      this.errors.nif =
         'El DNI es obligatorio';
-
-      this.errorField = 'nif';
 
       return;
     }
 
     if (!nifRegex.test(this.nif)) {
 
-      this.error =
+      this.errors.nif =
         'Formato DNI incorrecto (12345678A)';
-
-      this.errorField = 'nif';
 
       return;
     }
@@ -224,20 +204,16 @@ export class Register {
 
     if (!this.phone) {
 
-      this.error =
+      this.errors.phone =
         'El teléfono es obligatorio';
-
-      this.errorField = 'phone';
 
       return;
     }
 
     if (!phoneRegex.test(this.phone)) {
 
-      this.error =
+      this.errors.phone =
         'El teléfono debe tener 9 dígitos';
-
-      this.errorField = 'phone';
 
       return;
     }
@@ -251,20 +227,16 @@ export class Register {
       this.age === undefined
     ) {
 
-      this.error =
+      this.errors.age =
         'La edad es obligatoria';
-
-      this.errorField = 'age';
 
       return;
     }
 
     if (this.age < 1 || this.age > 120) {
 
-      this.error =
+      this.errors.age =
         'Introduce una edad válida';
-
-      this.errorField = 'age';
 
       return;
     }
@@ -326,35 +298,28 @@ export class Register {
 
         case 'auth/email-already-in-use':
 
-          this.error =
+          this.errors.email =
             'El email ya está en uso';
-
-          this.errorField = 'email';
 
           break;
 
         case 'auth/invalid-email':
 
-          this.error =
+          this.errors.email =
             'Introduce un email válido';
-
-          this.errorField = 'email';
 
           break;
 
         case 'auth/weak-password':
 
-          this.error =
+          this.errors.password =
             'La contraseña es demasiado débil';
-
-          this.errorField = 'password';
 
           break;
 
         default:
 
-          this.error =
-            'Error al registrar usuario';
+          alert('Error al registrar usuario');
       }
 
     } finally {
