@@ -12,6 +12,7 @@
     <label>Nombre</label>
     <input
       type="text"
+      name="name"
       placeholder="Ej: Juan"
       [(ngModel)]="name"
       (input)="clearError('name')"
@@ -29,6 +30,7 @@
     <label>Apellidos</label>
     <input
       type="text"
+      name="surname"
       placeholder="Ej: García López"
       [(ngModel)]="surname"
       (input)="clearError('surname')"
@@ -46,6 +48,7 @@
     <label>Correo electrónico</label>
     <input
       type="email"
+      name="email"
       placeholder="Ej: juan@gmail.com"
       [(ngModel)]="email"
       (input)="clearError('email')"
@@ -62,6 +65,7 @@
     <label>Contraseña</label>
     <input
       type="password"
+      name="password"
       placeholder="Mínimo 6 caracteres"
       [(ngModel)]="password"
       (input)="clearError('password')"
@@ -81,6 +85,7 @@
     <label>DNI</label>
     <input
       type="text"
+      name="nif"
       placeholder="Ej: 12345678A"
       [(ngModel)]="nif"
       (input)="clearError('nif')"
@@ -98,6 +103,7 @@
     <label>Teléfono</label>
     <input
       type="text"
+      name="phone"
       placeholder="Ej: 612345678"
       [(ngModel)]="phone"
       (input)="clearError('phone')"
@@ -115,6 +121,7 @@
     <label>Edad</label>
     <input
       type="number"
+      name="age"
       placeholder="Ej: 25"
       [(ngModel)]="age"
       (input)="clearError('age')"

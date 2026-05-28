@@ -166,6 +166,7 @@ export class Register {
       switch (err.code) {
 
         case 'auth/email-already-in-use':
+        case 'auth/email-already-exists':
           this.errors['email'] = 'Este correo ya está registrado';
           break;
 
