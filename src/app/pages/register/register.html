@@ -14,6 +14,7 @@
       type="text"
       placeholder="Ej: Juan"
       [(ngModel)]="name"
+      (input)="clearError('name')"
       [class.input-error]="errors['name']"
       maxlength="30"
       required
@@ -30,6 +31,7 @@
       type="text"
       placeholder="Ej: García López"
       [(ngModel)]="surname"
+      (input)="clearError('surname')"
       [class.input-error]="errors['surname']"
       maxlength="50"
       required
@@ -46,6 +48,7 @@
       type="email"
       placeholder="Ej: juan@gmail.com"
       [(ngModel)]="email"
+      (input)="clearError('email')"
       [class.input-error]="errors['email']"
       required
     />
@@ -61,6 +64,7 @@
       type="password"
       placeholder="Mínimo 6 caracteres"
       [(ngModel)]="password"
+      (input)="clearError('password')"
       [class.input-error]="errors['password']"
       minlength="6"
       required
@@ -79,6 +83,7 @@
       type="text"
       placeholder="Ej: 12345678A"
       [(ngModel)]="nif"
+      (input)="clearError('nif')"
       [class.input-error]="errors['nif']"
       maxlength="9"
       required
@@ -95,6 +100,7 @@
       type="text"
       placeholder="Ej: 612345678"
       [(ngModel)]="phone"
+      (input)="clearError('phone')"
       [class.input-error]="errors['phone']"
       maxlength="9"
       required
@@ -111,6 +117,7 @@
       type="number"
       placeholder="Ej: 25"
       [(ngModel)]="age"
+      (input)="clearError('age')"
       [class.input-error]="errors['age']"
       min="1"
       max="120"

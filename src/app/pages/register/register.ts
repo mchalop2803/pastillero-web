@@ -189,4 +189,9 @@ export class Register {
   goToLogin() {
     this.router.navigate(['/login']);
   }
+
+  clearError(field: string) {
+    delete this.errors[field];
+    delete this.errors['general'];
+  }
 }
