@@ -53,18 +53,13 @@
       placeholder="Ej: juan@gmail.com"
       [(ngModel)]="email"
       (input)="clearError('email')"
-      [ngClass]="{
-        'input-error': !!errors['email']
-      }"
+      [ngClass]="{ 'input-error': !!errors['email'] }"
       required
     />
 
     <small>Debe ser un correo válido.</small>
 
-    <p class="field-error" *ngIf="errors['email']">
-      {{ errors['email'] }}
-    </p>
-
+    <!-- 🔴 SOLO UNA VEZ -->
     <p class="field-error" *ngIf="errors['email']">
       {{ errors['email'] }}
     </p>
@@ -81,9 +76,8 @@
       minlength="6"
       required
     />
-    <small>
-      Usa al menos 6 caracteres, incluyendo números y letras.
-    </small>
+
+    <small>Usa al menos 6 caracteres, incluyendo números y letras.</small>
 
     <p class="field-error" *ngIf="errors['password']">
       {{ errors['password'] }}
@@ -101,6 +95,7 @@
       maxlength="9"
       required
     />
+
     <small>Formato válido: 12345678A</small>
 
     <p class="field-error" *ngIf="errors['nif']">
@@ -119,6 +114,7 @@
       maxlength="9"
       required
     />
+
     <small>Debe contener 9 dígitos.</small>
 
     <p class="field-error" *ngIf="errors['phone']">
@@ -138,21 +134,21 @@
       max="120"
       required
     />
+
     <small>Introduce una edad válida.</small>
 
     <p class="field-error" *ngIf="errors['age']">
       {{ errors['age'] }}
     </p>
 
+    <!-- General -->
     <p class="field-error general-error" *ngIf="errors['general']">
       {{ errors['general'] }}
     </p>
 
     <button type="submit" [disabled]="loading">
-
       <span *ngIf="!loading">Registrar</span>
       <span *ngIf="loading">Creando...</span>
-
     </button>
 
     <p class="login-link">
