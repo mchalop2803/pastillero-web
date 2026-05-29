@@ -92,7 +92,6 @@ export class Medications {
 
     this.medicaments$ = this.data.getMedicaments();
 
-    // 🔥 SOLO MEDICAMENTOS ACTIVOS EN GRID
     this.filteredMeds$ = this.medicaments$.pipe(
       map(meds =>
         meds.filter(m => m.activo !== false)
@@ -143,7 +142,6 @@ export class Medications {
 
         if (!alert.hora) continue;
 
-        // 🔥 AUTO PERDIDA
         if (
           alert.estado !== 'TOMADA' &&
           alert.estado !== 'PERDIDA' &&
@@ -157,10 +155,6 @@ export class Medications {
           });
         }
 
-        // 🔥 HISTÓRICO
-        // Si el medicamento fue eliminado,
-        // solo ocultar futuros
-
         if (
           alert.fechaEliminacion &&
           alert.hora > alert.fechaEliminacion
@@ -173,7 +167,6 @@ export class Medications {
         const key =
           `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${alert.medicamentoId}`;
 
-        // 🔥 COLORES POR ESTADO
         let color = '#3b82f6';
 
         const estado = alert.estado?.toLowerCase();
@@ -359,7 +352,6 @@ export class Medications {
 
     const now = Date.now();
 
-    // 🔥 1. borrar SOLO alarmas futuras
     const alertsToDelete =
       this.alerts.filter(alert =>
         alert.medicamentoId === id &&
@@ -370,13 +362,11 @@ export class Medications {
       await this.data.deleteAlert(alert.id);
     }
 
-    // 🔥 2. marcar el medicamento como eliminado (NO borrarlo antes de tiempo)
     await this.data.updateMedicament(id, {
       activo: false,
       fechaEliminacion: now
     });
 
-    // 🔥 3. actualizar alerts restantes (histórico ya queda protegido automáticamente)
     const alertsToMark = this.alerts.filter(alert =>
       alert.medicamentoId === id
     );
@@ -389,7 +379,6 @@ export class Medications {
       }
     }
 
-    // 🔥 4. refrescar UI
     this.loadCalendarEvents();
 
     if (this.selectedDate) {
