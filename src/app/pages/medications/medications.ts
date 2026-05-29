@@ -357,21 +357,17 @@ export class Medications {
   // =========================
   async deleteMedicament(id: string) {
 
-    const now = new Date();
+    // 🔥 MOMENTO EXACTO ACTUAL
+    const now = Date.now();
 
-    // 🔥 Inicio del día actual
-    now.setHours(0, 0, 0, 0);
-
-    const todayStart = now.getTime();
-
-    // 🔥 Buscar alarmas del medicamento
+    // 🔥 Buscar alarmas futuras
     const alertsToDelete =
       this.alerts.filter(alert =>
 
         alert.medicamentoId === id &&
 
-        // 🔥 BORRAR DESDE HOY EN ADELANTE
-        alert.hora >= todayStart
+        // 🔥 SOLO ACTUALES/FUTURAS
+        alert.hora >= now
       );
 
     // 🔥 ELIMINAR SOLO FUTURAS
@@ -380,8 +376,21 @@ export class Medications {
       await this.data.deleteAlert(alert.id);
     }
 
-    // 🔥 ELIMINAR MEDICAMENTO
-    await this.data.deleteMedicament(id);
+    // 🔥 Comprobar si quedan alarmas históricas
+    const remainingAlerts =
+      this.alerts.filter(alert =>
+
+        alert.medicamentoId === id &&
+
+        alert.hora < now
+      );
+
+    // 🔥 SOLO BORRAR MEDICAMENTO
+    // SI YA NO QUEDAN HISTÓRICAS
+    if (remainingAlerts.length === 0) {
+
+      await this.data.deleteMedicament(id);
+    }
 
     // 🔥 RECARGAR
     this.loadCalendarEvents();
@@ -389,7 +398,7 @@ export class Medications {
     if (this.selectedDate) {
       this.loadMedicamentsByDay(this.selectedDate);
     }
-    }
+  }
 
   // =========================
   // DETAIL
@@ -501,52 +510,78 @@ export class Medications {
         .split(':')
         .map(Number);
 
+    // 🔥 FRECUENCIA
+    let intervalHours = 24;
+
+    if (this.alertForm.frecuencia === 'Cada 12 horas') {
+      intervalHours = 12;
+    }
+
+    if (this.alertForm.frecuencia === 'Cada 8 horas') {
+      intervalHours = 8;
+    }
+
+    if (this.alertForm.frecuencia === 'Cada 6 horas') {
+      intervalHours = 6;
+    }
+
     const start = new Date(med.fechaInicio);
     const end = new Date(med.fechaFin);
 
     start.setHours(0,0,0,0);
     end.setHours(23,59,59,999);
 
-    const current = new Date(start);
+    const currentDay = new Date(start);
 
-    while (current <= end) {
+    while (currentDay <= end) {
 
-      const alarm = new Date(current);
+      // 🔥 GENERAR ALARMAS SEGÚN FRECUENCIA
+      for (
+        let h = hour;
+        h < 24;
+        h += intervalHours
+      ) {
 
-      alarm.setHours(hour, minute, 0, 0);
+        const alarm = new Date(currentDay);
 
-      // 🔥 COMPROBAR DUPLICADOS
-      const exists = this.alerts.some(a =>
+        alarm.setHours(h, minute, 0, 0);
 
-        a.medicamentoId === med.id &&
+        // 🔥 EVITAR PASAR AL DÍA SIGUIENTE
+        if (alarm > end) continue;
 
-        new Date(a.hora).getTime() === alarm.getTime()
-      );
+        // 🔥 EVITAR DUPLICADOS
+        const exists = this.alerts.some(a =>
 
-      // 🔥 SOLO CREAR SI NO EXISTE
-      if (!exists) {
+          a.medicamentoId === med.id &&
 
-        await this.data.addAlert({
+          new Date(a.hora).getTime() === alarm.getTime()
+        );
 
-          nombre: med.nombre,
+        if (!exists) {
 
-          medicamentoId: med.id,
+          await this.data.addAlert({
 
-          medicamentImageUrl: med.imageUrl,
+            nombre: med.nombre,
 
-          dosisBase: this.alertForm.dosisBase,
+            medicamentoId: med.id,
 
-          hora: alarm.getTime(),
+            medicamentImageUrl: med.imageUrl,
 
-          estado:
-            alarm.getTime() < Date.now()
-              ? 'PERDIDA'
-              : 'PENDIENTE'
-        });
+            dosisBase: this.alertForm.dosisBase,
+
+            hora: alarm.getTime(),
+
+            estado:
+              alarm.getTime() < Date.now()
+                ? 'PERDIDA'
+                : 'PENDIENTE'
+          });
+        }
       }
 
-      current.setDate(
-        current.getDate() + 1
+      // 🔥 PASAR AL SIGUIENTE DÍA
+      currentDay.setDate(
+        currentDay.getDate() + 1
       );
     }
 
