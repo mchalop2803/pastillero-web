@@ -357,42 +357,39 @@ export class Medications {
   // =========================
   async deleteMedicament(id: string) {
 
-    // 🔥 MOMENTO EXACTO ACTUAL
     const now = Date.now();
 
-    // 🔥 Buscar alarmas futuras
+    // 🔥 1. borrar SOLO alarmas futuras
     const alertsToDelete =
       this.alerts.filter(alert =>
-
         alert.medicamentoId === id &&
-
-        // 🔥 SOLO ACTUALES/FUTURAS
         alert.hora >= now
       );
 
-    // 🔥 ELIMINAR SOLO FUTURAS
     for (const alert of alertsToDelete) {
-
       await this.data.deleteAlert(alert.id);
     }
 
-    // 🔥 Comprobar si quedan alarmas históricas
-    const remainingAlerts =
-      this.alerts.filter(alert =>
+    // 🔥 2. marcar el medicamento como eliminado (NO borrarlo antes de tiempo)
+    await this.data.updateMedicament(id, {
+      activo: false,
+      fechaEliminacion: now
+    });
 
-        alert.medicamentoId === id &&
+    // 🔥 3. actualizar alerts restantes (histórico ya queda protegido automáticamente)
+    const alertsToMark = this.alerts.filter(alert =>
+      alert.medicamentoId === id
+    );
 
-        alert.hora < now
-      );
-
-    // 🔥 SOLO BORRAR MEDICAMENTO
-    // SI YA NO QUEDAN HISTÓRICAS
-    if (remainingAlerts.length === 0) {
-
-      await this.data.deleteMedicament(id);
+    for (const alert of alertsToMark) {
+      if (!alert.fechaEliminacion || alert.fechaEliminacion < now) {
+        await this.data.updateAlert(alert.id, {
+          fechaEliminacion: now
+        });
+      }
     }
 
-    // 🔥 RECARGAR
+    // 🔥 4. refrescar UI
     this.loadCalendarEvents();
 
     if (this.selectedDate) {
