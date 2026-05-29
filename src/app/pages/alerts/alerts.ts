@@ -17,6 +17,15 @@ import { DetailModalComponent } from '../../shared/detail-modal/detail-modal';
 export class Alerts {
 
   alerts$!: Observable<any[]>;
+  alerts: any[] = [];
+  filteredAlerts: any[] = [];
+
+  medicamentos: string[] = [];
+
+  selectedMedicamento = 'Todos';
+
+  fechaInicio = '';
+  fechaFin = '';
 
   selectedItem: any = null;
   isDetailOpen = false;
@@ -51,7 +60,74 @@ export class Alerts {
   }
 
   refreshAlerts() {
-    this.alerts$ = this.data.getAlerts();
+
+    this.data.getAlerts().subscribe(alerts => {
+
+      this.alerts = alerts;
+
+      this.filteredAlerts = alerts;
+
+      this.loadMedicamentos();
+
+      this.applyFilters();
+    });
+  }
+
+  loadMedicamentos() {
+
+    const nombres = this.alerts.map(a => a.nombre);
+
+    this.medicamentos = [...new Set(nombres)];
+  }
+
+  applyFilters() {
+
+    this.filteredAlerts = this.alerts.filter(alert => {
+
+      // FILTRO MEDICAMENTO
+      const coincideMedicamento =
+        this.selectedMedicamento === 'Todos'
+        || alert.nombre === this.selectedMedicamento;
+
+      // FILTRO FECHAS
+      let coincideFecha = true;
+
+      const alertDate = new Date(alert.hora);
+
+      if (this.fechaInicio) {
+
+        const inicio = new Date(this.fechaInicio);
+        inicio.setHours(0,0,0,0);
+
+        coincideFecha =
+          coincideFecha &&
+          alertDate >= inicio;
+      }
+
+      if (this.fechaFin) {
+
+        const fin = new Date(this.fechaFin);
+        fin.setHours(23,59,59,999);
+
+        coincideFecha =
+          coincideFecha &&
+          alertDate <= fin;
+      }
+
+      return coincideMedicamento && coincideFecha;
+    });
+  }
+
+  onFechaInicioChange() {
+
+    if (
+      this.fechaFin &&
+      this.fechaFin < this.fechaInicio
+    ) {
+      this.fechaFin = '';
+    }
+
+    this.applyFilters();
   }
 
   openCreateModal() {

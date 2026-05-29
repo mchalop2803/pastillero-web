@@ -4,11 +4,44 @@
     <h1>⏰ Alarmas</h1>
   </header>
 
+  <!-- FILTROS -->
+  <div class="filters">
+
+    <!-- MEDICAMENTO -->
+    <select
+      [(ngModel)]="selectedMedicamento"
+      (change)="applyFilters()">
+
+      <option value="Todos">Todos</option>
+
+      <option
+        *ngFor="let med of medicamentos"
+        [value]="med">
+
+        {{ med }}
+      </option>
+    </select>
+
+    <!-- FECHA INICIO -->
+    <input
+      type="date"
+      [(ngModel)]="fechaInicio"
+      (change)="onFechaInicioChange()" />
+
+    <!-- FECHA FIN -->
+    <input
+      type="date"
+      [(ngModel)]="fechaFin"
+      [min]="fechaInicio"
+      (change)="applyFilters()" />
+
+  </div>
+
   <!-- LISTA -->
   <div class="grid">
 
     <div class="card small"
-         *ngFor="let alert of alerts$ | async"
+         *ngFor="let alert of filteredAlerts"
          (click)="openDetail(alert)">
 
       <div class="icon">⏰</div>

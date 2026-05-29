@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -92,7 +92,12 @@ export class Medications {
 
     this.medicaments$ = this.data.getMedicaments();
 
-    this.filteredMeds$ = this.medicaments$;
+    // 🔥 SOLO MEDICAMENTOS ACTIVOS EN GRID
+    this.filteredMeds$ = this.medicaments$.pipe(
+      map(meds =>
+        meds.filter(m => m.activo !== false)
+      )
+    );
 
     this.initCalendar();
     this.loadCalendarEvents();
@@ -106,6 +111,7 @@ export class Medications {
   // CALENDAR
   // =========================
   initCalendar() {
+
     this.calendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
       initialView: 'dayGridMonth',
@@ -114,6 +120,7 @@ export class Medications {
       events: this.calendarEvents,
       eventDisplay: 'block',
       dayMaxEvents: true,
+
       dateClick: (info: any) => {
         this.loadMedicamentsByDay(info.date);
       }
@@ -129,17 +136,20 @@ export class Medications {
       this.alerts = alerts;
 
       const map = new Map();
+
       const now = Date.now();
 
       for (const alert of alerts) {
 
         if (!alert.hora) continue;
 
+        // 🔥 AUTO PERDIDA
         if (
           alert.estado !== 'TOMADA' &&
           alert.estado !== 'PERDIDA' &&
           alert.hora < now
         ) {
+
           alert.estado = 'PERDIDA';
 
           await this.data.updateAlert(alert.id, {
@@ -147,28 +157,56 @@ export class Medications {
           });
         }
 
+        // 🔥 HISTÓRICO
+        // Si el medicamento fue eliminado,
+        // solo ocultar futuros
+
+        if (
+          alert.fechaEliminacion &&
+          alert.hora > alert.fechaEliminacion
+        ) {
+          continue;
+        }
+
         const date = new Date(alert.hora);
 
         const key =
           `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${alert.medicamentoId}`;
 
+        // 🔥 COLORES POR ESTADO
         let color = '#3b82f6';
 
         const estado = alert.estado?.toLowerCase();
-        if (estado === 'pendiente') color = '#f59e0b';
-        if (estado === 'tomada') color = '#10b981';
-        if (estado === 'perdida') color = '#ef4444';
+
+        if (estado === 'pendiente') {
+          color = '#f59e0b';
+        }
+
+        if (estado === 'tomada') {
+          color = '#10b981';
+        }
+
+        if (estado === 'perdida') {
+          color = '#ef4444';
+        }
 
         if (!map.has(key)) {
+
           map.set(key, {
             id: alert.id,
+
             title: alert.nombre,
+
             start: date,
+
             allDay: true,
+
             backgroundColor: color,
             borderColor: color,
             textColor: '#fff',
+
             display: 'block',
+
             extendedProps: {
               medicamentoId: alert.medicamentoId,
               estado: alert.estado
@@ -203,6 +241,14 @@ export class Medications {
 
       if (!alert.hora) return;
 
+      // 🔥 HISTÓRICO
+      if (
+        alert.fechaEliminacion &&
+        alert.hora > alert.fechaEliminacion
+      ) {
+        return;
+      }
+
       const d = new Date(alert.hora);
 
       const sameDay =
@@ -212,14 +258,20 @@ export class Medications {
 
       if (!sameDay) return;
 
-      const key = alert.medicamentoId || alert.nombre;
+      const key =
+        alert.medicamentoId || alert.nombre;
 
       if (!map.has(key)) {
+
         map.set(key, {
           id: alert.medicamentoId,
+
           nombre: alert.nombre,
+
           imageUrl: alert.medicamentImageUrl,
+
           dosisBase: alert.dosisBase,
+
           alerts: []
         });
       }
@@ -227,7 +279,8 @@ export class Medications {
       map.get(key).alerts.push(alert);
     });
 
-    this.selectedDayMedicaments = Array.from(map.values());
+    this.selectedDayMedicaments =
+      Array.from(map.values());
   }
 
   // =========================
@@ -241,39 +294,97 @@ export class Medications {
 
     try {
 
-      let imageUrl = this.newMedicament.imageUrl || '';
+      let imageUrl =
+        this.newMedicament.imageUrl || '';
 
       if (this.selectedFile) {
-        imageUrl = await this.storage.uploadImage(this.selectedFile);
+
+        imageUrl =
+          await this.storage.uploadImage(
+            this.selectedFile
+          );
       }
 
       const data = {
-        nombre: this.newMedicament.nombre,
-        descripcion: this.newMedicament.descripcion,
+
+        nombre:
+          this.newMedicament.nombre,
+
+        descripcion:
+          this.newMedicament.descripcion,
+
         imageUrl,
-        fechaInicio: this.newMedicament.fechaInicio
-          ? new Date(this.newMedicament.fechaInicio).getTime()
-          : null,
-        fechaFin: this.newMedicament.fechaFin
-          ? new Date(this.newMedicament.fechaFin).getTime()
-          : null
+
+        activo: true,
+
+        fechaInicio:
+          this.newMedicament.fechaInicio
+            ? new Date(
+                this.newMedicament.fechaInicio
+              ).getTime()
+            : null,
+
+        fechaFin:
+          this.newMedicament.fechaFin
+            ? new Date(
+                this.newMedicament.fechaFin
+              ).getTime()
+            : null
       };
 
       if (this.editingId) {
-        await this.data.updateMedicament(this.editingId, data);
+
+        await this.data.updateMedicament(
+          this.editingId,
+          data
+        );
+
       } else {
+
         await this.data.addMedicament(data);
       }
 
       this.closeModal();
 
     } finally {
+
       this.isSaving = false;
     }
   }
 
+  // =========================
+  // DELETE WITH HISTORY
+  // =========================
   async deleteMedicament(id: string) {
-    await this.data.deleteMedicament(id);
+
+    const now = Date.now();
+
+    // 🔥 NO BORRAR
+    // SOLO DESACTIVAR
+
+    await this.data.updateMedicament(id, {
+
+      activo: false,
+
+      fechaEliminacion: now
+    });
+
+    // 🔥 ACTUALIZAR ALERTAS FUTURAS
+    // PARA MANTENER HISTÓRICO
+
+    const alertsToUpdate =
+      this.alerts.filter(alert =>
+        alert.medicamentoId === id
+      );
+
+    for (const alert of alertsToUpdate) {
+
+      await this.data.updateAlert(alert.id, {
+        fechaEliminacion: now
+      });
+    }
+
+    this.loadCalendarEvents();
 
     if (this.selectedDate) {
       this.loadMedicamentsByDay(this.selectedDate);
@@ -284,40 +395,57 @@ export class Medications {
   // DETAIL
   // =========================
   openDetail(item: any) {
+
     this.selectedItem = item;
+
     this.isDetailOpen = true;
   }
 
   closeDetail() {
+
     this.selectedItem = null;
+
     this.isDetailOpen = false;
   }
 
   deleteFromModal(item: any) {
+
     this.deleteMedicament(item.id);
+
     this.closeDetail();
   }
 
   editFromModal(item: any) {
 
     this.closeDetail();
+
     this.openAddModal();
 
     this.editingId = item.id;
 
     this.newMedicament = {
+
       nombre: item.nombre,
+
       descripcion: item.descripcion,
+
       imageUrl: item.imageUrl,
+
       fechaInicio: item.fechaInicio
-        ? new Date(item.fechaInicio).toISOString().split('T')[0]
+        ? new Date(item.fechaInicio)
+            .toISOString()
+            .split('T')[0]
         : '',
+
       fechaFin: item.fechaFin
-        ? new Date(item.fechaFin).toISOString().split('T')[0]
+        ? new Date(item.fechaFin)
+            .toISOString()
+            .split('T')[0]
         : ''
     };
 
-    this.previewUrl = item.imageUrl || null;
+    this.previewUrl =
+      item.imageUrl || null;
   }
 
   // =========================
@@ -328,16 +456,24 @@ export class Medications {
     if (!med) return;
 
     this.selectedMedForAlert = {
+
       id: med.id || med.medicamentoId,
+
       nombre: med.nombre,
+
       fechaInicio: med.fechaInicio,
+
       fechaFin: med.fechaFin,
+
       imageUrl: med.imageUrl
     };
 
     this.alertForm = {
+
       hora: '',
+
       dosisBase: '',
+
       frecuencia: 'Cada 24 horas'
     };
 
@@ -345,82 +481,164 @@ export class Medications {
   }
 
   closeAlertCreateModal() {
+
     this.isAlertCreateOpen = false;
+
     this.selectedMedForAlert = null;
   }
 
   async createAlertFromModal() {
 
-    const med = this.selectedMedForAlert;
+    const med =
+      this.selectedMedForAlert;
 
     if (!med || !med.id) {
-      console.error('Medicamento inválido para crear alarma', med);
+
+      console.error(
+        'Medicamento inválido',
+        med
+      );
+
       return;
     }
 
-    const [hour, minute] = this.alertForm.hora.split(':').map(Number);
+    const [hour, minute] =
+      this.alertForm.hora
+        .split(':')
+        .map(Number);
 
     let interval = 24;
-    if (this.alertForm.frecuencia === 'Cada 12 horas') interval = 12;
-    if (this.alertForm.frecuencia === 'Cada 8 horas') interval = 8;
-    if (this.alertForm.frecuencia === 'Cada 6 horas') interval = 6;
 
-    const start = new Date(med.fechaInicio);
-    const end = new Date(med.fechaFin);
+    if (
+      this.alertForm.frecuencia ===
+      'Cada 12 horas'
+    ) {
+      interval = 12;
+    }
+
+    if (
+      this.alertForm.frecuencia ===
+      'Cada 8 horas'
+    ) {
+      interval = 8;
+    }
+
+    if (
+      this.alertForm.frecuencia ===
+      'Cada 6 horas'
+    ) {
+      interval = 6;
+    }
+
+    const start =
+      new Date(med.fechaInicio);
+
+    const end =
+      new Date(med.fechaFin);
 
     if (!start || !end) {
-      console.error('Fechas inválidas');
+
+      console.error(
+        'Fechas inválidas'
+      );
+
       return;
     }
 
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
+    start.setHours(0,0,0,0);
 
-    const current = new Date(start);
+    end.setHours(23,59,59,999);
+
+    const current =
+      new Date(start);
 
     while (current <= end) {
 
-      const alarm = new Date(current);
-      alarm.setHours(hour, minute, 0, 0);
+      const alarm =
+        new Date(current);
+
+      alarm.setHours(
+        hour,
+        minute,
+        0,
+        0
+      );
 
       await this.data.addAlert({
+
         nombre: med.nombre,
-        medicamentoId: med.id, // 🔥 YA NO FALLA
-        medicamentImageUrl: med.imageUrl,
-        dosisBase: this.alertForm.dosisBase,
+
+        medicamentoId: med.id,
+
+        medicamentImageUrl:
+          med.imageUrl,
+
+        dosisBase:
+          this.alertForm.dosisBase,
+
         hora: alarm.getTime(),
-        estado: alarm.getTime() < Date.now() ? 'PERDIDA' : 'PENDIENTE'
+
+        estado:
+          alarm.getTime() < Date.now()
+            ? 'PERDIDA'
+            : 'PENDIENTE'
       });
 
-      current.setDate(current.getDate() + 1);
+      current.setDate(
+        current.getDate() + 1
+      );
     }
 
     this.closeAlertCreateModal();
+
     this.loadCalendarEvents();
   }
 
   // =========================
-  // ADD / EDIT MED
+  // ADD / EDIT MODAL
   // =========================
   openAddModal() {
+
     this.isAddModalOpen = true;
   }
 
   closeModal() {
+
     this.isAddModalOpen = false;
+
     this.editingId = null;
+
+    this.newMedicament = {
+
+      nombre: '',
+      descripcion: '',
+      imageUrl: '',
+      fechaInicio: '',
+      fechaFin: ''
+    };
+
+    this.selectedFile = null;
+
+    this.previewUrl = null;
   }
 
   onFileChange(e: any) {
-    const file = e.target.files[0];
+
+    const file =
+      e.target.files[0];
+
     this.selectedFile = file;
 
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = () => {
-      this.previewUrl = reader.result as string;
+
+      this.previewUrl =
+        reader.result as string;
     };
+
     reader.readAsDataURL(file);
   }
 }
