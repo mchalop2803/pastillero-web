@@ -6,7 +6,7 @@
     <div class="header">
 
       <div class="title">
-        <h1> {{ item?.nombre || item?.descripcion || 'Detalle'}}</h1>
+        <h1>{{ item?.nombre || item?.descripcion || 'Detalle' }}</h1>
 
         <p class="subtitle">
 
@@ -61,19 +61,6 @@
         </div>
 
       </div>
-
-      <!-- CITA -->
-      <ng-container *ngIf="type === 'cita'">
-
-        <button class="btn edit" (click)="editItem()">
-          ✏️ Editar
-        </button>
-
-        <button class="btn delete" (click)="deleteItem()">
-          🗑 Eliminar
-        </button>
-
-      </ng-container>
 
       <!-- ALERT -->
       <div class="big-card" *ngIf="type === 'alert'">
@@ -169,6 +156,19 @@
 
         <button class="btn danger" *ngIf="canTakeActions" (click)="markAsMissed()">
           ❌ No tomada
+        </button>
+
+      </ng-container>
+
+      <!-- CITA MÉDICA (FIXED: ahora abajo como los demás) -->
+      <ng-container *ngIf="type === 'cita'">
+
+        <button class="btn edit" (click)="editItem()">
+          ✏️ Editar
+        </button>
+
+        <button class="btn delete" (click)="deleteItem()">
+          🗑 Eliminar
         </button>
 
       </ng-container>
