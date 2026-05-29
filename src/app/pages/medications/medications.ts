@@ -357,39 +357,39 @@ export class Medications {
   // =========================
   async deleteMedicament(id: string) {
 
-    const now = Date.now();
+    const now = new Date();
 
-    // 🔥 NO BORRAR
-    // SOLO DESACTIVAR
+    // 🔥 Inicio del día actual
+    now.setHours(0, 0, 0, 0);
 
-    await this.data.updateMedicament(id, {
+    const todayStart = now.getTime();
 
-      activo: false,
-
-      fechaEliminacion: now
-    });
-
-    // 🔥 ACTUALIZAR ALERTAS FUTURAS
-    // PARA MANTENER HISTÓRICO
-
-    const alertsToUpdate =
+    // 🔥 Buscar alarmas del medicamento
+    const alertsToDelete =
       this.alerts.filter(alert =>
-        alert.medicamentoId === id
+
+        alert.medicamentoId === id &&
+
+        // 🔥 BORRAR DESDE HOY EN ADELANTE
+        alert.hora >= todayStart
       );
 
-    for (const alert of alertsToUpdate) {
+    // 🔥 ELIMINAR SOLO FUTURAS
+    for (const alert of alertsToDelete) {
 
-      await this.data.updateAlert(alert.id, {
-        fechaEliminacion: now
-      });
+      await this.data.deleteAlert(alert.id);
     }
 
+    // 🔥 ELIMINAR MEDICAMENTO
+    await this.data.deleteMedicament(id);
+
+    // 🔥 RECARGAR
     this.loadCalendarEvents();
 
     if (this.selectedDate) {
       this.loadMedicamentsByDay(this.selectedDate);
     }
-  }
+    }
 
   // =========================
   // DETAIL
@@ -489,16 +489,10 @@ export class Medications {
 
   async createAlertFromModal() {
 
-    const med =
-      this.selectedMedForAlert;
+    const med = this.selectedMedForAlert;
 
     if (!med || !med.id) {
-
-      console.error(
-        'Medicamento inválido',
-        med
-      );
-
+      console.error('Medicamento inválido', med);
       return;
     }
 
@@ -507,82 +501,49 @@ export class Medications {
         .split(':')
         .map(Number);
 
-    let interval = 24;
-
-    if (
-      this.alertForm.frecuencia ===
-      'Cada 12 horas'
-    ) {
-      interval = 12;
-    }
-
-    if (
-      this.alertForm.frecuencia ===
-      'Cada 8 horas'
-    ) {
-      interval = 8;
-    }
-
-    if (
-      this.alertForm.frecuencia ===
-      'Cada 6 horas'
-    ) {
-      interval = 6;
-    }
-
-    const start =
-      new Date(med.fechaInicio);
-
-    const end =
-      new Date(med.fechaFin);
-
-    if (!start || !end) {
-
-      console.error(
-        'Fechas inválidas'
-      );
-
-      return;
-    }
+    const start = new Date(med.fechaInicio);
+    const end = new Date(med.fechaFin);
 
     start.setHours(0,0,0,0);
-
     end.setHours(23,59,59,999);
 
-    const current =
-      new Date(start);
+    const current = new Date(start);
 
     while (current <= end) {
 
-      const alarm =
-        new Date(current);
+      const alarm = new Date(current);
 
-      alarm.setHours(
-        hour,
-        minute,
-        0,
-        0
+      alarm.setHours(hour, minute, 0, 0);
+
+      // 🔥 COMPROBAR DUPLICADOS
+      const exists = this.alerts.some(a =>
+
+        a.medicamentoId === med.id &&
+
+        new Date(a.hora).getTime() === alarm.getTime()
       );
 
-      await this.data.addAlert({
+      // 🔥 SOLO CREAR SI NO EXISTE
+      if (!exists) {
 
-        nombre: med.nombre,
+        await this.data.addAlert({
 
-        medicamentoId: med.id,
+          nombre: med.nombre,
 
-        medicamentImageUrl:
-          med.imageUrl,
+          medicamentoId: med.id,
 
-        dosisBase:
-          this.alertForm.dosisBase,
+          medicamentImageUrl: med.imageUrl,
 
-        hora: alarm.getTime(),
+          dosisBase: this.alertForm.dosisBase,
 
-        estado:
-          alarm.getTime() < Date.now()
-            ? 'PERDIDA'
-            : 'PENDIENTE'
-      });
+          hora: alarm.getTime(),
+
+          estado:
+            alarm.getTime() < Date.now()
+              ? 'PERDIDA'
+              : 'PENDIENTE'
+        });
+      }
 
       current.setDate(
         current.getDate() + 1
