@@ -5,7 +5,11 @@
   </button>
 
   <aside class="sidebar" [class.open]="isSidebarOpen">
-    <h2>👤 {{ userName }}</h2>
+
+    <div class="user-header">
+      <img src="assets/images/ic_pastillero.png" alt="Pastillero Digital" class="logo">
+      <h2>{{ userName }}</h2>
+    </div>
 
     <nav>
       <a routerLink="/home" routerLinkActive="active">🏠 Inicio</a>
@@ -17,6 +21,7 @@
     <div class="bottom">
       <button (click)="logout()">🚪 Cerrar sesión</button>
     </div>
+
   </aside>
 
   <div class="overlay" *ngIf="isSidebarOpen" (click)="closeSidebar()"></div>
